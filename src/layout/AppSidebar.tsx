@@ -30,7 +30,23 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    path: "/",
+  },
+  {
+    name: "Tables",
+    icon: <TableIcon />,
+    subItems: [
+      { name: "Ordenes", path: "/orders", pro: false, new: false },
+      { name: "Inventario", path: "/inventory", pro: false, new: false },
+      { name: "Productos", path: "/products", pro: false },
+      { name: "Categorias", path: "/categories", pro: false },
+      { name: "Metodos de Pago", path: "/payment-methods", pro: false },
+      { name: "Metodos de Envio", path: "/shipping-methods", pro: false  },
+      { name: "Codigos de Promoción", path: "/promotion-codes", pro: false  },
+      { name: "Marcas", path: "/brands", pro: false  },
+      { name: "Direcciones", path: "/addresses", pro: false  },
+      { name: "Descuentos", path: "/discounts", pro: false  },
+    ],
   },
   {
     icon: <CalenderIcon />,
@@ -47,11 +63,6 @@ const navItems: NavItem[] = [
     name: "Forms",
     icon: <ListIcon />,
     subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   },
   {
     name: "Pages",
