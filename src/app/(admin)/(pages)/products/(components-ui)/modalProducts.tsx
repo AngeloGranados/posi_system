@@ -15,33 +15,31 @@ interface ModalProductProps {
     isOpen: boolean;
     closeModal: () => void;
     selected: Product | null;
+    setSelected: (product: Product | null) => void;
+    handleCreateProduct: (e: React.FormEvent<HTMLFormElement>, product: Product, images: File[]) => Promise<void>;
 }
 
-export default function ModalProduct({ isOpen, closeModal, selected } : ModalProductProps) {
+export default function ModalProduct({ isOpen, closeModal, selected, setSelected, handleCreateProduct } : ModalProductProps) {
 
     const emptyProduct: Product = {
-        id: 0,
         name: "",
         slug: "",
         description_short: "",
         description_long: "",
-        image: "", 
+        image: selected?.image || new File([], ""),
         price: 0,
         category_id: 0,
         idbrand: 0,
         stock: 0,
         discount: 0,
-        rating: 0,
-        reviews: 0,
-        is_active: true,
-        created_at: "",
-        updated_at: ""
     };
 
     // Si selected existe, usarlo; si no, usar emptyProduct
     const [FormDataProduct, setFormDataProduct] = useState<Product>(selected || emptyProduct);
-    const [imageFile, setImageFile] = useState<File | null>(null);
-    const [extraImageFiles, setExtraImageFiles] = useState<FileList | null>(null);
+
+    // images
+    const [imageExtrasFiles, setImageExtrasFiles] = useState<File[]>([]);
+    const [extraImageFileSelected, setExtraImageFileSelected] = useState<File | null>(null);
 
     // Actualiza el estado cuando cambia selected
     useEffect(() => {
@@ -50,8 +48,9 @@ export default function ModalProduct({ isOpen, closeModal, selected } : ModalPro
 
     const handleCloseModal = () => {
         setFormDataProduct(emptyProduct);
-        setImageFile(null);
-        setExtraImageFiles(null);
+        setImageExtrasFiles([]);
+        setExtraImageFileSelected(null);
+        setSelected(null);
         closeModal();
     }
 
@@ -85,12 +84,28 @@ export default function ModalProduct({ isOpen, closeModal, selected } : ModalPro
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files ? e.target.files[0] : null;
-        setImageFile(file);
+        setFormDataProduct((prevData) => ({
+            ...prevData,
+            image: file ? file : prevData.image 
+        }));
     }
 
-    const handleExtraImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-        setExtraImageFiles(files);
+    const handleExtraImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files ? e.target.files[0] : null;
+        setExtraImageFileSelected(file);
+    }
+
+    function handleAddImagesGallery() {
+      if (extraImageFileSelected) {
+        setImageExtrasFiles((prevData) => (
+          [
+            ...prevData || [],
+            extraImageFileSelected
+          ]
+        ))
+
+        setExtraImageFileSelected(null);
+      }
     }
 
     const optionsCategory = [
@@ -105,7 +120,7 @@ export default function ModalProduct({ isOpen, closeModal, selected } : ModalPro
             onClose={handleCloseModal}
             className="max-w-[700px] p-6 lg:p-10"
           >
-            <form className="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[80vh]">
+            <form onSubmit={(e) => handleCreateProduct(e, FormDataProduct, imageExtrasFiles)} className="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[80vh]">
               <div>
                 <h5 className="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl">
                   {selected ? `Editar Producto` : `Agregar Producto`}
@@ -133,15 +148,6 @@ export default function ModalProduct({ isOpen, closeModal, selected } : ModalPro
                   </div>
                 </div>
                 <div className="flex md:flex-row flex-col gap-4 mt-4">
-                  <div className="mt-4 flex-1">
-                    <Label htmlFor="price">Precio:</Label>
-                    <InputField
-                      id="input-price"
-                      name="price"
-                      value={FormDataProduct ? FormDataProduct.price : ""}
-                      onChange={handleDataChange}
-                    />
-                  </div>
                   <div className="mt-4 flex-1">
                     <Label htmlFor="category">Categoria:</Label>
                     <Select
@@ -214,45 +220,53 @@ export default function ModalProduct({ isOpen, closeModal, selected } : ModalPro
                   />
                 </div>
               </div>
-              <div className="flex md:flex-row flex-col gap-4 mt-8">
+              <div className="flex flex-col gap-4 mt-8">
                 <div className="mt-4 flex-1 flex flex-col items-center gap-4">
                     {
-                      imageFile && (
-                        <Image
-                          src={URL.createObjectURL(imageFile)}
-                          alt="Product Image"
-                          width={200}
-                          height={200}
-                        />
-                      )
+                      <Image
+                         src={
+                           selected?.image ?
+                           (process.env.NEXT_PUBLIC_URL_IMAGES ?? "") + selected.image : 
+                           FormDataProduct.image instanceof File && FormDataProduct.image.size > 0 ? URL.createObjectURL(FormDataProduct.image) : 
+                           "/images/error/404_image.png"
+                         }
+                         alt="Product Image"
+                         width={200}
+                         unoptimized={process.env.NODE_ENV ? true : false}
+                         height={200}
+                       />
                     }
                   <Label htmlFor="image">Imagen principal:</Label>
                   <FileInput
+                    name="image"
                     onChange={handleImageChange}
                   />
                 </div>
-                <div className="mt-4 flex-1 flex flex-col items-center gap-4">
-                  <Label htmlFor="extra-images">Imágenes adicionales:</Label>
-                  <FileInput
-                    onChange={handleExtraImagesChange}
-                  />
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {extraImageFiles && extraImageFiles.length > 0 &&
-                      Array.from(extraImageFiles).map((file: File, idx: number) => (
-                        <Image
-                          key={idx}
-                          src={URL.createObjectURL(file)}
-                          alt={`Extra ${idx + 1}`}
-                          width={80}
-                          height={80}
-                          className="rounded border"
-                        />
-                      ))}
+                {!selected && (
+                  <div className="mt-4 flex-1 flex flex-col items-center gap-4">
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {imageExtrasFiles && imageExtrasFiles.length > 0 &&
+                        imageExtrasFiles.map((image: File, idx: number) => (
+                          <Image
+                            key={idx}
+                            src={URL.createObjectURL(image)}
+                            alt={`Extra ${idx + 1}`}
+                            width={80}
+                            height={80}
+                            className="rounded border"
+                          />
+                        ))}
+                    </div>
+                    <Label htmlFor="extra-images">Agregar Imágenes adicionales:</Label>
+                    <FileInput
+                      onChange={handleExtraImageChange}
+                    />
+                    <div>
+                      <Button onClick={handleAddImagesGallery}>Agregar Imagen</Button>
+                    </div>
+                  
                   </div>
-                  <div>
-                    <Button >Agregar</Button>
-                  </div>
-                </div>
+                )}
               </div>
               <div className="flex items-center gap-3 mt-6 modal-footer sm:justify-end">
                 <button

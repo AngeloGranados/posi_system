@@ -39,7 +39,7 @@ const TextArea: React.FC<TextareaProps> = ({
       <textarea
         placeholder={placeholder}
         rows={rows}
-        defaultValue={value}
+        value={value}
         onChange={onChange}
         disabled={disabled}
         className={textareaClasses}

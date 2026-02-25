@@ -24,7 +24,7 @@ export default function TableProducts({ data, OpenModal }: TableProductsProps) {
                             <TableCell isHeader className="px-3 text-start text-gray-500 py-3">Precio</TableCell>
                             <TableCell isHeader className="px-3 text-start text-gray-500 py-3">Stock</TableCell>
                             <TableCell isHeader className="px-3 text-start text-gray-500 py-4">Descripción Corta</TableCell>
-                            <TableCell isHeader className="px-3 text-start text-gray-500 py-4">Descripción Larga</TableCell>
+                            <TableCell isHeader className="px-3 text-start text-gray-500 py-4">Descuento</TableCell>
                             <TableCell isHeader className="px-3 text-start text-gray-500 py-3">Acciones</TableCell>
                         </TableRow>
                     </TableHeader>
@@ -35,20 +35,25 @@ export default function TableProducts({ data, OpenModal }: TableProductsProps) {
                                     <TableRow key={product.id}>
                                         <TableCell className="px-3 py-3">{product.id}</TableCell>
                                         <TableCell className="px-3 py-3">
-                                            <Image
-                                                width={64}
-                                                height={64}
-                                                src={product.image}
-                                                alt={product.name}
-                                                className="w-16 h-16 object-cover rounded"
-                                            />
+                                            {
+                                                product.image && (
+                                                 <Image
+                                                    width={64}
+                                                    height={64}
+                                                    unoptimized={process.env.NODE_ENV ? true : false}
+                                                    src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}${typeof product.image === "string" ? product.image : product.image}`}
+                                                    alt={product.name}
+                                                    className="w-16 h-16 object-cover rounded"
+                                                />
+                                                )
+                                            }
                                         </TableCell>
                                         <TableCell className="px-3 py-3">{product.name}</TableCell>
                                         <TableCell className="px-3 py-3">{product.slug}</TableCell>
                                         <TableCell className="px-3 py-3">${product.price}</TableCell>
                                         <TableCell className="px-3 py-3">{product.stock}</TableCell>
                                         <TableCell className="px-3 py-4">{product.description_short}</TableCell>
-                                        <TableCell className="px-3 py-4">{product.description_long}</TableCell>
+                                        <TableCell className="px-3 py-4">{product.discount}</TableCell>
                                         <TableCell className="px-3 py-3">
                                             <div className="flex space-x-4">
                                                 <Button onClick={() => OpenModal(product)} variant="outline" className="text-blue-500">Editar</Button>
