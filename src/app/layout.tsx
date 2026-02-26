@@ -3,6 +3,7 @@ import './globals.css';
 import "flatpickr/dist/flatpickr.css";
 import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const outfit = Outfit({
   subsets: ["latin"],

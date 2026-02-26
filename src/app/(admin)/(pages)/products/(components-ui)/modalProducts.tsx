@@ -10,6 +10,8 @@ import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
 import Image from "next/image";
 import Button from "@/components/ui/button/Button";
+import Alert from "@/components/ui/alert/Alert";
+import useAlert from "@/hooks/useAlert";
 
 interface ModalProductProps {
     isOpen: boolean;
@@ -17,9 +19,16 @@ interface ModalProductProps {
     selected: Product | null;
     setSelected: (product: Product | null) => void;
     handleCreateProduct: (e: React.FormEvent<HTMLFormElement>, product: Product, images: File[]) => Promise<void>;
+    alertProps: {
+      showAlert: boolean;
+      alertMessage: string;
+      alertVariant: "success" | "warning" | "error";
+      alertTitle: string;
+      closeAlert: () => void;
+    }
 }
 
-export default function ModalProduct({ isOpen, closeModal, selected, setSelected, handleCreateProduct } : ModalProductProps) {
+export default function ModalProduct({ isOpen, closeModal, selected, setSelected, handleCreateProduct, alertProps } : ModalProductProps) {
 
     const emptyProduct: Product = {
         name: "",
@@ -43,15 +52,24 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
 
     // Actualiza el estado cuando cambia selected
     useEffect(() => {
-      setFormDataProduct(selected || emptyProduct);
+      if(isOpen && !selected){
+        handleClearForm();
+      }else{
+        setFormDataProduct(selected || emptyProduct);
+      }
     },[selected, isOpen]);
 
     const handleCloseModal = () => {
-        setFormDataProduct(emptyProduct);
-        setImageExtrasFiles([]);
-        setExtraImageFileSelected(null);
-        setSelected(null);
+        handleClearForm();
         closeModal();
+    }
+
+    const handleClearForm = () => {
+      setFormDataProduct(emptyProduct);
+      setImageExtrasFiles([]);
+      setExtraImageFileSelected(null);
+      setSelected(null);
+      alertProps.closeAlert();
     }
 
     // Handler universal, siempre actualiza el estado
@@ -127,6 +145,13 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                 </h5>
               </div>
               <div className="mt-8">
+                { alertProps.showAlert && (
+                  <Alert
+                    title={alertProps.alertTitle}
+                    variant={alertProps.alertVariant}
+                    message={alertProps.alertMessage}
+                  />
+                )}
                 <div className="flex md:flex-row flex-col gap-4">
                   <div className="mt-4 flex-1">
                     <Label htmlFor="name">Nombre:</Label>
@@ -171,6 +196,7 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                   <div className="mt-4 flex-1">
                     <Label htmlFor="description_short">Descripción corta:</Label>
                     <TextArea 
+                        className="text-color-black"
                         name="description_short"
                         value={FormDataProduct ? FormDataProduct.description_short : ""}
                         onChange={handleDataChange}
@@ -181,6 +207,7 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                   <div className="mt-4 flex-1">
                     <Label htmlFor="description_long">Descripción larga:</Label>
                     <TextArea 
+                        className="text-color-black"
                         name="description_long"
                         value={FormDataProduct ? FormDataProduct.description_long : ""}
                         onChange={handleDataChange}
@@ -207,27 +234,28 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                     onChange={handleDataChange}
                   />
                 </div>
-              </div>
-              <div className="flex md:flex-row flex-col gap-4 mt-4">
-                <div className="mt-4">
-                  <Label htmlFor="discount">Descuento:</Label>
-                  <InputField
-                    id="input-discount"
-                    name="discount"
-                    type="number"
-                    value={FormDataProduct ? FormDataProduct.discount : 0}
-                    onChange={handleDataChange}
-                  />
-                </div>
+                {
+                  !selected && (
+                    <div className="mt-4">
+                      <Label htmlFor="discount">Descuento:</Label>
+                      <InputField
+                        id="input-discount"
+                        name="discount"
+                        type="number"
+                        value={FormDataProduct ? FormDataProduct.discount : 0}
+                        onChange={handleDataChange}
+                      />
+                    </div>
+                  )
+                }
               </div>
               <div className="flex flex-col gap-4 mt-8">
                 <div className="mt-4 flex-1 flex flex-col items-center gap-4">
                     {
                       <Image
                          src={
-                           selected?.image ?
-                           (process.env.NEXT_PUBLIC_URL_IMAGES ?? "") + selected.image : 
-                           FormDataProduct.image instanceof File && FormDataProduct.image.size > 0 ? URL.createObjectURL(FormDataProduct.image) : 
+                           FormDataProduct.image && FormDataProduct.image instanceof File && FormDataProduct.image.size > 0 ? URL.createObjectURL(FormDataProduct.image) :
+                           selected?.image ? (process.env.NEXT_PUBLIC_URL_IMAGES ?? "") + selected.image :
                            "/images/error/404_image.png"
                          }
                          alt="Product Image"

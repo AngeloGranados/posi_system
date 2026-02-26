@@ -1,3 +1,11 @@
+export type orderBy = "ByPriceMinToMax" | "ByPriceMaxToMin" | "novedades" | "ByMostSold" | "ByNew" | "ByASC" | "ByDESC" | null
+type productThName = "id" | "image" | "name" | "slug" | "price" | "stock" | "description_short" | "discount" | "status" | "actions"
+type orderByAscDesc = Exclude<productThName, "actions">
+type productThKeyValue = { name: productThName, value: string }
+type orderByAscDescParams = (field: orderByAscDesc) => Promise<void>
+
+export type tableThProducts = productThKeyValue[]
+
 export interface Product {
     id?: number;
     name: string;
