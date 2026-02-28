@@ -12,6 +12,8 @@ import Image from "next/image";
 import Button from "@/components/ui/button/Button";
 import Alert from "@/components/ui/alert/Alert";
 import useAlert from "@/hooks/useAlert";
+import FormRow from "@/components/form/group-input/FormRow";
+import FormGroupInput from "@/components/form/group-input/FormGroupInput";
 
 interface ModalProductProps {
     isOpen: boolean;
@@ -152,17 +154,17 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                     message={alertProps.alertMessage}
                   />
                 )}
-                <div className="flex md:flex-row flex-col gap-4">
-                  <div className="mt-4 flex-1">
-                    <Label htmlFor="name">Nombre:</Label>
-                    <InputField
-                      id="input-name"
-                      name="name"
-                      value={FormDataProduct ? FormDataProduct.name : ""}
-                      onChange={handleDataChange}
-                    />
-                  </div>
-                  <div className="mt-4 flex-1">
+                <FormRow>
+                  <FormGroupInput>
+                      <Label htmlFor="name">Nombre:</Label>
+                      <InputField
+                        id="input-name"
+                        name="name"
+                        value={FormDataProduct ? FormDataProduct.name : ""}
+                        onChange={handleDataChange}
+                      />
+                  </FormGroupInput>
+                  <FormGroupInput>
                     <Label htmlFor="slug">Slug:</Label>
                     <InputField
                       id="input-slug"
@@ -170,10 +172,10 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                       value={FormDataProduct ? FormDataProduct.slug : ""}
                       onChange={handleDataChange}
                     />
-                  </div>
-                </div>
-                <div className="flex md:flex-row flex-col gap-4 mt-4">
-                  <div className="mt-4 flex-1">
+                  </FormGroupInput>
+                </FormRow>
+                <FormRow>
+                  <FormGroupInput>
                     <Label htmlFor="category">Categoria:</Label>
                     <Select
                       name="category_id"
@@ -181,8 +183,8 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                       onChange={handleDataChange}
                       options={optionsCategory}
                     />
-                  </div>
-                  <div className="mt-4 flex-1">
+                  </FormGroupInput>
+                  <FormGroupInput>
                     <Label htmlFor="idbrand">Marca:</Label>
                     <Select
                       name="idbrand"
@@ -190,10 +192,10 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                       onChange={handleDataChange}
                       options={optionsCategory}
                     />
-                  </div>
-                </div>
-                <div className="flex md:flex-row flex-col gap-4 mt-4">
-                  <div className="mt-4 flex-1">
+                  </FormGroupInput>
+                </FormRow>
+                <FormRow>
+                  <FormGroupInput>
                     <Label htmlFor="description_short">Descripción corta:</Label>
                     <TextArea 
                         className="text-color-black"
@@ -201,10 +203,10 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                         value={FormDataProduct ? FormDataProduct.description_short : ""}
                         onChange={handleDataChange}
                     />
-                  </div>
-                </div>
-                <div className="flex md:flex-row flex-col gap-4 mt-4">
-                  <div className="mt-4 flex-1">
+                  </FormGroupInput>
+                </FormRow>
+                <FormRow>
+                  <FormGroupInput>
                     <Label htmlFor="description_long">Descripción larga:</Label>
                     <TextArea 
                         className="text-color-black"
@@ -212,31 +214,29 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                         value={FormDataProduct ? FormDataProduct.description_long : ""}
                         onChange={handleDataChange}
                     />
-                  </div>
-                </div>
-              </div>
-              <div className="flex md:flex-row flex-col gap-4 mt-4">
-                <div className="mt-4">
-                  <Label htmlFor="price">Precio:</Label>
-                  <InputField
-                    id="input-price"
-                    name="price"
-                    value={FormDataProduct ? FormDataProduct.price : ""}
-                    onChange={handleDataChange}
-                  />
-                </div>
-                <div className="mt-4">
-                  <Label htmlFor="stock">Stock:</Label>
-                  <InputField
-                    id="input-stock"
-                    name="stock"
-                    value={FormDataProduct ? FormDataProduct.stock : ""}
-                    onChange={handleDataChange}
-                  />
-                </div>
-                {
-                  !selected && (
-                    <div className="mt-4">
+                  </FormGroupInput>
+                </FormRow>
+                <FormRow>
+                  <FormGroupInput>
+                    <Label htmlFor="price">Precio:</Label>
+                    <InputField
+                      id="input-price"
+                      name="price"
+                      value={FormDataProduct ? FormDataProduct.price : ""}
+                      onChange={handleDataChange}
+                    />
+                  </FormGroupInput>
+                  <FormGroupInput>
+                    <Label htmlFor="stock">Stock:</Label>
+                    <InputField
+                      id="input-stock"
+                      name="stock"
+                      value={FormDataProduct ? FormDataProduct.stock : ""}
+                      onChange={handleDataChange}
+                    />
+                  </FormGroupInput>
+                  {!selected && (
+                    <FormGroupInput>
                       <Label htmlFor="discount">Descuento:</Label>
                       <InputField
                         id="input-discount"
@@ -245,9 +245,10 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                         value={FormDataProduct ? FormDataProduct.discount : 0}
                         onChange={handleDataChange}
                       />
-                    </div>
-                  )
-                }
+                    </FormGroupInput>
+                  )}
+
+                </FormRow>
               </div>
               <div className="flex flex-col gap-4 mt-8">
                 <div className="mt-4 flex-1 flex flex-col items-center gap-4">

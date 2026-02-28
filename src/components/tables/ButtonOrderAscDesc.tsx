@@ -1,6 +1,3 @@
-import { orderBy, orderByAscDesc, orderByAscDescParams } from "@/types/produts";
-import { useEffect, useState } from "react";
-
 interface ButtonOrderAscDescProps {
     onClick: () => void,
     isAsc: boolean,
