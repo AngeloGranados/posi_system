@@ -2,6 +2,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@utility line-clamp{
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 @theme {
   --font-*: initial;
   --font-outfit: Outfit, sans-serif;

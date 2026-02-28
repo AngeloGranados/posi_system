@@ -16,8 +16,9 @@ export default function TableModal() {
     // filters
     const [page, setPage] = useState(1)
     const [limit, setLimit] = useState(6)
-    const [orderBy, setOrderBy] = useState<orderBy | null>(null)
-    const [orderField, setOrderField] = useState<orderByAscDesc | null>(null)
+    const [pageTotal, setPageTotal] = useState(1)
+    const [orderBy, setOrderBy] = useState<orderBy | null>("ByASC")
+    const [orderField, setOrderField] = useState<orderByAscDesc | null>("id")
     const [filterlike, setFilterlike] = useState('')
 
     // Alert
@@ -25,22 +26,20 @@ export default function TableModal() {
 
     const tableThProducts: tableThProducts = [
         { name: "id", value: "ID" },
-        { name: "image", value: "Imagen" },
-        { name: "name", value: "Nombre" },
-        { name: "slug", value: "Slug" },
+        { name: "name", value: "Producto" },
         { name: "price", value: "Precio" },
         { name: "stock", value: "Stock" },
         { name: "description_short", value: "Descripción" },
-        { name: "discount", value: "Descuento" },
-        { name: "status", value: "Estado" },
+        { name: "is_active", value: "Estado" },
         { name: "actions", value: "Acciones" },
     ]
 
     useEffect(() => {
         async function fetchProductsFiltered() {
             try {
-                const response = await getProductsFilter({ orderBy, orderField });
+                const response = await getProductsFilter({ orderBy, orderField, limit, page });
                 setProductsList(response.products);
+                setPageTotal(response.total);
             }catch (error) {
                 console.error("Error fetching products:", error);
             }
@@ -48,6 +47,8 @@ export default function TableModal() {
 
         fetchProductsFiltered()
     }, [limit, page, orderBy, filterlike, orderField]);
+
+    const pageTotalToTable = Math.ceil(pageTotal / limit);
 
     async function handleCreateProduct(event: React.FormEvent<HTMLFormElement>, product: Product, images: File[]) {
         event.preventDefault();
@@ -130,7 +131,18 @@ export default function TableModal() {
                 selected={selectedProduct} 
                 alertProps={{ showAlert, alertMessage, alertVariant, alertTitle, closeAlert }} 
             />
-            <TableProducts data={productsList} orderField={orderField} orderBy={orderBy} tableThProducts={tableThProducts} OpenModal={handleOpenModal} handleDeleteProduct={handleDeleteProduct} handleOrderByAscDesc={handleOrderByAscDesc} />
+            <TableProducts 
+                data={productsList} 
+                orderField={orderField} 
+                orderBy={orderBy} 
+                tableThProducts={tableThProducts} 
+                OpenModal={handleOpenModal} 
+                handleDeleteProduct={handleDeleteProduct} 
+                handleOrderByAscDesc={handleOrderByAscDesc} 
+                pageTotal={pageTotalToTable} 
+                page={page}
+                setPage={setPage}
+            />
         </>
     );
 }

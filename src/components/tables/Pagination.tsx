@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 type PaginationProps = {
   currentPage: number;
   totalPages: number;
@@ -14,6 +16,10 @@ const Pagination: React.FC<PaginationProps> = ({
     (_, i) => i + Math.max(currentPage - 1, 1)
   );
 
+  useEffect(() => {
+    console.log("Current Page:", currentPage, "Total Pages:", totalPages);
+  }, [currentPage, totalPages]);
+
   return (
     <div className="flex items-center ">
       <button
@@ -25,19 +31,20 @@ const Pagination: React.FC<PaginationProps> = ({
       </button>
       <div className="flex items-center gap-2">
         {currentPage > 3 && <span className="px-2">...</span>}
-        {pagesAroundCurrent.map((page) => (
-          <button
-            key={page}
-            onClick={() => onPageChange(page)}
-            className={`px-4 py-2 rounded ${
-              currentPage === page
-                ? "bg-brand-500 text-white"
-                : "text-gray-700 dark:text-gray-400"
-            } flex w-10 items-center justify-center h-10 rounded-lg text-sm font-medium hover:bg-blue-500/[0.08] hover:text-brand-500 dark:hover:text-brand-500`}
-          >
-            {page}
-          </button>
-        ))}
+        {pagesAroundCurrent.map((page) => {
+          if(page > totalPages) return null;
+          return <button
+              key={page}
+              onClick={() => onPageChange(page)}
+              className={`px-4 py-2 rounded ${
+                currentPage === page
+                  ? "bg-brand-500 text-white"
+                  : "text-gray-700 dark:text-gray-400"
+              } flex w-10 items-center justify-center h-10 rounded-lg text-sm font-medium hover:bg-blue-500/[0.08] hover:text-brand-500 dark:hover:text-brand-500`}
+            >
+              {page}
+            </button>;
+          })}
         {currentPage < totalPages - 2 && <span className="px-2">...</span>}
       </div>
       <button

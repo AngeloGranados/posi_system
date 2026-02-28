@@ -7,12 +7,12 @@ import ComponentCard from "@/components/common/ComponentCard";
 import Image from "next/image";
 import Badge from "@/components/ui/badge/Badge";
 import Skeleton from 'react-loading-skeleton'
-import ButtonOrderAscDesc from "./(components)/buttonOrderAscDesc";
-import EditIcon from "../../../../../../public/images/icons/edit-icon";
-import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
-import { formatPrice } from "../../../../../../util";
-import AddIcon from "../../../../../../public/images/icons/add-icon";
 import Pagination from "@/components/tables/Pagination";
+import AddIcon from "../../../public/images/icons/add-icon";
+import ButtonOrderAscDesc from "@/app/(admin)/(pages)/products/(components-ui)/(components)/buttonOrderAscDesc";
+import { formatPrice } from "../../../util";
+import EditIcon from "../../../public/images/icons/edit-icon";
+import DeleteIcon from "../../../public/images/icons/delete-icon";
 
 interface TableProductsProps {
     data: Product[];
