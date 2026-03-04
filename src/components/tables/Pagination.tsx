@@ -16,10 +16,6 @@ const Pagination: React.FC<PaginationProps> = ({
     (_, i) => i + Math.max(currentPage - 1, 1)
   );
 
-  useEffect(() => {
-    console.log("Current Page:", currentPage, "Total Pages:", totalPages);
-  }, [currentPage, totalPages]);
-
   return (
     <div className="flex items-center ">
       <button

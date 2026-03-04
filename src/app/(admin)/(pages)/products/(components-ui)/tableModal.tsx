@@ -1,7 +1,7 @@
 'use client'
 
 import { useModal } from "@/hooks/useModal"
-import { orderBy, orderByAscDesc, Product, tableThProducts } from "@/types/produts"
+import { orderByAscDescProduct, orderByProduct, Product, tableThProduct } from "@/types/produts"
 import ModalProduct from "./modalProducts";
 import { useEffect, useState } from "react";
 import { createProduct, deleteProduct, getProductsFilter, updateProduct } from "@/services/produtsServices";
@@ -25,14 +25,14 @@ export default function TableModal() {
     const [page, setPage] = useState(1)
     const [limit, setLimit] = useState(6)
     const [pageTotal, setPageTotal] = useState(1)
-    const [orderBy, setOrderBy] = useState<orderBy | null>("ByASC")
-    const [orderField, setOrderField] = useState<orderByAscDesc | null>("id")
+    const [orderBy, setOrderBy] = useState<orderByProduct | null>("ByDESC")
+    const [orderField, setOrderField] = useState<orderByAscDescProduct | null>("id")
     const [filterlike, setFilterlike] = useState('')
 
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
 
-    const tableThProducts: tableThProducts[] = [
+    const tableThProducts: tableThProduct[] = [
         { name: "id", value: "ID" },
         { name: "name", value: "Producto" },
         { name: "price", value: "Precio" },
@@ -43,22 +43,22 @@ export default function TableModal() {
     ]
 
     useEffect(() => {
-        async function fetchProductsFiltered() {
-            try {
-                const response = await getProductsFilter({ orderBy, orderField, limit, page });
-                setProductsList(response.products);
-                setPageTotal(response.total);
-            }catch (error) {
-                console.error("Error fetching products:", error);
-            }
-        }
-
         fetchProductsFiltered()
     }, [limit, page, orderBy, filterlike, orderField]);
 
+    async function fetchProductsFiltered() {
+        try {
+            const response = await getProductsFilter({ orderBy, orderField, limit, page });
+            setProductsList(response.products);
+            setPageTotal(response.total);
+        }catch (error) {
+            console.error("Error fetching products:", error);
+        }
+    }
+
     const pageTotalToTable = Math.ceil(pageTotal / limit);
 
-    async function handleCreateProduct(event: React.FormEvent<HTMLFormElement>, product: Product, images: File[]) {
+    async function handleCreateProduct(event: React.FormEvent<HTMLFormElement>, product: Product, images: File[], productAttributes: { key: string; value: string }[]) {
         event.preventDefault();
 
         let error = null;
@@ -93,12 +93,11 @@ export default function TableModal() {
 
         try {
             if (selectedProduct) {
-                const result = await updateProduct(product);
-                setProductsList(prev => prev.map(p => (p.id === result.id ? result : p)));
+                await updateProduct(product);
             } else {
-                const result = await createProduct(product, images);
-                setProductsList(prev => [...prev, result]);
+                await createProduct(product, images, productAttributes);
             }
+            await fetchProductsFiltered();
             closeModal();
         } catch (error) {
             console.error("Error creating product:", error);
@@ -108,13 +107,13 @@ export default function TableModal() {
     async function handleDeleteProduct(productId: number) {
         try{ 
             await deleteProduct(productId);
-            setProductsList(prev => prev.filter(p => p.id !== productId));
+            await fetchProductsFiltered();
         }catch(error){
             console.error("Error deleting product:", error);
         }
     } 
 
-    async function handleOrderByAscDesc(field: orderByAscDesc) {
+    async function handleOrderByAscDesc(field: orderByAscDescProduct) {
         if(orderField === field){
             setOrderBy(orderBy === "ByASC" ? "ByDESC" : "ByASC");
         } else {
@@ -138,7 +137,7 @@ export default function TableModal() {
                 selected={selectedProduct} 
                 alertProps={{ showAlert, alertMessage, alertVariant, alertTitle, closeAlert }} 
             />
-            <TablePage 
+            <TablePage<Product>
                 titleTable="Productos"
                 buttonText="Agregar un producto"
                 orderField={orderField} 

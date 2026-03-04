@@ -39,16 +39,16 @@ export default function TableModal() {
         { name: "actions", value: "Acciones" }
     ]
 
-    useEffect(() => {
-        async function fetchCategoriesFiltered() {
-            try {
-                const response = await getCategoriesFiltered({orderBy, orderField, limit, page});// Agrega este log para verificar la respuesta
-                setCategoriesList(response);
-            }catch (error) {
-                console.error("Error fetching categories:", error);
-            }
+    async function fetchCategoriesFiltered() {
+        try {
+            const response = await getCategoriesFiltered({orderBy, orderField, limit, page});// Agrega este log para verificar la respuesta
+            setCategoriesList(response);
+        }catch (error) {
+            console.error("Error fetching categories:", error);
         }
+    }
 
+    useEffect(() => {
         fetchCategoriesFiltered()
     }, [limit, page, orderBy, filterlike, orderField]);
 
@@ -82,13 +82,13 @@ export default function TableModal() {
 
         try {
             if (selectedCategory) {
-                const result = await updateCategory(category);
-                console.log("Category updated:", result);
-                setCategoriesList(prev => prev.map(c => (c.id === result.id ? result : c)));
+                await updateCategory(category);
+
             } else {
-                const result = await createCategory(category);        
-                setCategoriesList(prev => [...prev, result]);
+                await createCategory(category);
             }
+
+            await fetchCategoriesFiltered();
             closeModal();
         } catch (error) {
             console.error("Error creating category:", error);
@@ -98,7 +98,7 @@ export default function TableModal() {
     async function handleDeleteCategory(categoryId: number) {
         try{ 
             await deleteCategory(categoryId);
-            setCategoriesList(prev => prev.filter(c => c.id !== categoryId));
+            await fetchCategoriesFiltered();
         }catch(error){
             console.error("Error deleting category:", error);
         }

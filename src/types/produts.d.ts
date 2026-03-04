@@ -1,10 +1,10 @@
-type productThName = "id" | "name" | "price" | "stock" | "description_short" | "discount" | "is_active" | "actions"
-type orderByAscDesc = Exclude<productThName, "actions">
-export type orderBy = "ByPriceMinToMax" | "ByPriceMaxToMin" | "novedades" | "ByMostSold" | "ByNew" | "ByASC" | "ByDESC" | null
-export interface tableThProducts { 
-    name: productThName, 
-    value: string,
-    className?: string
+export type tableThNameProduct = "id" | "name" | "price" | "stock" | "description_short" | "discount" | "is_active" | "actions";
+export type orderByAscDescProduct = Exclude<tableThNameProduct, "actions">;
+export type orderByProduct = "ByPriceMinToMax" | "ByPriceMaxToMin" | "novedades" | "ByMostSold" | "ByNew" | "ByASC" | "ByDESC" | null;
+export interface tableThProduct { 
+    name: tableThNameProduct; 
+    value: string;
+    className?: string;
 }
 
 export interface Product {
@@ -22,6 +22,7 @@ export interface Product {
     reviews?: number;
     stock: number;
     discount?: number;
+    product_attributes?: { key: string; value: string }[];
     is_active?: boolean;
     created_at?: string; 
     updated_at?: string;

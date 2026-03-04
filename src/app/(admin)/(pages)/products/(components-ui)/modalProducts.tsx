@@ -14,13 +14,14 @@ import Alert from "@/components/ui/alert/Alert";
 import useAlert from "@/hooks/useAlert";
 import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
+import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 
 interface ModalProductProps {
     isOpen: boolean;
     closeModal: () => void;
     selected: Product | null;
     setSelected: (product: Product | null) => void;
-    handleCreateProduct: (e: React.FormEvent<HTMLFormElement>, product: Product, images: File[]) => Promise<void>;
+    handleCreateProduct: (e: React.FormEvent<HTMLFormElement>, product: Product, images: File[], productAttributes: { key: string; value: string }[]) => Promise<void>;
     alertProps: {
       showAlert: boolean;
       alertMessage: string;
@@ -47,6 +48,7 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
 
     // Si selected existe, usarlo; si no, usar emptyProduct
     const [FormDataProduct, setFormDataProduct] = useState<Product>(selected || emptyProduct);
+    const [productAttributes, setProductAttributes] = useState<{ key: string; value: string }[]>([]);
 
     // images
     const [imageExtrasFiles, setImageExtrasFiles] = useState<File[]>([]);
@@ -69,6 +71,7 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
     const handleClearForm = () => {
       setFormDataProduct(emptyProduct);
       setImageExtrasFiles([]);
+      setProductAttributes([]);
       setExtraImageFileSelected(null);
       setSelected(null);
       alertProps.closeAlert();
@@ -100,6 +103,25 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                 [name]: value
             };
         });
+    }
+
+    const handleAttributesChange = (index: number, field: "key" | "value", e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = e.target;
+      setProductAttributes((prevAttributes) => (
+        prevAttributes.map((attr, idx) => {
+          if (idx === index) {
+            return { ...attr, [field]: value };
+          }
+          return attr;
+        })
+      ))
+    }
+
+    const handleAddAttribute = () => {
+      setProductAttributes((prevAttributes) => [
+        ...prevAttributes,
+        { key: "", value: "" }
+      ]);
     }
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,7 +162,7 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
             onClose={handleCloseModal}
             className="max-w-[700px] p-6 lg:p-10"
           >
-            <form onSubmit={(e) => handleCreateProduct(e, FormDataProduct, imageExtrasFiles)} className="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[80vh]">
+            <form onSubmit={(e) => handleCreateProduct(e, FormDataProduct, imageExtrasFiles, productAttributes)} className="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[80vh]">
               <div>
                 <h5 className="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl">
                   {selected ? `Editar Producto` : `Agregar Producto`}
@@ -249,6 +271,32 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                   )}
 
                 </FormRow>
+                {
+                  productAttributes.map((attr, index) => (
+                    <FormRow key={index}>
+                      <FormGroupInput>
+                          <Label htmlFor="key">Clave:</Label>
+                          <InputField
+                            id="input-key"
+                            name="key"
+                            value={attr.key}
+                            onChange={e => handleAttributesChange(index, "key", e)}
+                          />
+                      </FormGroupInput>
+                      <FormGroupInput>
+                          <Label htmlFor="value">Valor:</Label>
+                          <InputField
+                            id="input-value"
+                            name="value"
+                            value={attr.value}
+                            onChange={e => handleAttributesChange(index, "value", e)}
+                          />
+                      </FormGroupInput>
+                      <DeleteIcon className="mb-  " width={20} height={20} />
+                    </FormRow>
+                  ))
+                }
+                <Button onClick={handleAddAttribute} className="mt-4">Añadir atributo</Button>
               </div>
               <div className="flex flex-col gap-4 mt-8">
                 <div className="mt-4 flex-1 flex flex-col items-center gap-4">

@@ -1,12 +1,12 @@
-import { orderBy, orderByAscDesc, Product } from "@/types/produts";
+import { orderByAscDescProduct, orderByProduct, Product } from "@/types/produts";
 
 const URL_API: string = `${process.env.NEXT_PUBLIC_API_URL}products`;
 
 interface FilterParams {
     categoryId?: number;
     filterlike?: string;
-    orderBy?: orderBy | null;
-    orderField?: orderByAscDesc | null;
+    orderBy?: orderByProduct | null;
+    orderField?: orderByAscDescProduct | null;
     price_min?: number;
     price_max?: number;
     stock_min?: number;
@@ -65,7 +65,7 @@ export async function getProductsFilter(Filterparams: FilterParams): Promise<Fil
     return data;
 }
 
-export async function createProduct(product: Product, images: File[]): Promise<Product> {
+export async function createProduct(product: Product, images: File[], productAttributes: { key: string; value: string }[] ): Promise<Product> {
 
     const formData = new FormData();
 
@@ -79,7 +79,8 @@ export async function createProduct(product: Product, images: File[]): Promise<P
     formData.append("idbrand", String(product.idbrand));
     formData.append("discount", String(product.discount));
     formData.append("image", product.image);
-
+    formData.append("product_attributes", JSON.stringify(productAttributes || []));
+    
     images.forEach((file) => {
         formData.append("images", file);
     })

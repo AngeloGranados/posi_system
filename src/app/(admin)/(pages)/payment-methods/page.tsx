@@ -1,7 +1,6 @@
-import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import BasicTableOne from "@/components/tables/BasicTableOne";
 import { Metadata } from "next";
+import TableModal from "./(components-ui)/tableModal";
 
 export const metadata: Metadata = {
     title: "Next.js Payment Methods | TailAdmin - Next.js Dashboard Template",
@@ -11,12 +10,8 @@ export const metadata: Metadata = {
 export default function PaymentMethodsPage() {
     return (
         <div>
-            <PageBreadcrumb pageTitle="Payment Methods" />
-            <div className="space-y-6">
-                <ComponentCard title="Payment Methods Table">
-                    <BasicTableOne />
-                </ComponentCard>
-            </div>
+            <PageBreadcrumb pageTitle="Products" />
+            <TableModal />    
         </div>
     )
 }
