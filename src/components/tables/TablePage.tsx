@@ -12,6 +12,7 @@ import { Brands, orderByAscDescBrands, orderByBrands } from "@/types/brands";
 import { orderByAscDescPaymentMethods, orderByPaymentMethods, PaymentMethods } from "@/types/paymentMethods";
 import { orderByAscDescShippingMethods, orderByShippingMethods, ShippingMethods } from "@/types/shippingMethods";
 import { orderByAscDescPromoCodes, orderByPromoCodes, PromoCodes } from "@/types/promoCodes";
+import { Discounts, orderByAscDescDiscounts, orderByDiscounts } from "@/types/discounts";
 
 type orderByAscDescT<T> = 
 T extends Product ? orderByAscDescProduct : 
@@ -20,6 +21,7 @@ T extends Brands ? orderByAscDescBrands :
 T extends PaymentMethods ? orderByAscDescPaymentMethods :
 T extends ShippingMethods ? orderByAscDescShippingMethods :
 T extends PromoCodes ? orderByAscDescPromoCodes :
+T extends Discounts ? orderByAscDescDiscounts :
 never;
 
 type orderByT<T> =
@@ -29,6 +31,7 @@ type orderByT<T> =
   T extends PaymentMethods ? orderByPaymentMethods :
   T extends ShippingMethods ? orderByShippingMethods :
   T extends PromoCodes ? orderByPromoCodes :
+  T extends Discounts ? orderByDiscounts :
   never;
 
 interface TablePageProps<T> {
