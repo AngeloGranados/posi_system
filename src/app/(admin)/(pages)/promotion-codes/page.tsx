@@ -2,6 +2,7 @@ import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import BasicTableOne from "@/components/tables/BasicTableOne";
 import { Metadata } from "next";
+import TableModal from "./(components-ui)/tableModal";
 
 export const metadata: Metadata = {
     title: "Next.js Promotion Codes | TailAdmin - Next.js Dashboard Template",
@@ -11,12 +12,8 @@ export const metadata: Metadata = {
 export default function PromotionCodesPage() {
     return (
         <div>
-            <PageBreadcrumb pageTitle="Promotion Codes" />
-            <div className="space-y-6">
-                <ComponentCard title="Promotion Codes Table">
-                    <BasicTableOne />
-                </ComponentCard>
-            </div>
+            <PageBreadcrumb pageTitle="Códigos de Promoción"/>
+            <TableModal />    
         </div>
     )
 }
