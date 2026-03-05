@@ -13,6 +13,7 @@ import { orderByAscDescPaymentMethods, orderByPaymentMethods, PaymentMethods } f
 import { orderByAscDescShippingMethods, orderByShippingMethods, ShippingMethods } from "@/types/shippingMethods";
 import { orderByAscDescPromoCodes, orderByPromoCodes, PromoCodes } from "@/types/promoCodes";
 import { Discounts, orderByAscDescDiscounts, orderByDiscounts } from "@/types/discounts";
+import { orderByAscDescOrders, orderByOrders, Orders } from "@/types/orders";
 
 type orderByAscDescT<T> = 
 T extends Product ? orderByAscDescProduct : 
@@ -22,6 +23,7 @@ T extends PaymentMethods ? orderByAscDescPaymentMethods :
 T extends ShippingMethods ? orderByAscDescShippingMethods :
 T extends PromoCodes ? orderByAscDescPromoCodes :
 T extends Discounts ? orderByAscDescDiscounts :
+T extends Orders ? orderByAscDescOrders :
 never;
 
 type orderByT<T> =
@@ -32,6 +34,7 @@ type orderByT<T> =
   T extends ShippingMethods ? orderByShippingMethods :
   T extends PromoCodes ? orderByPromoCodes :
   T extends Discounts ? orderByDiscounts :
+  T extends Orders ? orderByOrders :
   never;
 
 interface TablePageProps<T> {
@@ -58,7 +61,7 @@ export default function TablePage<T>({ children, titleTable, buttonText, OpenMod
     return (
         <div className="space-y-6">
             <ComponentCard title={titleTable}>
-                <Button onClick={() => OpenModal(null)} className="flex items-center leading-none float-right"><AddIcon width={17} height={17} fill="currentColor" /> {buttonText}</Button>
+                {buttonText && <Button onClick={() => OpenModal(null)} className="flex items-center leading-none float-right"><AddIcon width={17} height={17} fill="currentColor" /> {buttonText}</Button>}
                 <Table>
                     <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
                         <TableRow>

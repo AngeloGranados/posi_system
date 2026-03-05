@@ -2,6 +2,7 @@ import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import BasicTableOne from "@/components/tables/BasicTableOne";
 import { Metadata } from "next";
+import TableModal from "./(components-ui)/tableModal";
 
 export const metadata: Metadata = {
     title: "Next.js Orders | TailAdmin - Next.js Dashboard Template",
@@ -12,11 +13,7 @@ export default function OrdersPage() {
     return (
         <div>
             <PageBreadcrumb pageTitle="Orders" />
-            <div className="space-y-6">
-                <ComponentCard title="Orders Table">
-                    <BasicTableOne />
-                </ComponentCard>
-            </div>
+            <TableModal />
         </div>
     )
 }
