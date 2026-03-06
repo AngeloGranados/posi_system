@@ -29,6 +29,8 @@ export default function TableModal() {
     const [orderField, setOrderField] = useState<orderByAscDescCategories>("id")
     const [filterlike, setFilterlike] = useState('')
 
+    const [loading, setLoading] = useState(false);
+
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
 
@@ -40,11 +42,15 @@ export default function TableModal() {
     ]
 
     async function fetchCategoriesFiltered() {
+        setLoading(true);
         try {
             const response = await getCategoriesFiltered({orderBy, orderField, limit, page});// Agrega este log para verificar la respuesta
-            setCategoriesList(response);
-        }catch (error) {
+            setCategoriesList(response.data);
+            setPageTotal(response.totalRows);
+        } catch (error) {
             console.error("Error fetching categories:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -129,7 +135,7 @@ export default function TableModal() {
                 alertProps={{ showAlert, alertMessage, alertVariant, alertTitle, closeAlert }} 
             />
             <TablePage<Categories>
-                titleTable="Categorías"
+                titleTable=""
                 buttonText="Agregar una Categoría"
                 orderField={orderField} 
                 orderBy={orderBy} 
@@ -141,42 +147,7 @@ export default function TableModal() {
                 setPage={setPage}
             >
                 {
-                    categoriesList && categoriesList.length > 0 ? (
-                        categoriesList.map((category) => (
-                            <TableRow key={category.id}>
-                                <TableCell className="px-3 py-3 text-left">#{category.id}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="mb-2">
-                                            {
-                                                category.image_url && (
-                                                <Image
-                                                    width={64}
-                                                    height={64}
-                                                    unoptimized={process.env.NODE_ENV ? true : false}
-                                                    src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}${typeof category.image_url === "string" ? category.image_url : category.image_url}`}
-                                                    alt={category.name}
-                                                    className="w-16 h-16 object-cover rounded"
-                                                />
-                                                )
-                                            }
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-[14px] font-bold">{category.name}</span>
-                                            <small className="text-gray-500">{category.slug}</small>
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="px-5 my-4 line-clamp text-gray-700">{category.description}</TableCell>
-                                <TableCell className="px-3 py-3">
-                                    <div className="flex space-x-4">
-                                        <Button onClick={() => handleOpenModal(category)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                        <Button onClick={() => handleDeleteCategory(category.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    ) : (
+                    loading ? (
                         <TableRow>
                             <TableCell className="text-center py-4" colSpan={12}>   
                                 <div className="w-full h-50">
@@ -184,6 +155,49 @@ export default function TableModal() {
                                 </div>
                             </TableCell>
                         </TableRow>
+                    ) : (
+                        categoriesList && categoriesList.length > 0 ? (
+                            categoriesList.map((category) => (
+                                <TableRow key={category.id}>
+                                    <TableCell className="px-3 py-3 text-left">#{category.id}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="mb-2">
+                                                {
+                                                    category.image_url && (
+                                                    <Image
+                                                        width={64}
+                                                        height={64}
+                                                        unoptimized={process.env.NODE_ENV ? true : false}
+                                                        src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}${typeof category.image_url === "string" ? category.image_url : category.image_url}`}
+                                                        alt={category.name}
+                                                        className="w-16 h-16 object-cover rounded"
+                                                    />
+                                                    )
+                                                }
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[14px] font-bold">{category.name}</span>
+                                                <small className="text-gray-500">{category.slug}</small>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="px-5 my-4 line-clamp text-gray-700">{category.description}</TableCell>
+                                    <TableCell className="px-3 py-3">
+                                        <div className="flex space-x-4">
+                                            <Button onClick={() => handleOpenModal(category)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeleteCategory(category.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell className="text-center py-4" colSpan={12}>
+                                    No hay categorías disponibles
+                                </TableCell>
+                            </TableRow>
+                        )
                     )
                 }
             </TablePage>

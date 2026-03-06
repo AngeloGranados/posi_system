@@ -11,7 +11,11 @@ import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { Discounts, orderByAscDescDiscounts, orderByDiscounts, tableThDiscounts } from "@/types/discounts";
 import { createDiscounts, deleteDiscounts, getDiscountsFiltered, updateDiscounts } from "@/services/discountsServices";
-import ModalDiscounts from "./modalPromoCodes";
+import Badge from "@/components/ui/badge/Badge";
+import { formatDate } from "@fullcalendar/core/index.js";
+import { formatPrice } from "../../../../../../util";
+import Image from "next/image";
+import ModalDiscounts from "./modalDiscounts";
 
 
 export default function TableModal() {
@@ -27,12 +31,14 @@ export default function TableModal() {
     const [orderField, setOrderField] = useState<orderByAscDescDiscounts>("id")
     const [filterlike, setFilterlike] = useState('')
 
+    const [loading, setLoading] = useState(false);
+
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
 
     const tableThDiscounts: tableThDiscounts[] = [
         { name: "id", value: "ID" },
-        { name: "product_id", value: "Producto(ID)" },
+        { name: "product_id", value: "Producto" },
         { name: "discount_type", value: "Tipo de Descuento" },
         { name: "valid_from", value: "Válido Desde" },
         { name: "is_active", value: "Estado" }, 
@@ -40,6 +46,7 @@ export default function TableModal() {
     ]
 
     async function fetchDiscountsFiltered() {
+        setLoading(true);
         try {
             // El servicio debe retornar { data, totalItems }
             const response = await getDiscountsFiltered({orderBy, orderField, limit, page});
@@ -47,6 +54,8 @@ export default function TableModal() {
             setPageTotal(response.totalRows); // Actualiza el total de elementos
         }catch (error) {
             console.error("Error fetching discounts:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -124,8 +133,8 @@ export default function TableModal() {
                 alertProps={{ showAlert, alertMessage, alertVariant, alertTitle, closeAlert }} 
             />
             <TablePage<Discounts>
-                titleTable="Métodos de Envío"
-                buttonText="Agregar un Método de Envío"
+                titleTable=""
+                buttonText="Agregar un Descuento"
                 orderField={orderField} 
                 orderBy={orderBy} 
                 tableThPage={tableThDiscounts} 
@@ -136,31 +145,7 @@ export default function TableModal() {
                 setPage={setPage}
             >
                 {
-                    discountsList && discountsList.length > 0 ? (
-                        discountsList.map((discounts) => (
-                            <TableRow key={discounts.id}>
-                                <TableCell className="px-3 py-3 text-left">#{discounts.id}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{discounts.product_id}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">
-                                    {discounts.discount_type === "percentage" ? `${discounts.discount_value}%` : `$${discounts.discount_value}`}
-                                </TableCell>
-                                <TableCell className="px-3 py-3 text-left">
-                                    <div>
-                                        <span>{discounts.valid_from ? discounts.valid_from.toString() : "No Date"}</span>
-                                        <span className="mx-1">-</span>
-                                        <span>{discounts.valid_until ? discounts.valid_until.toString() : "No Date"}</span>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="px-3 py-3 text-left">{discounts.is_active ? "Active" : "Inactive"}</TableCell>
-                                <TableCell className="px-3 py-3">
-                                    <div className="flex space-x-4">
-                                        <Button onClick={() => handleOpenModal(discounts)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                        <Button onClick={() => handleDeleteDiscounts(discounts.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    ) : (
+                    loading ? (
                         <TableRow>
                             <TableCell className="text-center py-4" colSpan={12}>   
                                 <div className="w-full h-50">
@@ -168,6 +153,65 @@ export default function TableModal() {
                                 </div>
                             </TableCell>
                         </TableRow>
+                    ) : (
+                        discountsList && discountsList.length > 0 ? (
+                            discountsList.map((discounts) => (
+                                <TableRow key={discounts.id}>
+                                    <TableCell className="px-3 py-3 text-left">#{discounts.id}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        {
+                                            <div className="flex items-center space-x-4">
+                                                <div className="mb-2">
+                                                    {
+                                                        discounts.product_image && (
+                                                        <Image
+                                                            width={64}
+                                                            height={64}
+                                                            unoptimized={process.env.NODE_ENV ? true : false}
+                                                            src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}${typeof discounts.product_image === "string" ? discounts.product_image : discounts.product_image}`}
+                                                            alt={discounts.product_name as string}
+                                                            className="w-16 h-16 object-cover rounded"
+                                                        />
+                                                        )
+                                                    }
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="text-[14px] font-bold">{discounts.product_name}</span>
+                                                    <small className="text-gray-500">{discounts.product_slug}</small>
+                                                </div>
+                                            </div>
+                                        }
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        {discounts.discount_type === "percentage" ? `${discounts.discount_value}%` : `${formatPrice(discounts.discount_value)}`}
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        <div>
+                                            <span>{formatDate(discounts.valid_from) ? formatDate(discounts.valid_from) : "No Date"}</span>
+                                            <span className="mx-1">-</span>
+                                            <span>{formatDate(discounts.valid_until) ? formatDate(discounts.valid_until) : "No Date"}</span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        {
+                                            discounts.is_active ? 
+                                            <Badge variant="solid" color="success">Activo</Badge> : 
+                                            <Badge variant="solid" color="error">Inactivo</Badge>
+                                        }
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3">
+                                        <div className="flex space-x-4">
+                                            <Button onClick={() => handleOpenModal(discounts)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeleteDiscounts(discounts.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell className="text-center py-4" colSpan={12}>No se encontraron descuentos.</TableCell>
+                            </TableRow>
+                        )
                     )
                 }
             </TablePage>

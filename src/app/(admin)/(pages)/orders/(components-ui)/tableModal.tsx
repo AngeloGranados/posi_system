@@ -8,10 +8,14 @@ import Skeleton from "react-loading-skeleton";
 import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { Orders, orderByAscDescOrders, orderByOrders, tableThOrders } from "@/types/orders";
-import { EyeIcon } from "@/icons";
+import { EyeIcon, UserIcon } from "@/icons";
 import { getOrdersFiltered } from "@/services/ordersServices";
 import CancelIcon from "../../../../../../public/images/icons/cancel-icon";
 import { useRouter } from "next/navigation";
+import Badge from "@/components/ui/badge/Badge";
+import { formatPrice, verifyColorByStatus } from "../../../../../../util";
+import { formatDate } from "@fullcalendar/core/index.js";
+import Avatar from "@/components/ui/avatar/Avatar";
 
 
 export default function TableModal() {
@@ -19,7 +23,6 @@ export default function TableModal() {
     const router = useRouter();
 
     const { isOpen, closeModal, openModal } = useModal();
-    const [selectedOrder, setSelectedOrder] = useState<Orders | null>(null);
     const [ordersList, setOrdersList] = useState<Orders[]>([]);
 
     // filters
@@ -30,6 +33,8 @@ export default function TableModal() {
     const [orderField, setOrderField] = useState<orderByAscDescOrders>("id")
     const [filterlike, setFilterlike] = useState('')
 
+    const [loading, setLoading] = useState(false);
+
     const tableThOrders: tableThOrders[] = [
         { name: "id", value: "ID" },
         { name: "order_number", value: "N° Orden" },
@@ -38,19 +43,22 @@ export default function TableModal() {
         { name: "shipping_cost", value: "Envío" },
         { name: "discount", value: "Descuento" },
         { name: "total", value: "Total" },
-        { name: "status", value: "Estado" },
-        { name: "is_paid", value: "Pagado" },
+        { name: "status", value: "Estado & Pago" },
         { name: "created_at", value: "Fecha" },
         { name: "actions", value: "Acciones"},
     ];
 
     async function fetchOrdersFiltered() {
+
+        setLoading(true);
         try {
-            const response = await getOrdersFiltered({orderBy, orderField, limit, page});// Agrega este log para verificar la respuesta
+            const response = await getOrdersFiltered({orderBy, orderField, limit, page});
             setOrdersList(response.data);
             setPageTotal(response.totalRows);
         }catch (error) {
             console.error("Error fetching orders:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -69,11 +77,6 @@ export default function TableModal() {
         }
     }
 
-    const handleOpenModal = (data: Orders | null) => {
-        setSelectedOrder(data);
-        openModal();
-    };
-
     return (
         <>
             <TablePage<Orders>
@@ -81,26 +84,51 @@ export default function TableModal() {
                 orderField={orderField} 
                 orderBy={orderBy} 
                 tableThPage={tableThOrders} 
-                OpenModal={handleOpenModal}  
                 handleOrderByAscDesc={handleOrderByAscDesc} 
                 pageTotal={pageTotalToTable} 
                 page={page}
                 setPage={setPage}
             >
                 {
-                    ordersList && ordersList.length > 0 ? (
-                        ordersList.map((order) => (
-                            <TableRow key={order.id}>
-                                <TableCell className="px-3 py-3 text-left">#{order.id}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{order.order_number}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{order.email}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{order.subtotal}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{order.shipping_cost}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{order.discount}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{order.total}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{order.status}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{order.is_paid ? "Sí" : "No"}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{order.created_at ? new Date(order.created_at).toLocaleString() : ""}</TableCell>
+                    loading ? (
+                        <TableRow>
+                            <TableCell className="text-center py-4" colSpan={12}>   
+                                <div className="w-full h-50">
+                                    <Skeleton width={'100%'} height={'100%'} />
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    ) : (
+                        ordersList && ordersList.length > 0 ? (
+                            ordersList.map((order) => (
+                                <TableRow key={order.id}>
+                                    <TableCell className="px-3 py-3 text-left">#{order.id}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{order.order_number}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        <div className="flex items-center gap-3">
+                                            <UserIcon />
+                                            <div className="flex flex-col">
+                                                <span className="font-medium">{order.shipping_address_name}</span>
+                                            <small className="text-gray-500">{order.email}</small>
+                                        </div>
+                                    </div>
+                                </TableCell>
+                                <TableCell className="px-3 py-3 text-left">{formatPrice(order.subtotal)}</TableCell>
+                                <TableCell className="px-3 py-3 text-left">{formatPrice(order.shipping_cost)}</TableCell>
+                                <TableCell className="px-3 py-3 text-left">{formatPrice(order.discount)}</TableCell>
+                                <TableCell className="px-3 py-3 text-left">{formatPrice(order.total)}</TableCell>
+                                <TableCell className="px-3 py-3 text-left">
+                                    <div className="flex flex-col items-center gap-2">
+                                        <Badge variant="light" color={verifyColorByStatus(order.status)}>{order.status}</Badge>
+                                        <Badge variant="light" color={ order.is_paid ? "success" : "dark" }>{order.is_paid ? "Pagado" : "No Pagado"}</Badge>
+                                    </div>
+                                </TableCell>
+                                <TableCell className="px-3 py-3 text-left">
+                                    <div className="flex flex-col">
+                                        <span>{order.created_at ? formatDate(order.created_at) : ""}</span>
+                                        <small className="text-gray-500">{order.created_at ? formatDate(order.created_at, { hour: 'numeric', minute: 'numeric' }) : ""}</small>
+                                    </div>
+                                </TableCell>
                                 <TableCell className="px-3 py-3">
                                     <div className="flex space-x-4">
                                         <Button variant="outline" onClick={() => router.push(`/orders/${order.id}`)} className="text-blue-500"><EyeIcon width={16} height={16} fill="currentColor" /></Button>
@@ -109,14 +137,11 @@ export default function TableModal() {
                                 </TableCell>
                             </TableRow>
                         ))
-                    ) : (
-                        <TableRow>
-                            <TableCell className="text-center py-4" colSpan={12}>   
-                                <div className="w-full h-50">
-                                    <Skeleton width={'100%'} height={'100%'} />
-                                </div>
-                            </TableCell>
-                        </TableRow>
+                        ) : (
+                            <TableRow>
+                                <TableCell className="text-center py-4" colSpan={12}>No se encontraron órdenes.</TableCell>
+                            </TableRow>
+                        )
                     )
                 }
             </TablePage>

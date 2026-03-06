@@ -67,7 +67,7 @@ export async function createCategory(category: Categories): Promise<Categories> 
     return response.json();
 }
 
-export async function getCategoriesFiltered(filterOptions: filterOptions): Promise<Categories[]>{
+export async function getCategoriesFiltered(filterOptions: filterOptions): Promise<{ data: Categories[]; totalRows: number}>{
 
     const params = new URLSearchParams();
 

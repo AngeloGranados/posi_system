@@ -15,5 +15,8 @@ export interface Discounts {
     valid_from: Date,
     valid_until: Date,
     is_active?: boolean,
+    product_image?: string,
+    product_name?: string,
+    product_slug?: string
 }
 

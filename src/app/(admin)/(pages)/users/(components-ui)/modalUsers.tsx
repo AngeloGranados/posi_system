@@ -8,15 +8,16 @@ import Alert from "@/components/ui/alert/Alert";
 import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
 import TextArea from "@/components/form/input/TextArea";
-import { ShippingMethods } from "@/types/shippingMethods";
+import { Users } from "@/types/users";
+import Select from "@/components/form/Select";
 
 
-interface ModalShippingMethodsProps {
+interface ModalUsersProps {
     isOpen: boolean;
     closeModal: () => void;
-    selected: ShippingMethods | null;
-    setSelected: (ShippingMethods: ShippingMethods | null) => void;
-    handleCreateShippingMethods: (e: React.FormEvent<HTMLFormElement>, ShippingMethods: ShippingMethods) => Promise<void>;
+    selected: Users | null;
+    setSelected: (Users: Users | null) => void;
+    handleCreateUsers: (e: React.FormEvent<HTMLFormElement>, Users: Users) => Promise<void>;
     alertProps: {
       showAlert: boolean;
       alertMessage: string;
@@ -26,26 +27,26 @@ interface ModalShippingMethodsProps {
     }
 }
 
-export default function ModalShippingMethods({ isOpen, closeModal, selected, setSelected, handleCreateShippingMethods, alertProps } : ModalShippingMethodsProps) {
+export default function ModalUsers({ isOpen, closeModal, selected, setSelected, handleCreateUsers, alertProps } : ModalUsersProps) {
 
-    const emptyShippingMethods: ShippingMethods = {
-        name: "",
-        code: "",
-        description: "",
-        estimated_days_min: 0,
-        estimated_days_max: 0,
-        price: 0,
+    const emptyUsers: Users = {
+        email : "",
+        password_hash : "",
+        nombres : "",
+        apellidos : "",
+        telefono : "",
+        type : ""
     };
 
-    // Si selected existe, usarlo; si no, usar emptyShippingMethods
-    const [FormDataShippingMethods, setFormDataShippingMethods] = useState<ShippingMethods>(selected || emptyShippingMethods);
+    // Si selected existe, usarlo; si no, usar emptyUsers
+    const [FormDataUsers, setFormDataUsers] = useState<Users>(selected || emptyUsers);
 
     // Actualiza el estado cuando cambia selected
     useEffect(() => {
       if(isOpen && !selected){
         handleClearForm();
       }else{
-        setFormDataShippingMethods(selected || emptyShippingMethods);
+        setFormDataUsers(selected || emptyUsers);
       }
     },[selected, isOpen]);
 
@@ -55,7 +56,7 @@ export default function ModalShippingMethods({ isOpen, closeModal, selected, set
     }
 
     const handleClearForm = () => {
-      setFormDataShippingMethods(emptyShippingMethods);
+      setFormDataUsers(emptyUsers);
       setSelected(null);
       alertProps.closeAlert();
     }
@@ -64,22 +65,7 @@ export default function ModalShippingMethods({ isOpen, closeModal, selected, set
     const handleDataChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         e.preventDefault();
-        setFormDataShippingMethods((prevData) => {      
-
-            if(name === "estimated_days_min" || name === "estimated_days_max"){
-                return {
-                    ...prevData,
-                    [name]: Number(value) 
-                };
-            }
-
-            if(name === "price"){
-                return {
-                    ...prevData,
-                    [name]: parseFloat(value) 
-                };
-            }
-
+        setFormDataUsers((prevData) => {      
             return {
                 ...prevData,
                 [name]: value
@@ -93,7 +79,7 @@ export default function ModalShippingMethods({ isOpen, closeModal, selected, set
             onClose={handleCloseModal}
             className="max-w-[700px] p-6 lg:p-10"
           >
-            <form onSubmit={(e) => handleCreateShippingMethods(e, FormDataShippingMethods)} className="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[80vh]">
+            <form onSubmit={(e) => handleCreateUsers(e, FormDataUsers)} className="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[80vh]">
               <div>
                 <h5 className="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl">
                   {selected ? `Editar Método de Envío` : `Agregar Método de Envío`}
@@ -109,62 +95,65 @@ export default function ModalShippingMethods({ isOpen, closeModal, selected, set
                 )}
                 <FormRow>
                   <FormGroupInput>
-                      <Label htmlFor="name">Nombre:</Label>
+                      <Label htmlFor="nombres">Nombre:</Label>
                       <InputField
-                        id="input-name"
-                        name="name"
-                        value={FormDataShippingMethods ? FormDataShippingMethods.name : ""}
+                        id="nombres"
+                        name="nombres"
+                        value={FormDataUsers ? FormDataUsers.nombres : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
                   <FormGroupInput>
-                      <Label htmlFor="code">Code:</Label>
+                      <Label htmlFor="apellidos">Apellidos:</Label>
                       <InputField
-                        id="input-code"
-                        name="code"
-                        value={FormDataShippingMethods ? FormDataShippingMethods.code : ""}
+                        id="apellidos"
+                        name="apellidos"
+                        value={FormDataUsers ? FormDataUsers.apellidos : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
                 </FormRow>
                 <FormRow>
                   <FormGroupInput>
-                      <Label htmlFor="description">Descripcion:</Label>
-                      <TextArea 
-                        name="description"
-                        value={FormDataShippingMethods ? FormDataShippingMethods.description : ""}
+                      <Label htmlFor="description">Email:</Label>
+                      <InputField
+                        type="email"
+                        name="email"
+                        value={FormDataUsers ? FormDataUsers.email : ""}
+                        onChange={handleDataChange}
+                      />
+                  </FormGroupInput>
+                  <FormGroupInput>
+                      <Label htmlFor="password_hash">Contraseña:</Label>
+                      <InputField
+                        type="password"
+                        name="password_hash"
+                        value={FormDataUsers ? FormDataUsers.password_hash : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
                 </FormRow>
                 <FormRow>
                   <FormGroupInput>
-                      <Label htmlFor="description">Tiempo estimado (min):</Label>
-                      <InputField 
-                        type="number"
-                        name="estimated_days_min"
-                        value={FormDataShippingMethods ? FormDataShippingMethods.estimated_days_min : 0}
-                        onChange={handleDataChange}
-                      />
-                  </FormGroupInput>
-                  <FormGroupInput>
-                      <Label htmlFor="description">Tiempo estimado (max):</Label>
-                      <InputField 
-                        type="number"
-                        name="estimated_days_max"
-                        value={FormDataShippingMethods ? FormDataShippingMethods.estimated_days_max : 0}
+                      <Label htmlFor="telefono">Teléfono:</Label>
+                      <InputField
+                        name="telefono"
+                        value={FormDataUsers ? FormDataUsers.telefono : 0}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
                 </FormRow>
                 <FormRow>
                   <FormGroupInput>
-                      <Label htmlFor="description">Precio:</Label>
-                      <InputField 
-                        type="number"
-                        name="price"
-                        value={FormDataShippingMethods ? FormDataShippingMethods.price : 0}
+                      <Label htmlFor="type">Tipo:</Label>
+                      <Select
+                        name="type"
+                        value={FormDataUsers ? FormDataUsers.type : ""}
                         onChange={handleDataChange}
+                        options={[
+                          { value: "admin", label: "Admin" },
+                          { value: "customer", label: "Customer" },
+                        ]}
                       />
                   </FormGroupInput>
                 </FormRow>

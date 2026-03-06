@@ -75,7 +75,7 @@ export default function ModalBrands({ isOpen, closeModal, selected, setSelected,
             <form onSubmit={(e) => handleCreateBrands(e, FormDataBrands)} className="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[80vh]">
               <div>
                 <h5 className="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl">
-                  {selected ? `Editar Categoria` : `Agregar Categoria`}
+                  {selected ? `Editar Marca` : `Agregar Marca`}
                 </h5>
               </div>
               <div className="mt-8">

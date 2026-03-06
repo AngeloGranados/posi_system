@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default async function ProductsPage() {
     return (
         <div>
-            <PageBreadcrumb pageTitle="Products" />
+            <PageBreadcrumb pageTitle="Productos" />
             <TableModal />    
         </div>
     )

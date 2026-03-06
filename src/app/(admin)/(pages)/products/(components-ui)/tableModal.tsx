@@ -29,6 +29,8 @@ export default function TableModal() {
     const [orderField, setOrderField] = useState<orderByAscDescProduct | null>("id")
     const [filterlike, setFilterlike] = useState('')
 
+    const [loading, setLoading] = useState(false);
+
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
 
@@ -47,12 +49,15 @@ export default function TableModal() {
     }, [limit, page, orderBy, filterlike, orderField]);
 
     async function fetchProductsFiltered() {
+        setLoading(true);
         try {
             const response = await getProductsFilter({ orderBy, orderField, limit, page });
             setProductsList(response.products);
             setPageTotal(response.total);
         }catch (error) {
             console.error("Error fetching products:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -138,8 +143,8 @@ export default function TableModal() {
                 alertProps={{ showAlert, alertMessage, alertVariant, alertTitle, closeAlert }} 
             />
             <TablePage<Product>
-                titleTable="Productos"
-                buttonText="Agregar un producto"
+                titleTable=""
+                buttonText="Agregar un Producto"
                 orderField={orderField} 
                 orderBy={orderBy} 
                 tableThPage={tableThProducts} 
@@ -150,54 +155,7 @@ export default function TableModal() {
                 setPage={setPage}
             >
                 {
-                    productsList && productsList.length > 0 ? (
-                        productsList.map((product) => (
-                            <TableRow key={product.id}>
-                                <TableCell className="px-3 py-3 text-left">#{product.id}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="mb-2">
-                                            {
-                                                product.image && (
-                                                <Image
-                                                    width={64}
-                                                    height={64}
-                                                    unoptimized={process.env.NODE_ENV ? true : false}
-                                                    src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}${typeof product.image === "string" ? product.image : product.image}`}
-                                                    alt={product.name}
-                                                    className="w-16 h-16 object-cover rounded"
-                                                />
-                                                )
-                                            }
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-[14px] font-bold">{product.name}</span>
-                                            <small className="text-gray-500">{product.slug}</small>
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="px-3 py-3 text-left">{formatPrice(product.price)}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">
-                                    <div className="flex items-center gap-2">
-                                        <div className={`w-2 h-2 object-cover rounded ${product.stock > 0 ? "bg-green-500" : "bg-red-500"}`}></div>
-                                        {product.stock}
-                                    </div>
-                                </TableCell>
-                                <TableCell className="px-3 my-4 line-clamp text-gray-700">{product.description_short}</TableCell>
-                                <TableCell className="px-3 py-4 text-lef">{
-                                    product.is_active ? 
-                                    <Badge variant="solid" color="success">Activo</Badge> : 
-                                    <Badge variant="solid" color="error">Inactivo</Badge>
-                                    }</TableCell>
-                                <TableCell className="px-3 py-3">
-                                    <div className="flex space-x-4">
-                                        <Button onClick={() => handleOpenModal(product)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                        <Button onClick={() => handleDeleteProduct(product.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    ) : (
+                    loading ? (
                         <TableRow>
                             <TableCell className="text-center py-4" colSpan={12}>   
                                 <div className="w-full h-50">
@@ -205,6 +163,61 @@ export default function TableModal() {
                                 </div>
                             </TableCell>
                         </TableRow>
+                    ) : (
+                        productsList && productsList.length > 0 ? (
+                            productsList.map((product) => (
+                                <TableRow key={product.id}>
+                                    <TableCell className="px-3 py-3 text-left">#{product.id}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="mb-2">
+                                                {
+                                                    product.image && (
+                                                    <Image
+                                                        width={64}
+                                                        height={64}
+                                                        unoptimized={process.env.NODE_ENV ? true : false}
+                                                        src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}${typeof product.image === "string" ? product.image : product.image}`}
+                                                        alt={product.name}
+                                                        className="w-16 h-16 object-cover rounded"
+                                                    />
+                                                    )
+                                                }
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[14px] font-bold">{product.name}</span>
+                                                <small className="text-gray-500">{product.slug}</small>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{formatPrice(product.price)}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        <div className="flex items-center gap-2">
+                                            <div className={`w-2 h-2 object-cover rounded ${product.stock > 0 ? "bg-green-500" : "bg-red-500"}`}></div>
+                                            {product.stock}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="px-3 my-4 line-clamp text-gray-700">{product.description_short}</TableCell>
+                                    <TableCell className="px-3 py-4 text-lef">
+                                        {
+                                            product.is_active ? 
+                                            <Badge variant="solid" color="success">Activo</Badge> : 
+                                            <Badge variant="solid" color="error">Inactivo</Badge>
+                                        }
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3">
+                                        <div className="flex space-x-4">
+                                            <Button onClick={() => handleOpenModal(product)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeleteProduct(product.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell className="text-center py-4" colSpan={12}>No se encontraron productos.</TableCell>
+                            </TableRow>
+                        )
                     )
                 }
             </TablePage>

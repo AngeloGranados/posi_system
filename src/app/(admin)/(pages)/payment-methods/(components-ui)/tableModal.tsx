@@ -13,6 +13,7 @@ import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { orderByAscDescPaymentMethods, orderByPaymentMethods, PaymentMethods, tableThPaymentMethods } from "@/types/paymentMethods";
 import { createPaymentMethods, deletePaymentMethods, getPaymentMethodsFiltered, updatePaymentMethods } from "@/services/paymentMethods";
 import ModalPaymentMethods from "./modalBrands";
+import Badge from "@/components/ui/badge/Badge";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -27,6 +28,8 @@ export default function TableModal() {
     const [orderField, setOrderField] = useState<orderByAscDescPaymentMethods>("id")
     const [filterlike, setFilterlike] = useState('')
 
+    const [loading, setLoading] = useState(false);
+
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
 
@@ -40,6 +43,7 @@ export default function TableModal() {
     ]
 
     async function fetchPaymentMethodsFiltered() {
+        setLoading(true);
         try {
             // El servicio debe retornar { data, totalItems }
             const response = await getPaymentMethodsFiltered({orderBy, orderField, limit, page});
@@ -47,6 +51,8 @@ export default function TableModal() {
             setPageTotal(response.totalRows); // Actualiza el total de elementos
         }catch (error) {
             console.error("Error fetching paymentMethod:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -124,8 +130,8 @@ export default function TableModal() {
                 alertProps={{ showAlert, alertMessage, alertVariant, alertTitle, closeAlert }} 
             />
             <TablePage<PaymentMethods>
-                titleTable="Marcas"
-                buttonText="Agregar una Marca"
+                titleTable=""
+                buttonText="Agregar una nueva forma de pago"
                 orderField={orderField} 
                 orderBy={orderBy} 
                 tableThPage={tableThPaymentMethods} 
@@ -136,49 +142,7 @@ export default function TableModal() {
                 setPage={setPage}
             >
                 {
-                    paymentMethodList && paymentMethodList.length > 0 ? (
-                        paymentMethodList.map((paymentMethod) => (
-                            <TableRow key={paymentMethod.id}>
-                                <TableCell className="px-3 py-3 text-left">#{paymentMethod.id}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="mb-2">
-                                            {
-                                                paymentMethod.image_url && (
-                                                <Image
-                                                    width={64}
-                                                    height={64}
-                                                    unoptimized={process.env.NODE_ENV ? true : false}
-                                                    src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}${typeof paymentMethod.image_url === "string" ? paymentMethod.image_url : paymentMethod.image_url}`}
-                                                    alt={paymentMethod.name}
-                                                    className="w-16 h-16 object-cover rounded"
-                                                />
-                                                )
-                                            }
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-[14px] font-bold">{paymentMethod.name}</span>
-                                            <small className="text-gray-500">Code: {paymentMethod.code}</small>
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="px-3 py-3 text-left">
-                                    <div className="flex flex-col">
-                                        <span className="text-[14px] font-bold">{paymentMethod.account_name}</span>
-                                        <small className="text-gray-500">Nro cuenta: {paymentMethod.account_number}</small>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="px-3 py-3 text-left">{paymentMethod.description}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{paymentMethod.is_active ? "Active" : "Inactive"}</TableCell>
-                                <TableCell className="px-3 py-3">
-                                    <div className="flex space-x-4">
-                                        <Button onClick={() => handleOpenModal(paymentMethod)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                        <Button onClick={() => handleDeletePaymentMethods(paymentMethod.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    ) : (
+                    loading ? (
                         <TableRow>
                             <TableCell className="text-center py-4" colSpan={12}>   
                                 <div className="w-full h-50">
@@ -186,6 +150,60 @@ export default function TableModal() {
                                 </div>
                             </TableCell>
                         </TableRow>
+                    ) : (
+                        paymentMethodList && paymentMethodList.length > 0 ? (
+                            paymentMethodList.map((paymentMethod) => (
+                                <TableRow key={paymentMethod.id}>
+                                    <TableCell className="px-3 py-3 text-left">#{paymentMethod.id}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="mb-2">
+                                                {
+                                                    paymentMethod.image_url && (
+                                                    <Image
+                                                        width={64}
+                                                        height={64}
+                                                        unoptimized={process.env.NODE_ENV ? true : false}
+                                                        src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}${typeof paymentMethod.image_url === "string" ? paymentMethod.image_url : paymentMethod.image_url}`}
+                                                        alt={paymentMethod.name}
+                                                        className="w-16 h-16 object-cover rounded"
+                                                    />
+                                                    )
+                                                }
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[14px] font-bold">{paymentMethod.name}</span>
+                                                <small className="text-gray-500">Code: {paymentMethod.code}</small>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        <div className="flex flex-col">
+                                            <span className="text-[14px] font-bold">{paymentMethod.account_name ? paymentMethod.account_name : "No Account Name"}</span>
+                                            <small className="text-gray-500">Nro cuenta: {paymentMethod.account_number ? paymentMethod.account_number : "No Account Number"}</small>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{paymentMethod.description}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        {
+                                            paymentMethod.is_active ? 
+                                            <Badge variant="solid" color="success">Activo</Badge> : 
+                                            <Badge variant="solid" color="error">Inactivo</Badge>
+                                        }
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3">
+                                        <div className="flex space-x-4">
+                                            <Button onClick={() => handleOpenModal(paymentMethod)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeletePaymentMethods(paymentMethod.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell className="text-center py-4" colSpan={12}>No se encontraron métodos de pago.</TableCell>
+                            </TableRow>
+                        )
                     )
                 }
             </TablePage>

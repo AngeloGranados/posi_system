@@ -95,7 +95,7 @@ export default function ModalPaymentMethods({ isOpen, closeModal, selected, setS
             <form onSubmit={(e) => handleCreatePaymentMethods(e, FormDataPaymentMethods)} className="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[80vh]">
               <div>
                 <h5 className="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl">
-                  {selected ? `Editar Categoria` : `Agregar Categoria`}
+                  {selected ? `Editar Método de Pago` : `Agregar Método de Pago`}
                 </h5>
               </div>
               <div className="mt-8">

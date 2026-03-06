@@ -12,6 +12,8 @@ import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import ModalPromoCodes from "./modalPromoCodes";
 import { orderByAscDescPromoCodes, orderByPromoCodes, PromoCodes, tableThPromoCodes } from "@/types/promoCodes";
 import { createPromoCodes, deletePromoCodes, getPromoCodesFiltered, updatePromoCodes } from "@/services/promoCodesServices";
+import Badge from "@/components/ui/badge/Badge";
+import { formatDate } from "@fullcalendar/core/index.js";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -25,6 +27,8 @@ export default function TableModal() {
     const [orderBy, setOrderBy] = useState<orderByPromoCodes>("ByDESC")
     const [orderField, setOrderField] = useState<orderByAscDescPromoCodes>("id")
     const [filterlike, setFilterlike] = useState('')
+
+    const [loading, setLoading] = useState(false);
 
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
@@ -43,6 +47,7 @@ export default function TableModal() {
     ]
 
     async function fetchPromoCodesFiltered() {
+        setLoading(true);
         try {
             // El servicio debe retornar { data, totalItems }
             const response = await getPromoCodesFiltered({orderBy, orderField, limit, page});
@@ -50,6 +55,8 @@ export default function TableModal() {
             setPageTotal(response.totalRows); // Actualiza el total de elementos
         }catch (error) {
             console.error("Error fetching promoCodes:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -127,8 +134,8 @@ export default function TableModal() {
                 alertProps={{ showAlert, alertMessage, alertVariant, alertTitle, closeAlert }} 
             />
             <TablePage<PromoCodes>
-                titleTable="Métodos de Envío"
-                buttonText="Agregar un Método de Envío"
+                titleTable=""
+                buttonText="Agregar un Código Promocional"
                 orderField={orderField} 
                 orderBy={orderBy} 
                 tableThPage={tableThPromoCodes} 
@@ -139,37 +146,7 @@ export default function TableModal() {
                 setPage={setPage}
             >
                 {
-                    promoCodesList && promoCodesList.length > 0 ? (
-                        promoCodesList.map((promoCodes) => (
-                            <TableRow key={promoCodes.id}>
-                                <TableCell className="px-3 py-3 text-left">#{promoCodes.id}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">
-                                    <span className="text-gray-500">{promoCodes.code}</span>
-                                </TableCell>
-                                <TableCell className="px-3 py-3 text-left">{promoCodes.description}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">
-                                    {promoCodes.discount_type === "percentage" ? `${promoCodes.discount_value}%` : `$${promoCodes.discount_value}`}
-                                </TableCell>
-                                <TableCell className="px-3 py-3 text-left">{promoCodes.min_purchase}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{promoCodes.max_discount}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{promoCodes.usage_limit}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">
-                                    <div>
-                                        <span>{promoCodes.valid_from ? promoCodes.valid_from.toString() : "No Date"}</span>
-                                        <span className="mx-1">-</span>
-                                        <span>{promoCodes.valid_until ? promoCodes.valid_until.toString() : "No Date"}</span>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="px-3 py-3 text-left">{promoCodes.is_active ? "Active" : "Inactive"}</TableCell>
-                                <TableCell className="px-3 py-3">
-                                    <div className="flex space-x-4">
-                                        <Button onClick={() => handleOpenModal(promoCodes)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                        <Button onClick={() => handleDeletePromoCodes(promoCodes.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    ) : (
+                    loading ? (
                         <TableRow>
                             <TableCell className="text-center py-4" colSpan={12}>   
                                 <div className="w-full h-50">
@@ -177,6 +154,50 @@ export default function TableModal() {
                                 </div>
                             </TableCell>
                         </TableRow>
+                    ) : (
+                        promoCodesList && promoCodesList.length > 0 ? (
+                            promoCodesList.map((promoCodes) => (
+                                <TableRow key={promoCodes.id}>
+                                    <TableCell className="px-3 py-3 text-left">#{promoCodes.id}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        <span className="text-gray-500">{promoCodes.code}</span>
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{promoCodes.description}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        {promoCodes.discount_type === "percentage" ? `${promoCodes.discount_value}%` : `$${promoCodes.discount_value}`}
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{promoCodes.min_purchase}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{promoCodes.max_discount}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{promoCodes.usage_limit}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        <div>
+                                            <span>{formatDate(promoCodes.valid_from) ? formatDate(promoCodes.valid_from) : "No Date"}</span>
+                                            <span className="mx-1">-</span>
+                                            <span>{formatDate(promoCodes.valid_until) ? formatDate(promoCodes.valid_until) : "No Date"}</span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        {
+                                            promoCodes.is_active ? 
+                                            <Badge variant="solid" color="success">Activo</Badge> : 
+                                            <Badge variant="solid" color="error">Inactivo</Badge>
+                                        }
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3">
+                                        <div className="flex space-x-4">
+                                            <Button onClick={() => handleOpenModal(promoCodes)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeletePromoCodes(promoCodes.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell className="text-center py-4" colSpan={12}>
+                                    No hay códigos promocionales disponibles.
+                                </TableCell>
+                            </TableRow>
+                        )
                     )
                 }
             </TablePage>

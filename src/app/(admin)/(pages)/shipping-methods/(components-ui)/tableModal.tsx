@@ -13,6 +13,8 @@ import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { orderByAscDescShippingMethods, orderByShippingMethods, ShippingMethods, tableThShippingMethods } from "@/types/shippingMethods";
 import { createShippingMethods, deleteShippingMethods, getShippingMethodsFiltered, updateShippingMethods } from "@/services/shippingMehods";
 import ModalShippingMethods from "./modalShippingMethods";
+import { verifyColorByStatus } from "../../../../../../util";
+import Badge from "@/components/ui/badge/Badge";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -26,6 +28,8 @@ export default function TableModal() {
     const [orderBy, setOrderBy] = useState<orderByShippingMethods>("ByDESC")
     const [orderField, setOrderField] = useState<orderByAscDescShippingMethods>("id")
     const [filterlike, setFilterlike] = useState('')
+
+    const [loading, setLoading] = useState(false);
 
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
@@ -41,6 +45,7 @@ export default function TableModal() {
     ]
 
     async function fetchShippingMethodsFiltered() {
+        setLoading(true);
         try {
             // El servicio debe retornar { data, totalItems }
             const response = await getShippingMethodsFiltered({orderBy, orderField, limit, page});
@@ -48,6 +53,8 @@ export default function TableModal() {
             setPageTotal(response.totalRows); // Actualiza el total de elementos
         }catch (error) {
             console.error("Error fetching shippingMethod:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -125,7 +132,7 @@ export default function TableModal() {
                 alertProps={{ showAlert, alertMessage, alertVariant, alertTitle, closeAlert }} 
             />
             <TablePage<ShippingMethods>
-                titleTable="Métodos de Envío"
+                titleTable=""
                 buttonText="Agregar un Método de Envío"
                 orderField={orderField} 
                 orderBy={orderBy} 
@@ -137,38 +144,7 @@ export default function TableModal() {
                 setPage={setPage}
             >
                 {
-                    shippingMethodList && shippingMethodList.length > 0 ? (
-                        shippingMethodList.map((shippingMethod) => (
-                            <TableRow key={shippingMethod.id}>
-                                <TableCell className="px-3 py-3 text-left">#{shippingMethod.id}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="flex flex-col">
-                                            <span className="text-[14px] font-bold">{shippingMethod.name}</span>
-                                            <small className="text-gray-500">Code: {shippingMethod.code}</small>
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="px-3 py-3 text-left">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="flex flex-col">
-                                            <span className="text-gray-500">Min: {shippingMethod.estimated_days_min} días</span>
-                                            <span className="text-gray-500">Max: {shippingMethod.estimated_days_max} días</span>
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="px-3 py-3 text-left">{shippingMethod.description}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{shippingMethod.price}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{shippingMethod.is_active ? "Active" : "Inactive"}</TableCell>
-                                <TableCell className="px-3 py-3">
-                                    <div className="flex space-x-4">
-                                        <Button onClick={() => handleOpenModal(shippingMethod)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                        <Button onClick={() => handleDeleteShippingMethods(shippingMethod.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    ) : (
+                    loading ? (
                         <TableRow>
                             <TableCell className="text-center py-4" colSpan={12}>   
                                 <div className="w-full h-50">
@@ -176,6 +152,51 @@ export default function TableModal() {
                                 </div>
                             </TableCell>
                         </TableRow>
+                    ) : (
+                        shippingMethodList && shippingMethodList.length > 0 ? (
+                            shippingMethodList.map((shippingMethod) => (
+                                <TableRow key={shippingMethod.id}>
+                                    <TableCell className="px-3 py-3 text-left">#{shippingMethod.id}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="flex flex-col">
+                                                <span className="text-[14px] font-bold">{shippingMethod.name}</span>
+                                                <small className="text-gray-500">Code: {shippingMethod.code}</small>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="flex flex-col">
+                                                <span className="text-gray-500">Min: {shippingMethod.estimated_days_min} días</span>
+                                                <span className="text-gray-500">Max: {shippingMethod.estimated_days_max} días</span>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{shippingMethod.description}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{shippingMethod.price}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        {
+                                        shippingMethod.is_active ? 
+                                            <Badge variant="solid" color="success">Activo</Badge> : 
+                                            <Badge variant="solid" color="error">Inactivo</Badge>
+                                        }
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3">
+                                        <div className="flex space-x-4">
+                                            <Button onClick={() => handleOpenModal(shippingMethod)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeleteShippingMethods(shippingMethod.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell className="text-center py-4" colSpan={12}>
+                                    No hay métodos de envío disponibles.
+                                </TableCell>
+                            </TableRow>
+                        )
                     )
                 }
             </TablePage>

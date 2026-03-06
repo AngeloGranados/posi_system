@@ -26,6 +26,8 @@ export default function TableModal() {
     const [orderField, setOrderField] = useState<orderByAscDescBrands>("id")
     const [filterlike, setFilterlike] = useState('')
 
+    const [loading, setLoading] = useState(false);
+
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
 
@@ -41,13 +43,16 @@ export default function TableModal() {
     }, [limit, page, orderBy, filterlike, orderField]);
 
     async function fetchBrandsFiltered() {
+        setLoading(true);
         try {
             // El servicio debe retornar { data, totalItems }
             const response = await getBrandsFiltered({orderBy, orderField, limit, page});
             setBrandsList(response.data);
-            setPageTotal(response.totalRows); // Actualiza el total de elementos
-        }catch (error) {
+            setPageTotal(response.totalRows);
+        } catch (error) {
             console.error("Error fetching brands:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -121,7 +126,7 @@ export default function TableModal() {
                 alertProps={{ showAlert, alertMessage, alertVariant, alertTitle, closeAlert }} 
             />
             <TablePage<Brands>
-                titleTable="Marcas"
+                titleTable=""
                 buttonText="Agregar una Marca"
                 orderField={orderField} 
                 orderBy={orderBy} 
@@ -133,21 +138,7 @@ export default function TableModal() {
                 setPage={setPage}
             >
                 {
-                    brandsList && brandsList.length > 0 ? (
-                        brandsList.map((brands) => (
-                            <TableRow key={brands.id}>
-                                <TableCell className="px-3 py-3 text-left">#{brands.id}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{brands.name}</TableCell>
-                                <TableCell className="px-3 py-3 text-left">{brands.slug}</TableCell>
-                                <TableCell className="px-3 py-3">
-                                    <div className="flex space-x-4">
-                                        <Button onClick={() => handleOpenModal(brands)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                        <Button onClick={() => handleDeleteBrands(brands.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    ) : (
+                    loading ? (
                         <TableRow>
                             <TableCell className="text-center py-4" colSpan={12}>   
                                 <div className="w-full h-50">
@@ -155,6 +146,27 @@ export default function TableModal() {
                                 </div>
                             </TableCell>
                         </TableRow>
+                    ) : (
+
+                        brandsList && brandsList.length > 0 ? (
+                            brandsList.map((brands) => (
+                                <TableRow key={brands.id}>
+                                    <TableCell className="px-3 py-3 text-left">#{brands.id}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{brands.name}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{brands.slug}</TableCell>
+                                    <TableCell className="px-3 py-3">
+                                        <div className="flex space-x-4">
+                                            <Button onClick={() => handleOpenModal(brands)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeleteBrands(brands.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell className="text-center py-4" colSpan={12}>No se encontraron marcas.</TableCell>
+                            </TableRow>
+                        )
                     )
                 }
             </TablePage>

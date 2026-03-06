@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function PaymentMethodsPage() {
     return (
         <div>
-            <PageBreadcrumb pageTitle="Products" />
+            <PageBreadcrumb pageTitle="Métodos de Pago" />
             <TableModal />    
         </div>
     )

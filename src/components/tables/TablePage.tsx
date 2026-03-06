@@ -14,6 +14,7 @@ import { orderByAscDescShippingMethods, orderByShippingMethods, ShippingMethods 
 import { orderByAscDescPromoCodes, orderByPromoCodes, PromoCodes } from "@/types/promoCodes";
 import { Discounts, orderByAscDescDiscounts, orderByDiscounts } from "@/types/discounts";
 import { orderByAscDescOrders, orderByOrders, Orders } from "@/types/orders";
+import { orderByAscDescUsers, orderByUsers, Users } from "@/types/users";
 
 type orderByAscDescT<T> = 
 T extends Product ? orderByAscDescProduct : 
@@ -24,6 +25,7 @@ T extends ShippingMethods ? orderByAscDescShippingMethods :
 T extends PromoCodes ? orderByAscDescPromoCodes :
 T extends Discounts ? orderByAscDescDiscounts :
 T extends Orders ? orderByAscDescOrders :
+T extends Users ? orderByAscDescUsers :
 never;
 
 type orderByT<T> =
@@ -35,12 +37,13 @@ type orderByT<T> =
   T extends PromoCodes ? orderByPromoCodes :
   T extends Discounts ? orderByDiscounts :
   T extends Orders ? orderByOrders :
+  T extends Users ? orderByUsers :
   never;
 
 interface TablePageProps<T> {
     titleTable: string;
     children: React.ReactNode;
-    OpenModal: (data: T | null) => void;
+    OpenModal?: (data: T | null) => void;
     tableThPage: { name: string, value: string }[];
     handleOrderByAscDesc: (field: orderByAscDescT<T>) => Promise<void>;
     orderBy: orderByT<T>;
@@ -61,7 +64,7 @@ export default function TablePage<T>({ children, titleTable, buttonText, OpenMod
     return (
         <div className="space-y-6">
             <ComponentCard title={titleTable}>
-                {buttonText && <Button onClick={() => OpenModal(null)} className="flex items-center leading-none float-right"><AddIcon width={17} height={17} fill="currentColor" /> {buttonText}</Button>}
+                {buttonText && <Button onClick={() => OpenModal?.(null)} className="flex items-center leading-none float-right"><AddIcon width={17} height={17} fill="currentColor" /> {buttonText}</Button>}
                 <Table>
                     <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
                         <TableRow>
