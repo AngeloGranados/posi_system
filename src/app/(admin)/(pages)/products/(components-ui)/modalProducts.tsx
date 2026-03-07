@@ -240,7 +240,7 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                   {selected ? `Editar Producto` : `Agregar Producto`}
                 </h5>
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+              <div className="mt-4">
                 { alertProps.showAlert && (
                   <Alert
                     title={alertProps.alertTitle}
@@ -248,8 +248,9 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                     message={alertProps.alertMessage}
                   />
                 )}
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-2">
                 <div>
-
                   <FormRow>
                     <FormGroupInput>
                         <Label htmlFor="name">Nombre del Producto:</Label>
@@ -349,7 +350,7 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                 </div>
                 <div>
                   <div>
-                    {categoryAttributes.length > 0 && FormDataProduct.category_id && <Button onClick={handleAddAttribute} className="mt-4 w-full bg-blue-100"><AddIcon width={20} height={20} fill="white"/> Añadir atributo</Button>}
+                    {categoryAttributes.length > 0 && FormDataProduct.category_id ? (<Button onClick={handleAddAttribute} className="mt-4 w-full bg-blue-100"><AddIcon width={20} height={20} fill="white"/> Añadir atributo</Button>) : null}
                       {
                         categoryAttributes && productAttributes.map((attr, index) => (
                           <FormRow key={index}>
