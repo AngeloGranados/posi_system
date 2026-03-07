@@ -10,7 +10,7 @@ export interface tableThDiscounts {
 export interface Discounts {
     id?: number,
     product_id: number,
-    discount_type: "percentage" | "fixed",
+    discount_type: "percentage" | "fixed" | "",
     discount_value: number,
     valid_from: Date,
     valid_until: Date,

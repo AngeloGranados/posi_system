@@ -26,6 +26,7 @@ export interface Product {
     is_active?: boolean;
     created_at?: string; 
     updated_at?: string;
+    category_name?: string;
 }
 
 export interface ImagesProduct {

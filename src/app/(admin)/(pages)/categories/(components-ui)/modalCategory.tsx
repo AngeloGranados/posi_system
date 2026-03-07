@@ -14,6 +14,7 @@ import useAlert from "@/hooks/useAlert";
 import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
 import { Categories } from "@/types/categories";
+import DropzoneComponent from "@/components/form/form-elements/DropZone";
 
 interface ModalCategoryProps {
     isOpen: boolean;
@@ -90,8 +91,8 @@ export default function ModalCategory({ isOpen, closeModal, selected, setSelecte
         });
     }
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files ? e.target.files[0] : null;
+    const handleImageChange = (files: File[]) => {
+        const file = files[0];
         setFormDataCategory((prevData) => ({
             ...prevData,
             image_url: file ? file : prevData.image_url 
@@ -151,26 +152,15 @@ export default function ModalCategory({ isOpen, closeModal, selected, setSelecte
                 </FormRow>
               </div>
               <div className="flex flex-col gap-4 mt-8">
-                <div className="mt-4 flex-1 flex flex-col items-center gap-4">
-                    {
-                      <Image
-                         src={
-                           FormDataCategory.image_url && FormDataCategory.image_url instanceof File && FormDataCategory.image_url.size > 0 ? URL.createObjectURL(FormDataCategory.image_url) :
-                           selected?.image_url ? (process.env.NEXT_PUBLIC_URL_IMAGES ?? "") + selected.image_url :
-                           "/images/error/404_image.png"
-                         }
-                         alt="Category Image"
-                         width={200}
-                         unoptimized={process.env.NODE_ENV ? true : false}
-                         height={200}
-                       />
-                    }
-                  <Label htmlFor="image">Imagen principal:</Label>
-                  <FileInput
-                    name="image"
-                    onChange={handleImageChange}
-                  />
-                </div>
+                <FormRow>
+                  <FormGroupInput>
+                    <DropzoneComponent
+                      onDrop={handleImageChange}
+                      image={FormDataCategory.image_url}
+                      ImageDefault={selected?.image_url}
+                    />
+                  </FormGroupInput>
+                </FormRow>
               </div>
               <div className="flex items-center gap-3 mt-6 modal-footer sm:justify-end">
                 <button

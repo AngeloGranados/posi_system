@@ -71,12 +71,33 @@ export default function TableModal() {
 
         let error = null;
 
-        const requiredFields: (keyof Discounts)[] = ["product_id", "discount_type", "valid_from", "valid_until"];
+        const requiredFields: (keyof Discounts)[] = ["product_id", "discount_type", "discount_value", "valid_from", "valid_until"];
 
         for (const field of requiredFields) {
             if (!discounts[field] || (discounts[field] as string).toString().trim() === "") {
                 error = `El campo ${field} es obligatorio.`;
                 break;
+            }
+
+            if(field === "discount_value" && isNaN(Number(discounts.discount_value))){
+                error = `El valor de descuento debe ser un numero`;
+                break;
+            }
+
+            if(field === "valid_from" || field === "valid_until") {
+                discounts.valid_from = new Date(discounts.valid_from);
+                discounts.valid_until = new Date(discounts.valid_until);
+
+                if (field === "valid_from" && discounts.valid_from < new Date()){
+                    error = `La fecha de inicio debe ser mayor a la fecha actual`;
+                    break;
+                }
+
+                if (field === "valid_until" && discounts.valid_until <= discounts.valid_from){
+                    error = `La fecha final debe ser mayor a la de inicio`;
+                    break;
+                }
+
             }
         }
 

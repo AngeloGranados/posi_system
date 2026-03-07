@@ -2,15 +2,21 @@
 
 import { Modal } from "@/components/ui/modal";
 import InputField from "@/components/form/input/InputField";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Label from "@/components/form/Label";
 import Alert from "@/components/ui/alert/Alert";
 import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
-import TextArea from "@/components/form/input/TextArea";
 import Select from "@/components/form/Select";
 import DatePicker from "@/components/form/date-picker";
 import { Discounts } from "@/types/discounts";
+import { InputContainerProduct } from "@/components/form/form-elements/InputContainerProduct";
+import { getProductsFilter } from "@/services/produtsServices";
+import { Product } from "@/types/produts";
+import debounce from "debounce";
+import AddIcon from "../../../../../../public/images/icons/add-icon";
+import Image from "next/image";
+import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 
 
 interface ModalDiscountsProps {
@@ -30,9 +36,14 @@ interface ModalDiscountsProps {
 
 export default function ModalDiscounts({ isOpen, closeModal, selected, setSelected, handleCreateDiscounts, alertProps } : ModalDiscountsProps) {
 
+    const [products, setProducts] = useState<Product[]>([]);
+    const [productsFilter, setProductsFilter] = useState("");
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+    const [loadingProducts, setLoadingProducts] = useState(false);
     const emptyDiscounts: Discounts = {
         product_id: 0,
-        discount_type: "percentage",
+        discount_type: "",
         discount_value: 0,
         valid_from: new Date(),
         valid_until: new Date()
@@ -62,7 +73,53 @@ export default function ModalDiscounts({ isOpen, closeModal, selected, setSelect
     const handleClearForm = () => {
       setFormDataDiscounts(emptyDiscounts);
       setSelected(null);
+      setProducts([]);
+      setProductsFilter("");
+      setSelectedProduct(null);
       alertProps.closeAlert();
+    }
+
+    const debounceFetch = useCallback(debounce((value) => {
+      fetchProducts(value);
+    }, 500), []);
+
+    useEffect(() => {
+      if(productsFilter) {
+        debounceFetch(productsFilter);
+      }
+
+      return () => {
+        debounceFetch.clear();
+      }
+    }, [productsFilter])
+
+    async function fetchProducts(filterLike: string) {
+        setLoadingProducts(true);
+        try {
+          const response = await getProductsFilter({ filterlike: filterLike });
+          setProducts(response.products);
+        }catch (error) {
+          console.error("Error fetching products:", error);
+        } finally {
+          setLoadingProducts(false);
+        }
+    }
+
+    function handleProductInputChange(producto: Product) {
+        setFormDataDiscounts((prevData) => ({
+            ...prevData,
+            product_id: producto.id || 0
+        }));
+        setSelectedProduct(producto);
+        setProductsFilter("");
+    }
+
+    function handleDeleteProductSelection() {
+        setFormDataDiscounts((prevData) => ({
+            ...prevData,
+            product_id: 0
+        }));
+        setSelectedProduct(null);
     }
 
     // Handler universal, siempre actualiza el estado
@@ -71,7 +128,7 @@ export default function ModalDiscounts({ isOpen, closeModal, selected, setSelect
         e.preventDefault();
         setFormDataDiscounts((prevData) => {      
 
-            if(name === "min_purchase" || name === "max_discount" || name === "usage_limit" || name === "discount_value" || name === "product_id") {
+            if(name === "product_id") {
                 return {
                     ...prevData,
                     [name]: Number(value) 
@@ -111,16 +168,40 @@ export default function ModalDiscounts({ isOpen, closeModal, selected, setSelect
                   />
                 )}
                 <FormRow>
-                  <FormGroupInput>
-                      <Label htmlFor="product_id">Producto(ID):</Label>
-                      <InputField
-                        type="number"
-                        id="input-product_id"
-                        name="product_id"
-                        value={FormDataDiscounts && FormDataDiscounts.product_id ? FormDataDiscounts.product_id : 0}
-                        onChange={handleDataChange}
-                      />
-                  </FormGroupInput>
+                  {
+                    selectedProduct ? (
+                      <div className="relative w-full mt-5">
+                        <div className="flex items-center gap-5 w-full px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                          <div className="w-[60px] h-[60px] bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden flex-shrink-0">
+                              <Image unoptimized={process.env.NODE_ENV ? true : false} src={selectedProduct.image ? `${process.env.NEXT_PUBLIC_URL_IMAGES}${selectedProduct.image}` : "/images/error/404_image.png"} width={100} height={100} alt="Imagen de producto" />
+                          </div>
+                          <div className="flex flex-1 flex-col">
+                              <span>{selectedProduct.name}</span>
+                              <small>{selectedProduct.category_name}</small>
+                          </div>
+                          <div>
+                              <button onClick={handleDeleteProductSelection} type="button" className="flex items-center gap-5 w-full px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                                <DeleteIcon fill="red" width={20} height={20} />
+                              </button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <FormGroupInput>
+                          <Label htmlFor="product">Producto:</Label>
+                          <div className="relative">
+                            <InputField
+                              id="input-product"
+                              name="product"
+                              value={productsFilter}
+                              placeholder="Buscar producto por ID"
+                              onChange={(e) => setProductsFilter(e.target.value)}
+                            />
+                            <InputContainerProduct products={products} handleProductInputChange={handleProductInputChange} is_open={productsFilter != ""} loading={loadingProducts} />
+                          </div>
+                      </FormGroupInput>
+                    )
+                  }
                 </FormRow>
                 <FormRow>
                   <FormGroupInput>

@@ -11,6 +11,7 @@ import { PaymentMethods } from "@/types/paymentMethods";
 import TextArea from "@/components/form/input/TextArea";
 import Image from "next/image";
 import FileInput from "@/components/form/input/FileInput";
+import DropzoneComponent from "@/components/form/form-elements/DropZone";
 
 
 interface ModalPaymentMethodsProps {
@@ -62,8 +63,8 @@ export default function ModalPaymentMethods({ isOpen, closeModal, selected, setS
       alertProps.closeAlert();
     }
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files ? e.target.files[0] : null;
+    const handleImageChange = (files: File[]) => {
+      const file = files[0];
       if (file) {
         setFormDataPaymentMethods((prevData) => (
           {
@@ -156,28 +157,17 @@ export default function ModalPaymentMethods({ isOpen, closeModal, selected, setS
                       />
                   </FormGroupInput>
                 </FormRow>
+                <div className="flex flex-col gap-4 mt-8">
                 <FormRow>
-                  <div className="mt-4">
-                    <Image
-                      width={200}
-                      height={200}
-                      src={
-                        FormDataPaymentMethods.image_url && FormDataPaymentMethods.image_url instanceof File && FormDataPaymentMethods.image_url.size > 0 ? URL.createObjectURL(FormDataPaymentMethods.image_url) :
-                           selected?.image_url ? (process.env.NEXT_PUBLIC_URL_IMAGES ?? "") + selected.image_url :
-                           "/images/error/404_image.png"
-                      }
-                      unoptimized={process.env.NODE_ENV ? true : false}
-                      alt="Imagen de método de pago"
+                  <FormGroupInput>
+                    <DropzoneComponent
+                      onDrop={handleImageChange}
+                      image={FormDataPaymentMethods.image_url}
+                      ImageDefault={selected?.image_url}
                     />
-                  </div>
-                  <div>
-                    <Label htmlFor="image_url">Imagen:</Label>
-                    <FileInput
-                      name="image_url"
-                      onChange={handleImageChange}
-                    />
-                  </div>
+                  </FormGroupInput>
                 </FormRow>
+              </div>
               </div>
               <div className="flex items-center gap-3 mt-6 modal-footer sm:justify-end">
                 <button
