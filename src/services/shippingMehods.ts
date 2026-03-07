@@ -29,7 +29,6 @@ export async function deleteShippingMethods(shippingMethodsId: number): Promise<
 
 export async function updateShippingMethods(shippingMethods: ShippingMethods): Promise<ShippingMethods> {
 
-    console.log("Updating shippingMethods:", shippingMethods); // Agrega este log para verificar los datos que se están enviando
     const response = await fetch(`${URL_API}/${shippingMethods.id}`, {
         method: "PUT",
         headers: {
@@ -47,10 +46,7 @@ export async function updateShippingMethods(shippingMethods: ShippingMethods): P
 
 export async function createShippingMethods(shippingMethods: ShippingMethods): Promise<ShippingMethods> {
 
-    console.log("Creating shippingMethods:", shippingMethods); // Agrega este log para verificar los datos que se están enviando
-    
-    
-    const response = await fetch(`${URL_API}`, {
+     const response = await fetch(`${URL_API}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

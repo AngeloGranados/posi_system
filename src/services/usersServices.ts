@@ -29,8 +29,7 @@ export async function deleteUsers(usersId: number): Promise<void> {
 
 export async function updateUsers(users: Users): Promise<Users> {
 
-    console.log("Updating users:", users); // Agrega este log para verificar los datos que se están enviando
-    const response = await fetch(`${URL_API}/${users.id}`, {
+     const response = await fetch(`${URL_API}/${users.id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -46,10 +45,7 @@ export async function updateUsers(users: Users): Promise<Users> {
 }
 
 export async function createUsers(users: Users): Promise<Users> {
-
-    console.log("Creating users:", users); // Agrega este log para verificar los datos que se están enviando
-    
-    
+ 
     const response = await fetch(`${URL_API}`, {
         method: "POST",
         headers: {

@@ -30,8 +30,6 @@ export async function deletePromoCodes(promoCodesId: number): Promise<void> {
 
 export async function updatePromoCodes(promoCodes: PromoCodes): Promise<PromoCodes> {
 
-    console.log("Updating promoCodes:", promoCodes); // Agrega este log para verificar los datos que se están enviando
-
     const response = await fetch(`${URL_API}/${promoCodes.id}`, {
         method: "PUT",
         headers: {
@@ -48,10 +46,7 @@ export async function updatePromoCodes(promoCodes: PromoCodes): Promise<PromoCod
 }
 
 export async function createPromoCodes(promoCodes: PromoCodes): Promise<PromoCodes> {
-
-    console.log("Creating promoCodes:", promoCodes); // Agrega este log para verificar los datos que se están enviando
-    
-    
+ 
     const response = await fetch(`${URL_API}`, {
         method: "POST",
         headers: {

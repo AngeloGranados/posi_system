@@ -1,4 +1,4 @@
-import { orderByAscDescProduct, orderByProduct, Product } from "@/types/produts";
+import { CategoryAttribute, ImagesProduct, orderByAscDescProduct, orderByProduct, Product, ProductAttribute } from "@/types/produts";
 
 const URL_API: string = `${process.env.NEXT_PUBLIC_API_URL}products`;
 
@@ -65,7 +65,7 @@ export async function getProductsFilter(Filterparams: FilterParams): Promise<Fil
     return data;
 }
 
-export async function createProduct(product: Product, images: File[], productAttributes: { key: string; value: string }[] ): Promise<Product> {
+export async function createProduct(product: Product, images: File[] | string[], productAttributes: { key: number; value: string }[] ): Promise<Product> {
 
     const formData = new FormData();
 
@@ -131,4 +131,31 @@ export async function deleteProduct(id: number): Promise<void> {
         throw new Error("Error deleting product");
     }
     return data;
+}
+
+export async function getImagesByProductId(productId: number): Promise<ImagesProduct[]> {
+    const response = await fetch(`${URL_API}/images/${productId}`);
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error("Error fetching product images");
+    }
+    return data || [];
+}
+
+export async function getAttributesByProductId(productId: number): Promise<ProductAttribute[]> {
+    const response = await fetch(`${URL_API}/attributes/${productId}`);
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error("Error fetching product attributes");
+    }
+    return data || [];
+}
+
+export async function getCategoryAttributesByCategoryId(categoryId: number): Promise<CategoryAttribute[]> {
+    const response = await fetch(`${URL_API}/categoryAttributesByCategoryId/${categoryId}`);
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error("Error fetching category attributes");
+    }
+    return data || [];
 }

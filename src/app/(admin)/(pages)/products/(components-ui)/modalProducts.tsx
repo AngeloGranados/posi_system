@@ -2,7 +2,7 @@
 
 import { Modal } from "@/components/ui/modal";
 import InputField from "@/components/form/input/InputField";
-import { Product } from "@/types/produts";
+import { CategoryAttribute, ImagesProduct, Product, ProductAttribute } from "@/types/produts";
 import React, { useEffect, useState } from "react";
 import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
@@ -15,13 +15,21 @@ import useAlert from "@/hooks/useAlert";
 import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
+import DropzoneComponent from "@/components/form/form-elements/DropZone";
+import ImagesDropzone from "@/components/form/form-elements/ImagesDropZone";
+import AddIcon from "../../../../../../public/images/icons/add-icon";
+import { getAttributesByProductId, getCategoryAttributesByCategoryId, getImagesByProductId } from "@/services/produtsServices";
+import { getCategories } from "@/services/categoriesServices";
+import { Categories } from "@/types/categories";
+import { getBrands } from "@/services/brandsServices";
+import { Brands } from "@/types/brands";
 
 interface ModalProductProps {
     isOpen: boolean;
     closeModal: () => void;
     selected: Product | null;
     setSelected: (product: Product | null) => void;
-    handleCreateProduct: (e: React.FormEvent<HTMLFormElement>, product: Product, images: File[], productAttributes: { key: string; value: string }[]) => Promise<void>;
+    handleCreateProduct: (e: React.FormEvent<HTMLFormElement>, product: Product, images: File[] | string[], productAttributes: { key: number; value: string }[]) => Promise<void>;
     alertProps: {
       showAlert: boolean;
       alertMessage: string;
@@ -46,13 +54,17 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
         discount: 0,
     };
 
+    // Options para selects
+    const [categories, setCategories] = useState<{ value: number; label: string }[]>([]);
+    const [brands, setBrands] = useState<{ value: number; label: string }[]>([]);
+
     // Si selected existe, usarlo; si no, usar emptyProduct
     const [FormDataProduct, setFormDataProduct] = useState<Product>(selected || emptyProduct);
-    const [productAttributes, setProductAttributes] = useState<{ key: string; value: string }[]>([]);
+    const [productAttributes, setProductAttributes] = useState<{ key: number; value: string }[]>([]);
+    const [categoryAttributes, setCategoryAttributes] = useState<{ value: number; label: string }[]>([]);
 
     // images
-    const [imageExtrasFiles, setImageExtrasFiles] = useState<File[]>([]);
-    const [extraImageFileSelected, setExtraImageFileSelected] = useState<File | null>(null);
+    const [imageExtrasFiles, setImageExtrasFiles] = useState<File[] | string[]>(Array(4).fill(null));
 
     // Actualiza el estado cuando cambia selected
     useEffect(() => {
@@ -60,8 +72,83 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
         handleClearForm();
       }else{
         setFormDataProduct(selected || emptyProduct);
+        handleImagesByProductId(selected?.id || 0);
+        handlegetAttributesByProductId(selected?.id || 0);
+        handleFetchCategories();
+        handleFetchBrands();
       }
     },[selected, isOpen]);
+
+    useEffect(() => {
+      if(FormDataProduct.category_id) {
+        handlegetCategoryAttributesByCategoryId(FormDataProduct.category_id);
+      }
+    }, [FormDataProduct.category_id]);
+
+    async function handlegetCategoryAttributesByCategoryId(categoryId: number) {
+      try {
+        const attributes = await getCategoryAttributesByCategoryId(categoryId);
+        const formattedAttributes = attributes.map((attr: CategoryAttribute) => ({
+          value: attr.id as number,
+          label: attr.attribute_name,
+        }));
+        setCategoryAttributes(formattedAttributes);
+      }catch (error) {
+        console.error("Error fetching category attributes:", error);
+      }
+    }
+
+    async function handleFetchCategories() {
+      try {
+        const categories = await getCategories();
+        const formattedCategories = categories.map((cat: Categories) => ({
+          value: cat.id as number,
+          label: cat.name,
+        }));
+        setCategories(formattedCategories);
+      }catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    }
+
+    async function handleFetchBrands() {
+      try {
+        const brands = await getBrands();
+        const formattedBrands = brands.map((brand: Brands) => ({
+          value: brand.id as number,
+          label: brand.name,
+        }));
+        setBrands(formattedBrands);
+      }catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    }
+
+    async function handleImagesByProductId(productId: number) {
+      try {
+        const images = await getImagesByProductId(productId);
+        const imageFiles = images.map((img: ImagesProduct) => {
+          return img.image_url;
+        });
+        setImageExtrasFiles(imageFiles);
+      }catch (error) {
+        console.error("Error fetching images for product ID:", productId, error);
+      }
+    }
+
+    async function handlegetAttributesByProductId(productId: number) {
+      try {
+        const attributes = await getAttributesByProductId(productId);
+        console.log("Fetched attributes for product ID:", productId, attributes);
+        const formattedAttributes = attributes.map((attr: ProductAttribute) => ({
+          key: attr.id as number,
+          value: attr.attribute_value,
+        }));
+        setProductAttributes(formattedAttributes);
+      }catch (error) {
+        console.error("Error fetching attributes for product ID:", productId, error);
+      }
+    }
 
     const handleCloseModal = () => {
         handleClearForm();
@@ -70,9 +157,8 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
 
     const handleClearForm = () => {
       setFormDataProduct(emptyProduct);
-      setImageExtrasFiles([]);
+      setImageExtrasFiles(Array(4).fill(null));
       setProductAttributes([]);
-      setExtraImageFileSelected(null);
       setSelected(null);
       alertProps.closeAlert();
     }
@@ -105,7 +191,7 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
         });
     }
 
-    const handleAttributesChange = (index: number, field: "key" | "value", e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAttributesChange = (index: number, field: "key" | "value", e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       const { value } = e.target;
       setProductAttributes((prevAttributes) => (
         prevAttributes.map((attr, idx) => {
@@ -120,34 +206,16 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
     const handleAddAttribute = () => {
       setProductAttributes((prevAttributes) => [
         ...prevAttributes,
-        { key: "", value: "" }
+        { key: 0, value: "" }
       ]);
     }
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files ? e.target.files[0] : null;
+    const handleImageChange = (files: File[]) => {
+        const file = files[0];
         setFormDataProduct((prevData) => ({
             ...prevData,
             image: file ? file : prevData.image 
         }));
-    }
-
-    const handleExtraImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files ? e.target.files[0] : null;
-        setExtraImageFileSelected(file);
-    }
-
-    function handleAddImagesGallery() {
-      if (extraImageFileSelected) {
-        setImageExtrasFiles((prevData) => (
-          [
-            ...prevData || [],
-            extraImageFileSelected
-          ]
-        ))
-
-        setExtraImageFileSelected(null);
-      }
     }
 
     const optionsCategory = [
@@ -155,6 +223,10 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
         { value: "2", label: "Category 2" },
         { value: "3", label: "Category 3" },
     ];
+
+    function handleDeleteAttribute(index: number) {
+      setProductAttributes((prevAttributes) => prevAttributes.filter((_, i) => i !== index));
+    }
 
     return (
         <Modal
@@ -207,7 +279,7 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                         name="category_id"
                         value={FormDataProduct ? FormDataProduct.category_id?.toString() : ""}
                         onChange={handleDataChange}
-                        options={optionsCategory}
+                        options={categories}
                       />
                     </FormGroupInput>
                     <FormGroupInput>
@@ -216,7 +288,7 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                         name="idbrand"
                         value={FormDataProduct ? FormDataProduct.idbrand?.toString() : ""}
                         onChange={handleDataChange}
-                        options={optionsCategory}
+                        options={brands}
                       />
                     </FormGroupInput>
                   </FormRow>
@@ -242,12 +314,7 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                       />
                     </FormGroupInput>
                   </FormRow>
-
-                </div>
-                <div>
-
-                  <div>
-                    <FormRow>
+                  <FormRow>
                       <FormGroupInput>
                         <Label htmlFor="price">Precio:</Label>
                         <InputField
@@ -278,21 +345,21 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                           />
                         </FormGroupInput>
                       )}
-                      
-                    </FormRow>
-
-                    <Button onClick={handleAddAttribute} className="mt-4">Añadir atributo</Button>
-                    
+                  </FormRow>
+                </div>
+                <div>
+                  <div>
+                    {categoryAttributes.length > 0 && FormDataProduct.category_id && <Button onClick={handleAddAttribute} className="mt-4 w-full bg-blue-100"><AddIcon width={20} height={20} fill="white"/> Añadir atributo</Button>}
                       {
-                        productAttributes.map((attr, index) => (
+                        categoryAttributes && productAttributes.map((attr, index) => (
                           <FormRow key={index}>
                             <FormGroupInput>
-                                <Label htmlFor="key">Clave:</Label>
-                                <InputField
-                                  id="input-key"
+                                <Label htmlFor="key">Atributo:</Label>
+                                <Select 
+                                  onChange={e => handleAttributesChange(index, "key", e)}
                                   name="key"
                                   value={attr.key}
-                                  onChange={e => handleAttributesChange(index, "key", e)}
+                                  options={categoryAttributes}
                                 />
                             </FormGroupInput>
                             <FormGroupInput>
@@ -304,61 +371,32 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
                                   onChange={e => handleAttributesChange(index, "value", e)}
                                 />
                             </FormGroupInput>
-                            <DeleteIcon className="mb-2" width={20} height={20} />
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteAttribute(index)}
+                            >
+                              <DeleteIcon className="mb-4" fill="red" width={20} height={20} />
+                            </button>
                           </FormRow>
                         ))
                       }
                     </div>
                     <div className="flex flex-col gap-4 mt-8">
-                      <div className="mt-4 flex-1 flex flex-col items-center gap-4">
-                          {
-                            <Image
-                              src={
-                                FormDataProduct.image && FormDataProduct.image instanceof File && FormDataProduct.image.size > 0 ? URL.createObjectURL(FormDataProduct.image) :
-                                selected?.image ? (process.env.NEXT_PUBLIC_URL_IMAGES ?? "") + selected.image :
-                                "/images/error/404_image.png"
-                              }
-                              alt="Product Image"
-                              width={200}
-                              unoptimized={process.env.NODE_ENV ? true : false}
-                              height={200}
-                            />
-                          }
-                        <Label htmlFor="image">Imagen principal:</Label>
-                        <FileInput
-                          name="image"
-                          onChange={handleImageChange}
-                        />
-                      </div>
-                      {!selected && (
-                        <div className="mt-4 flex-1 flex flex-col items-center gap-4">
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {imageExtrasFiles && imageExtrasFiles.length > 0 &&
-                              imageExtrasFiles.map((image: File, idx: number) => (
-                                <Image
-                                  key={idx}
-                                  src={URL.createObjectURL(image)}
-                                  alt={`Extra ${idx + 1}`}
-                                  width={80}
-                                  height={80}
-                                  className="rounded border"
-                                />
-                              ))}
-                          </div>
-                          <Label htmlFor="extra-images">Agregar Imágenes adicionales:</Label>
-                          <FileInput
-                            onChange={handleExtraImageChange}
+                      <FormRow>
+                        <FormGroupInput>
+                          <DropzoneComponent
+                            onDrop={handleImageChange}
+                            image={FormDataProduct.image}
+                            ImageDefault={selected?.image}
                           />
-                          <div>
-                            <Button onClick={handleAddImagesGallery}>Agregar Imagen</Button>
-                          </div>
-                        
-                        </div>
-                      )}
+                        </FormGroupInput>
+                      </FormRow>
+                      <ImagesDropzone
+                        imageExtrasFiles={imageExtrasFiles}
+                        setImageExtrasFiles={setImageExtrasFiles}
+                      />
                     </div>
-
                 </div>
-                
               </div>
               <div className="flex items-center gap-3 mt-6 modal-footer sm:justify-end">
                 <button

@@ -63,7 +63,7 @@ export default function TableModal() {
 
     const pageTotalToTable = Math.ceil(pageTotal / limit);
 
-    async function handleCreateProduct(event: React.FormEvent<HTMLFormElement>, product: Product, images: File[], productAttributes: { key: string; value: string }[]) {
+    async function handleCreateProduct(event: React.FormEvent<HTMLFormElement>, product: Product, images: File[] | string[], productAttributes: { key: number; value: string }[]) {
         event.preventDefault();
 
         let error = null;

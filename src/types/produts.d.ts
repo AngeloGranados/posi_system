@@ -27,3 +27,26 @@ export interface Product {
     created_at?: string; 
     updated_at?: string;
 }
+
+export interface ImagesProduct {
+    alt_text: string;
+    attribute_value: string | null;
+    id: number;
+    image_url: string;
+    product_id: number;
+    sort_order: number;
+}
+
+export interface ProductAttribute {
+    id?: number;
+    product_id: number;
+    category_attribute_id: number;
+    attribute_value: string;
+}
+
+export interface CategoryAttribute {
+    id? : number;
+    category_id: number;
+    attribute_name: string;
+    attribute_unit?: string;
+}
