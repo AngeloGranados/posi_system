@@ -98,7 +98,7 @@ export default function TableModal() {
 
         try {
             if (selectedProduct) {
-                await updateProduct(product);
+                await updateProduct(product, images, productAttributes);
             } else {
                 await createProduct(product, images, productAttributes);
             }

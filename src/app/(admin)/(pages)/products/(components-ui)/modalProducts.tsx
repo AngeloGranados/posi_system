@@ -139,7 +139,6 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
     async function handlegetAttributesByProductId(productId: number) {
       try {
         const attributes = await getAttributesByProductId(productId);
-        console.log("Fetched attributes for product ID:", productId, attributes);
         const formattedAttributes = attributes.map((attr: ProductAttribute) => ({
           key: attr.id as number,
           value: attr.attribute_value,
@@ -192,11 +191,16 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
     }
 
     const handleAttributesChange = (index: number, field: "key" | "value", e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const { value } = e.target;
+      let { value } = e.target;
+
       setProductAttributes((prevAttributes) => (
         prevAttributes.map((attr, idx) => {
           if (idx === index) {
-            return { ...attr, [field]: value };
+            if(field === "key") {
+              return { ...attr, key: parseInt(value) };
+            } else {
+              return { ...attr, value };
+            }
           }
           return attr;
         })
@@ -217,12 +221,6 @@ export default function ModalProduct({ isOpen, closeModal, selected, setSelected
             image: file ? file : prevData.image 
         }));
     }
-
-    const optionsCategory = [
-        { value: "1", label: "Category 1" },
-        { value: "2", label: "Category 2" },
-        { value: "3", label: "Category 3" },
-    ];
 
     function handleDeleteAttribute(index: number) {
       setProductAttributes((prevAttributes) => prevAttributes.filter((_, i) => i !== index));

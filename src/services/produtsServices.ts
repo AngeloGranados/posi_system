@@ -96,8 +96,9 @@ export async function createProduct(product: Product, images: File[] | string[],
     return data;
 }
 
-export async function updateProduct(product: Product): Promise<Product> {
+export async function updateProduct(product: Product, images: File[] | string[], productAttributes: { key: number; value: string }[]): Promise<Product> {
 
+    console.log(product, images, productAttributes);
     let formData = new FormData();
 
     formData.append("name", product.name);
@@ -110,6 +111,17 @@ export async function updateProduct(product: Product): Promise<Product> {
     formData.append("idbrand", String(product.idbrand));
     formData.append("discount", String(product.discount));
     formData.append("image", product.image);
+    formData.append("product_attributes", JSON.stringify(productAttributes || []));
+    
+    if(images && images.length > 0) {
+        if( typeof images[0] === "string") {
+            formData.append("images", JSON.stringify(images));
+        } else if (images[0] instanceof File && images[0].size > 0) {
+            images.forEach((file) => {
+                formData.append("images", file);
+            });
+        }
+    }
 
     const response = await fetch(`${URL_API}/${product.id}`, {
       method: "PUT",
