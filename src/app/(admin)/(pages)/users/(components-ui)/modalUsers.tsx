@@ -7,7 +7,6 @@ import Label from "@/components/form/Label";
 import Alert from "@/components/ui/alert/Alert";
 import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
-import TextArea from "@/components/form/input/TextArea";
 import { Users } from "@/types/users";
 import Select from "@/components/form/Select";
 
@@ -82,7 +81,7 @@ export default function ModalUsers({ isOpen, closeModal, selected, setSelected, 
             <form onSubmit={(e) => handleCreateUsers(e, FormDataUsers)} className="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[80vh]">
               <div>
                 <h5 className="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl">
-                  {selected ? `Editar Método de Envío` : `Agregar Método de Envío`}
+                  {selected ? `Editar Usuario` : `Agregar Usuario`}
                 </h5>
               </div>
               <div className="mt-8">

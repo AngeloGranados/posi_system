@@ -135,7 +135,7 @@ export default function TableModal() {
             />
             <TablePage<Users>
                 titleTable=""
-                buttonText="Agregar un Método de Envío"
+                buttonText="Agregar un Usuario"
                 orderField={orderField} 
                 orderBy={orderBy} 
                 tableThPage={tableThUsers} 
