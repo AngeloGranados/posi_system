@@ -12,7 +12,7 @@ import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { orderByAscDescUsers, orderByUsers, Users, tableThUsers } from "@/types/users";
 import Badge from "@/components/ui/badge/Badge";
-import { createUsers, deleteUsers, getUsersFiltered, updateUsers } from "@/services/usersServices";
+import { changePassword, createUsers, deleteUsers, getUsersFiltered, updateUsers } from "@/services/usersServices";
 import ModalUsers from "./modalUsers";
 import { UserIcon } from "@/icons";
 import { formatDate } from "@fullcalendar/core/index.js";
@@ -22,6 +22,11 @@ export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
     const [selectedUsers, setSelectedUsers] = useState<Users | null>(null);
     const [userList, setUsersList] = useState<Users[]>([]);
+
+    // CONTRASEÑA UPDATE
+    const [isToChangePassword, setIsToChangePassword] = useState(false);
+    const [newContraseña, setNewContraseña] = useState("");
+    const [confirmContraseña, setConfirmContraseña] = useState("");
 
     // filters
     const [page, setPage] = useState(1)
@@ -88,6 +93,18 @@ export default function TableModal() {
 
         try {
             if (selectedUsers) {
+                if (isToChangePassword) {
+                    if (newContraseña !== confirmContraseña) {
+                        triggerAlert("Error", "Las contraseñas no coinciden", "error");
+                        return;
+                    }
+
+                    await changePassword({ 
+                        idUser: selectedUsers.id as number,
+                        newPassword: newContraseña
+                    })
+                }
+
                 await updateUsers(user);
             } else {
                 await createUsers(user);
@@ -126,6 +143,12 @@ export default function TableModal() {
     return (
         <>
             <ModalUsers 
+                isToChangePassword={isToChangePassword}
+                newContraseña={newContraseña}
+                confirmContraseña={confirmContraseña}
+                setIsToChangePassword={setIsToChangePassword}
+                setNewContraseña={setNewContraseña}
+                setConfirmContraseña={setConfirmContraseña}
                 isOpen={isOpen} 
                 closeModal={closeModal} 
                 setSelected={setSelectedUsers} 

@@ -10,11 +10,11 @@ export interface tableThUsers {
 export interface Users {
     id? : number,
     email : string,
-    password_hash : string,
+    password_hash? : string,
     nombres : string,
     apellidos : string,
     telefono : string,
-    type : string,
+    type? : string,
     created_at? : Date,
     updated_at? : Date,
     is_active? : boolean,

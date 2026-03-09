@@ -9,6 +9,7 @@ import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
 import { Users } from "@/types/users";
 import Select from "@/components/form/Select";
+import Button from "@/components/ui/button/Button";
 
 
 interface ModalUsersProps {
@@ -17,6 +18,12 @@ interface ModalUsersProps {
     selected: Users | null;
     setSelected: (Users: Users | null) => void;
     handleCreateUsers: (e: React.FormEvent<HTMLFormElement>, Users: Users) => Promise<void>;
+    isToChangePassword: boolean;
+    newContraseña: string;
+    confirmContraseña: string;
+    setIsToChangePassword: React.Dispatch<React.SetStateAction<boolean>>;
+    setNewContraseña: React.Dispatch<React.SetStateAction<string>>;
+    setConfirmContraseña: React.Dispatch<React.SetStateAction<string>>;
     alertProps: {
       showAlert: boolean;
       alertMessage: string;
@@ -26,7 +33,7 @@ interface ModalUsersProps {
     }
 }
 
-export default function ModalUsers({ isOpen, closeModal, selected, setSelected, handleCreateUsers, alertProps } : ModalUsersProps) {
+export default function ModalUsers({ isOpen, closeModal, selected, setSelected, handleCreateUsers, alertProps, isToChangePassword, newContraseña, confirmContraseña, setIsToChangePassword, setNewContraseña, setConfirmContraseña } : ModalUsersProps) {
 
     const emptyUsers: Users = {
         email : "",
@@ -57,6 +64,9 @@ export default function ModalUsers({ isOpen, closeModal, selected, setSelected, 
     const handleClearForm = () => {
       setFormDataUsers(emptyUsers);
       setSelected(null);
+      setIsToChangePassword(false);
+      setNewContraseña("");
+      setConfirmContraseña("");
       alertProps.closeAlert();
     }
 
@@ -122,15 +132,6 @@ export default function ModalUsers({ isOpen, closeModal, selected, setSelected, 
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
-                  <FormGroupInput>
-                      <Label htmlFor="password_hash">Contraseña:</Label>
-                      <InputField
-                        type="password"
-                        name="password_hash"
-                        value={FormDataUsers ? FormDataUsers.password_hash : ""}
-                        onChange={handleDataChange}
-                      />
-                  </FormGroupInput>
                 </FormRow>
                 <FormRow>
                   <FormGroupInput>
@@ -155,6 +156,37 @@ export default function ModalUsers({ isOpen, closeModal, selected, setSelected, 
                         ]}
                       />
                   </FormGroupInput>
+                </FormRow>
+                <FormRow>
+                  <FormGroupInput>
+                      <Label htmlFor="password_hash">Contraseña:</Label>
+                      <InputField
+                        type="password"
+                        name="password_hash"
+                        value={FormDataUsers ? FormDataUsers.password_hash : ""}
+                        onChange={handleDataChange}
+                        disabled={!!selected} // Deshabilitar si se está editando un usuario existente
+                      />
+                  </FormGroupInput>
+                </FormRow>
+                <FormRow>
+                  <FormGroupInput>
+                  <Button onClick={() => setIsToChangePassword(!isToChangePassword)} variant="outline" size="sm" className="mb-4">
+                    Cambiar Contraseña
+                  </Button>
+                  {isToChangePassword && <div>
+                    <FormRow>
+                      <FormGroupInput>
+                        <Label>Contraseña Nueva</Label>
+                        <InputField type="password" value={newContraseña} name="newContraseña" onChange={(e) => setNewContraseña(e.target.value)} />
+                      </FormGroupInput>
+                      <FormGroupInput>
+                        <Label>Repetir Contraseña</Label>
+                        <InputField type="password" value={confirmContraseña} name="confirmContraseña" onChange={(e) => setConfirmContraseña(e.target.value)} />
+                      </FormGroupInput>
+                    </FormRow>
+                  </div>}
+                </FormGroupInput>
                 </FormRow>
               </div>
               <div className="flex items-center gap-3 mt-6 modal-footer sm:justify-end">

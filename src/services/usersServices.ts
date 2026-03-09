@@ -11,16 +11,19 @@ interface filterOptions {
 }
 
 export async function getUsers(): Promise<Users[]> {
-    const response = await fetch(`${URL_API}`);
+    const response = await fetch(`${URL_API}`, {
+        credentials: "include"
+    });
     if (!response.ok) {
-        throw new Error("Error fetching userss");
+        throw new Error("Error fetching users");
     }
     return response.json();
 }
 
 export async function deleteUsers(usersId: number): Promise<void> {
     const response = await fetch(`${URL_API}/${usersId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include",
     });
     if (!response.ok) {
         throw new Error("Error deleting users");
@@ -29,11 +32,12 @@ export async function deleteUsers(usersId: number): Promise<void> {
 
 export async function updateUsers(users: Users): Promise<Users> {
 
-     const response = await fetch(`${URL_API}/${users.id}`, {
+     const response = await fetch(`${URL_API}/admin/${users.id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify(users)
     });
 
@@ -44,6 +48,35 @@ export async function updateUsers(users: Users): Promise<Users> {
     return response.json();
 }
 
+export async function updateProfile(params: Users): Promise<void> {
+    const response = await fetch(`${URL_API}/profile`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(params)
+    });
+    if (!response.ok) {
+        throw new Error("Error editing profile");
+    }
+}
+
+export async function changePassword(params: { idUser: number; newPassword: string }): Promise<void> {
+    const response = await fetch(`${URL_API}/changepassword`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(params)
+    });
+    if (!response.ok) {
+        throw new Error("Error changing password");
+    }
+    return response.json();
+}
+
 export async function createUsers(users: Users): Promise<Users> {
  
     const response = await fetch(`${URL_API}`, {
@@ -51,6 +84,7 @@ export async function createUsers(users: Users): Promise<Users> {
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify(users)
     });
 
@@ -77,7 +111,9 @@ export async function getUsersFiltered(filterOptions: filterOptions): Promise<{ 
         }
     }
 
-    const response = await fetch(`${URL_API}/filter?${params.toString()}`);
+    const response = await fetch(`${URL_API}/filter?${params.toString()}`, {
+        credentials: "include"
+    });
     if (!response.ok) {
         throw new Error("Error fetching filtered users");
     }
