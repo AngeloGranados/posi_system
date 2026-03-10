@@ -49,7 +49,7 @@ export async function updateUsers(users: Users): Promise<Users> {
 }
 
 export async function updateProfile(params: Users): Promise<void> {
-    const response = await fetch(`${URL_API}/profile`, {
+    const response = await fetch(`${URL_API}/profile/admin`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
