@@ -87,6 +87,7 @@ export default function TableModal() {
         }
 
         try {
+            setLoading(true);
             if (selectedCategory) {
                 await updateCategory(category);
 
@@ -98,6 +99,8 @@ export default function TableModal() {
             closeModal();
         } catch (error) {
             console.error("Error creating category:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -127,6 +130,7 @@ export default function TableModal() {
     return (
         <>
             <ModalCategory 
+                loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 
                 setSelected={setSelectedCategory} 

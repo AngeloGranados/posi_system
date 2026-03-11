@@ -143,6 +143,7 @@ export default function TableModal() {
     return (
         <>
             <ModalUsers 
+                loading={loading}
                 isToChangePassword={isToChangePassword}
                 newContraseña={newContraseña}
                 confirmContraseña={confirmContraseña}

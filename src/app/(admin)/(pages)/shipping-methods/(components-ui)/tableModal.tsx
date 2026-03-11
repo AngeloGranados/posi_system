@@ -124,6 +124,7 @@ export default function TableModal() {
     return (
         <>
             <ModalShippingMethods 
+                loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 
                 setSelected={setSelectedShippingMethods} 

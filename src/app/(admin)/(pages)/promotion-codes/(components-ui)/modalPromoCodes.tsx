@@ -15,6 +15,7 @@ import DatePicker from "@/components/form/date-picker";
 
 interface ModalPromoCodesProps {
     isOpen: boolean;
+    loading: boolean;
     closeModal: () => void;
     selected: PromoCodes | null;
     setSelected: (PromoCodes: PromoCodes | null) => void;
@@ -28,7 +29,7 @@ interface ModalPromoCodesProps {
     }
 }
 
-export default function ModalPromoCodes({ isOpen, closeModal, selected, setSelected, handleCreatePromoCodes, alertProps } : ModalPromoCodesProps) {
+export default function ModalPromoCodes({ loading, isOpen, closeModal, selected, setSelected, handleCreatePromoCodes, alertProps } : ModalPromoCodesProps) {
 
     const emptyPromoCodes: PromoCodes = {
         code: "",
@@ -225,9 +226,10 @@ export default function ModalPromoCodes({ isOpen, closeModal, selected, setSelec
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                  disabled={loading}
+                  className={`btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto ${loading ? "opacity-50 cursor-not-allowed bg-brand-600" : ""}`}
                 >
-                  {selected ? "Actualizar" : "Agregar"}
+                  {loading ? "..cargando" : selected ? "Actualizar" : "Agregar"}
                 </button>
               </div>
             </form>

@@ -79,6 +79,7 @@ export default function TableModal() {
         }
 
         try {
+            setLoading(true);
             if (selectedBrands) {
                 await updateBrands(brands);
             } else {
@@ -89,6 +90,8 @@ export default function TableModal() {
             closeModal();
         } catch (error) {
             console.error("Error creating brands:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -118,6 +121,7 @@ export default function TableModal() {
     return (
         <>
             <ModalBrands 
+                loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 
                 setSelected={setSelectedBrands} 

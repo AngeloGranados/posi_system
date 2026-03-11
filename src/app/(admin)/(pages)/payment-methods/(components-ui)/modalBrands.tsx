@@ -16,6 +16,7 @@ import DropzoneComponent from "@/components/form/form-elements/DropZone";
 
 interface ModalPaymentMethodsProps {
     isOpen: boolean;
+    loading: boolean;
     closeModal: () => void;
     selected: PaymentMethods | null;
     setSelected: (PaymentMethods: PaymentMethods | null) => void;
@@ -29,7 +30,7 @@ interface ModalPaymentMethodsProps {
     }
 }
 
-export default function ModalPaymentMethods({ isOpen, closeModal, selected, setSelected, handleCreatePaymentMethods, alertProps } : ModalPaymentMethodsProps) {
+export default function ModalPaymentMethods({ loading, isOpen, closeModal, selected, setSelected, handleCreatePaymentMethods, alertProps } : ModalPaymentMethodsProps) {
 
     const emptyPaymentMethods: PaymentMethods = {
         name: "",
@@ -177,11 +178,12 @@ export default function ModalPaymentMethods({ isOpen, closeModal, selected, setS
                 >
                   Cerrar
                 </button>
-                <button
+                    <button
                   type="submit"
-                  className="btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                  disabled={loading}
+                  className={`btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto ${loading ? "opacity-50 cursor-not-allowed bg-brand-600" : ""}`}
                 >
-                  {selected ? "Actualizar" : "Agregar"}
+                  {loading ? "..cargando" : selected ? "Actualizar" : "Agregar"}
                 </button>
               </div>
             </form>

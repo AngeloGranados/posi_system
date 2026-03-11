@@ -97,6 +97,7 @@ export default function TableModal() {
         }
 
         try {
+            setLoading(true);
             if (selectedProduct) {
                 await updateProduct(product, images, productAttributes);
             } else {
@@ -106,6 +107,8 @@ export default function TableModal() {
             closeModal();
         } catch (error) {
             console.error("Error creating product:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -135,6 +138,7 @@ export default function TableModal() {
     return (
         <>
             <ModalProduct 
+                loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 
                 setSelected={setSelectedProduct} 

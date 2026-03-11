@@ -126,6 +126,7 @@ export default function TableModal() {
     return (
         <>
             <ModalPromoCodes 
+                loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 
                 setSelected={setSelectedPromoCodes} 

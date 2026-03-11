@@ -107,6 +107,7 @@ export default function TableModal() {
         }
 
         try {
+            setLoading(true);
             if (selectedDiscounts) {
                 await updateDiscounts(discounts);
             } else {
@@ -117,6 +118,8 @@ export default function TableModal() {
             closeModal();
         } catch (error) {
             console.error("Error creating discounts:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -146,6 +149,7 @@ export default function TableModal() {
     return (
         <>
             <ModalDiscounts 
+                loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 
                 setSelected={setSelectedDiscounts} 

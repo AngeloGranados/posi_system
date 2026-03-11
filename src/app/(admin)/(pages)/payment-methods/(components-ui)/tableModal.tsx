@@ -83,6 +83,7 @@ export default function TableModal() {
         }
 
         try {
+            setLoading(true);
             if (selectedPaymentMethods) {
                 await updatePaymentMethods(paymentMethod);
             } else {
@@ -93,6 +94,8 @@ export default function TableModal() {
             closeModal();
         } catch (error) {
             console.error("Error creating paymentMethod:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -122,6 +125,7 @@ export default function TableModal() {
     return (
         <>
             <ModalPaymentMethods 
+                loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 
                 setSelected={setSelectedPaymentMethods} 

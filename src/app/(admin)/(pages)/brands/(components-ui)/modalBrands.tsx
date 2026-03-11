@@ -11,6 +11,7 @@ import { Brands } from "@/types/brands";
 
 interface ModalBrandsProps {
     isOpen: boolean;
+    loading: boolean;
     closeModal: () => void;
     selected: Brands | null;
     setSelected: (Brands: Brands | null) => void;
@@ -24,7 +25,7 @@ interface ModalBrandsProps {
     }
 }
 
-export default function ModalBrands({ isOpen, closeModal, selected, setSelected, handleCreateBrands, alertProps } : ModalBrandsProps) {
+export default function ModalBrands({ loading, isOpen, closeModal, selected, setSelected, handleCreateBrands, alertProps } : ModalBrandsProps) {
 
     const emptyBrands: Brands = {
         name: "",
@@ -117,9 +118,10 @@ export default function ModalBrands({ isOpen, closeModal, selected, setSelected,
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                  disabled={loading}
+                  className={`btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto ${loading ? "opacity-50 cursor-not-allowed bg-brand-600" : ""}`}
                 >
-                  {selected ? "Actualizar" : "Agregar"}
+                  {loading ? "..cargando" : selected ? "Actualizar" : "Agregar"}
                 </button>
               </div>
             </form>
