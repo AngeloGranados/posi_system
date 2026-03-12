@@ -15,10 +15,11 @@ export async function LoginAdmin(email: string, contrasena: string): Promise<{us
             contrasena
         })
     });
-    if (!response.ok) {
-        throw new Error("Error fetching login");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }
 
 export async function LogoutAdmin() {
@@ -26,18 +27,20 @@ export async function LogoutAdmin() {
         method: "POST",
         credentials: "include",
     });
-    if (!response.ok) {
-        throw new Error("Error fetching logout");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }
 
 export async function UserSession() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}usuarios/usersession/admin`, {
         credentials: 'include'
     });
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return await response.json();
+    return data;
 }

@@ -15,6 +15,8 @@ import Button from "@/components/ui/button/Button";
 interface ModalUsersProps {
     isOpen: boolean;
     loading: boolean;
+    errorInput: string | null;
+    setErrorInput: (field: string | null) => void; 
     closeModal: () => void;
     selected: Users | null;
     setSelected: (Users: Users | null) => void;
@@ -34,7 +36,7 @@ interface ModalUsersProps {
     }
 }
 
-export default function ModalUsers({ loading, isOpen, closeModal, selected, setSelected, handleCreateUsers, alertProps, isToChangePassword, newContraseña, confirmContraseña, setIsToChangePassword, setNewContraseña, setConfirmContraseña } : ModalUsersProps) {
+export default function ModalUsers({ setErrorInput, errorInput, loading, isOpen, closeModal, selected, setSelected, handleCreateUsers, alertProps, isToChangePassword, newContraseña, confirmContraseña, setIsToChangePassword, setNewContraseña, setConfirmContraseña } : ModalUsersProps) {
 
     const emptyUsers: Users = {
         email : "",
@@ -69,6 +71,7 @@ export default function ModalUsers({ loading, isOpen, closeModal, selected, setS
       setNewContraseña("");
       setConfirmContraseña("");
       alertProps.closeAlert();
+      setErrorInput(null);
     }
 
     // Handler universal, siempre actualiza el estado
@@ -107,6 +110,7 @@ export default function ModalUsers({ loading, isOpen, closeModal, selected, setS
                   <FormGroupInput>
                       <Label htmlFor="nombres">Nombre:</Label>
                       <InputField
+                        className={errorInput === "nombres" ? "border-red-500" : ""}
                         id="nombres"
                         name="nombres"
                         value={FormDataUsers ? FormDataUsers.nombres : ""}
@@ -116,6 +120,7 @@ export default function ModalUsers({ loading, isOpen, closeModal, selected, setS
                   <FormGroupInput>
                       <Label htmlFor="apellidos">Apellidos:</Label>
                       <InputField
+                        className={errorInput === "apellidos" ? "border-red-500" : ""}
                         id="apellidos"
                         name="apellidos"
                         value={FormDataUsers ? FormDataUsers.apellidos : ""}
@@ -127,6 +132,7 @@ export default function ModalUsers({ loading, isOpen, closeModal, selected, setS
                   <FormGroupInput>
                       <Label htmlFor="description">Email:</Label>
                       <InputField
+                        className={errorInput === "email" ? "border-red-500" : ""}
                         type="email"
                         name="email"
                         value={FormDataUsers ? FormDataUsers.email : ""}
@@ -138,6 +144,7 @@ export default function ModalUsers({ loading, isOpen, closeModal, selected, setS
                   <FormGroupInput>
                       <Label htmlFor="telefono">Teléfono:</Label>
                       <InputField
+                        className={errorInput === "telefono" ? "border-red-500" : ""}
                         name="telefono"
                         value={FormDataUsers ? FormDataUsers.telefono : 0}
                         onChange={handleDataChange}
@@ -148,6 +155,7 @@ export default function ModalUsers({ loading, isOpen, closeModal, selected, setS
                   <FormGroupInput>
                       <Label htmlFor="type">Tipo:</Label>
                       <Select
+                        className={errorInput === "type" ? "border-red-500" : ""}
                         name="type"
                         value={FormDataUsers ? FormDataUsers.type : ""}
                         onChange={handleDataChange}
@@ -162,6 +170,7 @@ export default function ModalUsers({ loading, isOpen, closeModal, selected, setS
                   <FormGroupInput>
                       <Label htmlFor="password_hash">Contraseña:</Label>
                       <InputField
+                        className={errorInput === "password_hash" ? "border-red-500" : ""}
                         type="password"
                         name="password_hash"
                         value={FormDataUsers ? FormDataUsers.password_hash : ""}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 interface AlertProps {
   variant: "success" | "error" | "warning" | "info"; // Alert type
@@ -18,6 +18,15 @@ const Alert: React.FC<AlertProps> = ({
   linkHref = "#",
   linkText = "Learn more",
 }) => {
+
+  const alertRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (alertRef.current) {
+      alertRef.current.focus();
+    }
+  }, [message]);
+
   // Tailwind classes for each variant
   const variantClasses = {
     success: {
@@ -114,6 +123,8 @@ const Alert: React.FC<AlertProps> = ({
 
   return (
     <div
+      ref={alertRef}
+      tabIndex={-1}
       className={`rounded-xl border p-4 ${variantClasses[variant].container}`}
     >
       <div className="flex items-start gap-3">

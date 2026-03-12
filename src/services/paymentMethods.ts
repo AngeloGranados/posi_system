@@ -12,18 +12,20 @@ interface filterOptions {
 
 export async function getPaymentMethods(): Promise<PaymentMethods[]> {
     const response = await fetch(`${URL_API}`);
-    if (!response.ok) {
-        throw new Error("Error fetching paymentMethods");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }
 
 export async function deletePaymentMethods(paymentMethodsId: number): Promise<void> {
     const response = await fetch(`${URL_API}/${paymentMethodsId}`, {
         method: "DELETE"
     });
-    if (!response.ok) {
-        throw new Error("Error deleting paymentMethods");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
 }
 
@@ -42,11 +44,11 @@ export async function updatePaymentMethods(paymentMethods: PaymentMethods): Prom
         body: formData
     });
 
-    if (!response.ok) {
-        throw new Error("Error updating paymentMethods");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function createPaymentMethods(paymentMethods: PaymentMethods): Promise<PaymentMethods> {
@@ -63,11 +65,11 @@ export async function createPaymentMethods(paymentMethods: PaymentMethods): Prom
         body: formData
     });
 
-    if (!response.ok) {
-        throw new Error("Error creating paymentMethods");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function getPaymentMethodsFiltered(filterOptions: filterOptions): Promise<{ data: PaymentMethods[]; totalRows: number}>{
@@ -87,8 +89,9 @@ export async function getPaymentMethodsFiltered(filterOptions: filterOptions): P
     }
 
     const response = await fetch(`${URL_API}/filter?${params.toString()}`);
-    if (!response.ok) {
-        throw new Error("Error fetching filtered paymentMethods");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }

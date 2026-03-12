@@ -60,7 +60,7 @@ export async function getProductsFilter(Filterparams: FilterParams): Promise<Fil
     const response = await fetch(`${URL_API}/filter?${params.toString()}`);
     const data = await response.json();
     if (!response.ok || data.error) {
-        throw new Error("Error fetching products");
+        throw new Error(data.error || "Error creating product");
     }
     return data;
 }
@@ -91,7 +91,7 @@ export async function createProduct(product: Product, images: File[] | string[],
     });
     const data = await response.json();
     if (!response.ok || data.error) {
-        throw new Error("Error creating product");
+        throw new Error(data.error || "Error creating product");
     }
     return data;
 }
@@ -129,7 +129,7 @@ export async function updateProduct(product: Product, images: File[] | string[],
     });
     const data = await response.json();
     if (!response.ok || data.error) {
-        throw new Error("Error updating product");
+        throw new Error(data.error);
     }
     return data;
 }
@@ -140,7 +140,7 @@ export async function deleteProduct(id: number): Promise<void> {
     })
     const data = await response.json()
     if (!response.ok || data.error) {
-        throw new Error("Error deleting product");
+        throw new Error(data.error);
     }
     return data;
 }
@@ -149,7 +149,7 @@ export async function getImagesByProductId(productId: number): Promise<ImagesPro
     const response = await fetch(`${URL_API}/images/${productId}`);
     const data = await response.json();
     if (!response.ok || data.error) {
-        throw new Error("Error fetching product images");
+        throw new Error(data.error);
     }
     return data || [];
 }
@@ -158,7 +158,7 @@ export async function getAttributesByProductId(productId: number): Promise<Produ
     const response = await fetch(`${URL_API}/attributes/${productId}`);
     const data = await response.json();
     if (!response.ok || data.error) {
-        throw new Error("Error fetching product attributes");
+        throw new Error(data.error);
     }
     return data || [];
 }
@@ -167,7 +167,7 @@ export async function getCategoryAttributesByCategoryId(categoryId: number): Pro
     const response = await fetch(`${URL_API}/categoryAttributesByCategoryId/${categoryId}`);
     const data = await response.json();
     if (!response.ok || data.error) {
-        throw new Error("Error fetching category attributes");
+        throw new Error(data.error);
     }
     return data || [];
 }

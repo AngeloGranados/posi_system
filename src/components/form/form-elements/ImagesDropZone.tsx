@@ -4,7 +4,7 @@ import ComponentCard from "../../common/ComponentCard";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import AddIcon from "../../../../public/images/icons/add-icon";
-import { url } from "inspector";
+import CancelIcon from "../../../../public/images/icons/cancel-icon";
 
 const ImagesDropzone: React.FC<{imageExtrasFiles: File[] | string[]; setImageExtrasFiles: React.Dispatch<React.SetStateAction<File[] | string[]>>}> = ({imageExtrasFiles, setImageExtrasFiles}) => {
 
@@ -44,6 +44,13 @@ const ImagesDropzone: React.FC<{imageExtrasFiles: File[] | string[]; setImageExt
     },
   });
 
+  function handleDeteleteImageAdditional(e: React.MouseEvent<HTMLButtonElement>, index: number) {
+    e.stopPropagation();
+    const newFiles = [...imageExtrasFiles];
+    newFiles.splice(index, 1);
+    setImageExtrasFiles(newFiles as File[]);
+  }
+
   return (
     <ComponentCard title="Insertar Imagenes Adicionales">
       <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
@@ -65,7 +72,10 @@ const ImagesDropzone: React.FC<{imageExtrasFiles: File[] | string[]; setImageExt
             {imageExtrasFiles.map((image, index) => {
               if (image && image instanceof File && image.size > 0 && previewImages[index]) {
                 return (
-                  <div key={index} className="w-[85px] h-[100px] bg-gray-100 dark:bg-gray-800 dz-message flex flex-col justify-center items-center m-0!">
+                  <div key={index} className="relative w-[85px] h-[100px] bg-gray-100 dark:bg-gray-800 dz-message flex flex-col justify-center items-center m-0!">
+                    <button type="button" className="w-5 h-5 absolute top-2 right-1 cursor-pointer" onClick={(e) => handleDeteleteImageAdditional(e, index)}>
+                      <CancelIcon fill="red" width={20} height={20}/>
+                    </button>
                     <Image
                       unoptimized={process.env.NODE_ENV ? true : false}
                       className="w-full h-auto rounded-lg object-cover"
@@ -75,7 +85,7 @@ const ImagesDropzone: React.FC<{imageExtrasFiles: File[] | string[]; setImageExt
                       height={100}
                     />
                   </div>
-                );
+                ); 
               }
               if (typeof image === "string" && image.length > 0) {
                 return (

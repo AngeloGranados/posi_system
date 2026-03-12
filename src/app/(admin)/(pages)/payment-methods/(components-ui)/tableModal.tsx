@@ -32,6 +32,7 @@ export default function TableModal() {
 
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
+    const [ errorInput, setErrorInput ] = useState<string | null>(null)
 
     const tableThPaymentMethods: tableThPaymentMethods[] = [
         { name: "id", value: "ID" },
@@ -67,18 +68,21 @@ export default function TableModal() {
         event.preventDefault();
 
         let error = null;
+        let fieldError = null;
 
         const requiredFields: (keyof PaymentMethods)[] = ["name" ];
 
         for (const field of requiredFields) {
             if (!paymentMethod[field] || (paymentMethod[field] as string).toString().trim() === "") {
                 error = `El campo ${field} es obligatorio.`;
+                fieldError = field;
                 break;
             }
         }
 
         if (error) {    
             triggerAlert("Error", error, "error")
+            setErrorInput(fieldError);
             return;
         }
 
@@ -125,6 +129,8 @@ export default function TableModal() {
     return (
         <>
             <ModalPaymentMethods 
+                errorInput={errorInput}
+                setErrorInput={setErrorInput}
                 loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 

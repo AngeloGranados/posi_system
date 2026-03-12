@@ -27,6 +27,8 @@ import { Brands } from "@/types/brands";
 interface ModalProductProps {
     isOpen: boolean;
     loading?: boolean;
+    errorInput: string | null;
+    setErrorInput: (field: string | null) => void;
     closeModal: () => void;
     selected: Product | null;
     setSelected: (product: Product | null) => void;
@@ -40,7 +42,7 @@ interface ModalProductProps {
     }
 }
 
-export default function ModalProduct({ loading, isOpen, closeModal, selected, setSelected, handleCreateProduct, alertProps } : ModalProductProps) {
+export default function ModalProduct({ setErrorInput, loading, isOpen, closeModal, selected, setSelected, handleCreateProduct, alertProps, errorInput } : ModalProductProps) {
 
     const emptyProduct: Product = {
         name: "",
@@ -128,10 +130,14 @@ export default function ModalProduct({ loading, isOpen, closeModal, selected, se
     async function handleImagesByProductId(productId: number) {
       try {
         const images = await getImagesByProductId(productId);
-        const imageFiles = images.map((img: ImagesProduct) => {
+        const imageFiles = images.map((img: ImagesProduct, index) => {
           return img.image_url;
         });
-        setImageExtrasFiles(imageFiles);
+
+        const imagesUnWhithImageMain = images
+          .filter((img: ImagesProduct) => img.sort_order !== 0)
+          .map((img: ImagesProduct) => img.image_url);
+        setImageExtrasFiles(imagesUnWhithImageMain);
       }catch (error) {
         console.error("Error fetching images for product ID:", productId, error);
       }
@@ -161,6 +167,7 @@ export default function ModalProduct({ loading, isOpen, closeModal, selected, se
       setProductAttributes([]);
       setSelected(null);
       alertProps.closeAlert();
+      setErrorInput(null);
     }
 
     // Handler universal, siempre actualiza el estado
@@ -254,6 +261,7 @@ export default function ModalProduct({ loading, isOpen, closeModal, selected, se
                     <FormGroupInput>
                         <Label htmlFor="name">Nombre del Producto:</Label>
                         <InputField
+                          className={`${errorInput === "name" ? "border-red-500" : ""}`}
                           id="input-name"
                           name="name"
                           value={FormDataProduct ? FormDataProduct.name : ""}
@@ -265,6 +273,7 @@ export default function ModalProduct({ loading, isOpen, closeModal, selected, se
                     <FormGroupInput>
                       <Label htmlFor="slug">Slug:</Label>
                       <InputField
+                        className={`${errorInput === "slug" ? "border-red-500" : ""}`}
                         id="input-slug"
                         name="slug"
                         value={FormDataProduct ? FormDataProduct.slug : ""}
@@ -276,6 +285,7 @@ export default function ModalProduct({ loading, isOpen, closeModal, selected, se
                     <FormGroupInput>
                       <Label htmlFor="category">Categoria:</Label>
                       <Select
+                        className={`${errorInput === "category_id" ? "border-red-500" : ""}`}
                         name="category_id"
                         value={FormDataProduct ? FormDataProduct.category_id?.toString() : ""}
                         onChange={handleDataChange}
@@ -285,6 +295,7 @@ export default function ModalProduct({ loading, isOpen, closeModal, selected, se
                     <FormGroupInput>
                       <Label htmlFor="idbrand">Marca:</Label>
                       <Select
+                        className={`${errorInput === "idbrand" ? "border-red-500" : ""}`}
                         name="idbrand"
                         value={FormDataProduct ? FormDataProduct.idbrand?.toString() : ""}
                         onChange={handleDataChange}
@@ -296,7 +307,7 @@ export default function ModalProduct({ loading, isOpen, closeModal, selected, se
                     <FormGroupInput>
                       <Label htmlFor="description_short">Descripción corta:</Label>
                       <TextArea 
-                          className="text-color-black"
+                          className={`${errorInput === "description_short" ? "border-red-500" : ""}`}
                           name="description_short"
                           value={FormDataProduct ? FormDataProduct.description_short : ""}
                           onChange={handleDataChange}
@@ -307,7 +318,7 @@ export default function ModalProduct({ loading, isOpen, closeModal, selected, se
                     <FormGroupInput>
                       <Label htmlFor="description_long">Descripción larga:</Label>
                       <TextArea 
-                          className="text-color-black"
+                          className={`${errorInput === "description_long" ? "border-red-500" : ""}`}
                           name="description_long"
                           value={FormDataProduct ? FormDataProduct.description_long : ""}
                           onChange={handleDataChange}
@@ -318,6 +329,7 @@ export default function ModalProduct({ loading, isOpen, closeModal, selected, se
                       <FormGroupInput>
                         <Label htmlFor="price">Precio:</Label>
                         <InputField
+                          className={`${errorInput === "price" ? "border-red-500" : ""}`}
                           id="input-price"
                           name="price"
                           value={FormDataProduct ? FormDataProduct.price : ""}
@@ -327,6 +339,7 @@ export default function ModalProduct({ loading, isOpen, closeModal, selected, se
                       <FormGroupInput>
                         <Label htmlFor="stock">Stock:</Label>
                         <InputField
+                          className={`${errorInput === "stock" ? "border-red-500" : ""}`}
                           id="input-stock"
                           name="stock"
                           value={FormDataProduct ? FormDataProduct.stock : ""}
@@ -337,6 +350,7 @@ export default function ModalProduct({ loading, isOpen, closeModal, selected, se
                         <FormGroupInput>
                           <Label htmlFor="discount">Descuento:</Label>
                           <InputField
+                            className={`${errorInput === "discount" ? "border-red-500" : ""}`}
                             id="input-discount"
                             name="discount"
                             type="number"

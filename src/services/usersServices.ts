@@ -14,10 +14,11 @@ export async function getUsers(): Promise<Users[]> {
     const response = await fetch(`${URL_API}`, {
         credentials: "include"
     });
-    if (!response.ok) {
-        throw new Error("Error fetching users");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }
 
 export async function deleteUsers(usersId: number): Promise<void> {
@@ -25,8 +26,9 @@ export async function deleteUsers(usersId: number): Promise<void> {
         method: "DELETE",
         credentials: "include",
     });
-    if (!response.ok) {
-        throw new Error("Error deleting users");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
 }
 
@@ -41,11 +43,11 @@ export async function updateUsers(users: Users): Promise<Users> {
         body: JSON.stringify(users)
     });
 
-    if (!response.ok) {
-        throw new Error("Error updating users");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function updateProfile(params: Users): Promise<void> {
@@ -57,9 +59,11 @@ export async function updateProfile(params: Users): Promise<void> {
         credentials: "include",
         body: JSON.stringify(params)
     });
-    if (!response.ok) {
-        throw new Error("Error editing profile");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
+    return data;
 }
 
 export async function changePassword(params: { idUser: number; newPassword: string }): Promise<void> {
@@ -71,10 +75,11 @@ export async function changePassword(params: { idUser: number; newPassword: stri
         credentials: "include",
         body: JSON.stringify(params)
     });
-    if (!response.ok) {
-        throw new Error("Error changing password");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }
 
 export async function createUsers(users: Users): Promise<Users> {
@@ -88,11 +93,11 @@ export async function createUsers(users: Users): Promise<Users> {
         body: JSON.stringify(users)
     });
 
-    if (!response.ok) {
-        throw new Error("Error creating users");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function getUsersFiltered(filterOptions: filterOptions): Promise<{ data: Users[]; totalRows: number}>{
@@ -114,8 +119,9 @@ export async function getUsersFiltered(filterOptions: filterOptions): Promise<{ 
     const response = await fetch(`${URL_API}/filter?${params.toString()}`, {
         credentials: "include"
     });
-    if (!response.ok) {
-        throw new Error("Error fetching filtered users");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }

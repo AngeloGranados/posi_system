@@ -33,6 +33,7 @@ export default function TableModal() {
 
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
+    const [ errorInput, setErrorInput ] = useState<string | null>(null)
 
     const tableThCategories: tableThCategories[] = [
         { name: "id", value: "ID" },
@@ -64,18 +65,21 @@ export default function TableModal() {
         event.preventDefault();
 
         let error = null;
+        let fieldError = null;
 
         const requiredFields: (keyof Categories)[] = ["name", "slug", "description", "image_url"];
 
         for (const field of requiredFields) {
             if (!category[field] || (category[field] as string).toString().trim() === "") {
                 error = `El campo ${field} es obligatorio.`;
+                fieldError = field;
                 break;
             }
 
             if (field === "image_url" && selectedCategory === null) {
                 if (!(category[field] instanceof File) || category[field].size === 0) {
                     error = `El campo ${field} es obligatorio.`;
+                    fieldError = field;
                     break;
                 }
             }
@@ -83,6 +87,7 @@ export default function TableModal() {
 
         if (error) {    
             triggerAlert("Error", error, "error")
+            setErrorInput(fieldError);
             return;
         }
 
@@ -130,6 +135,8 @@ export default function TableModal() {
     return (
         <>
             <ModalCategory 
+                errorInput={errorInput}
+                setErrorInput={setErrorInput}
                 loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 

@@ -22,9 +22,11 @@ export async function deleteShippingMethods(shippingMethodsId: number): Promise<
     const response = await fetch(`${URL_API}/${shippingMethodsId}`, {
         method: "DELETE"
     });
-    if (!response.ok) {
-        throw new Error("Error deleting shippingMethods");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
+    return data;
 }
 
 export async function updateShippingMethods(shippingMethods: ShippingMethods): Promise<ShippingMethods> {
@@ -37,11 +39,11 @@ export async function updateShippingMethods(shippingMethods: ShippingMethods): P
         body: JSON.stringify(shippingMethods)
     });
 
-    if (!response.ok) {
-        throw new Error("Error updating shippingMethods");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function createShippingMethods(shippingMethods: ShippingMethods): Promise<ShippingMethods> {
@@ -54,11 +56,11 @@ export async function createShippingMethods(shippingMethods: ShippingMethods): P
         body: JSON.stringify(shippingMethods)
     });
 
-    if (!response.ok) {
-        throw new Error("Error creating shippingMethods");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function getShippingMethodsFiltered(filterOptions: filterOptions): Promise<{ data: ShippingMethods[]; totalRows: number}>{
@@ -78,8 +80,9 @@ export async function getShippingMethodsFiltered(filterOptions: filterOptions): 
     }
 
     const response = await fetch(`${URL_API}/filter?${params.toString()}`);
-    if (!response.ok) {
-        throw new Error("Error fetching filtered shippingMethods");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }

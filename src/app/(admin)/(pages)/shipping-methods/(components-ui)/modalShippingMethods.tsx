@@ -14,6 +14,8 @@ import { ShippingMethods } from "@/types/shippingMethods";
 interface ModalShippingMethodsProps {
     isOpen: boolean;
     loading: boolean;
+    errorInput: string | null;
+    setErrorInput: (field: string | null) => void;
     closeModal: () => void;
     selected: ShippingMethods | null;
     setSelected: (ShippingMethods: ShippingMethods | null) => void;
@@ -27,7 +29,7 @@ interface ModalShippingMethodsProps {
     }
 }
 
-export default function ModalShippingMethods({ loading, isOpen, closeModal, selected, setSelected, handleCreateShippingMethods, alertProps } : ModalShippingMethodsProps) {
+export default function ModalShippingMethods({ errorInput, setErrorInput, loading, isOpen, closeModal, selected, setSelected, handleCreateShippingMethods, alertProps } : ModalShippingMethodsProps) {
 
     const emptyShippingMethods: ShippingMethods = {
         name: "",
@@ -59,6 +61,7 @@ export default function ModalShippingMethods({ loading, isOpen, closeModal, sele
       setFormDataShippingMethods(emptyShippingMethods);
       setSelected(null);
       alertProps.closeAlert();
+      setErrorInput(null);
     }
 
     // Handler universal, siempre actualiza el estado
@@ -112,6 +115,7 @@ export default function ModalShippingMethods({ loading, isOpen, closeModal, sele
                   <FormGroupInput>
                       <Label htmlFor="name">Nombre:</Label>
                       <InputField
+                        className={errorInput === "name" ? "border-red-500" : ""}
                         id="input-name"
                         name="name"
                         value={FormDataShippingMethods ? FormDataShippingMethods.name : ""}
@@ -121,6 +125,7 @@ export default function ModalShippingMethods({ loading, isOpen, closeModal, sele
                   <FormGroupInput>
                       <Label htmlFor="code">Code:</Label>
                       <InputField
+                        className={errorInput === "code" ? "border-red-500" : ""}
                         id="input-code"
                         name="code"
                         value={FormDataShippingMethods ? FormDataShippingMethods.code : ""}
@@ -131,7 +136,8 @@ export default function ModalShippingMethods({ loading, isOpen, closeModal, sele
                 <FormRow>
                   <FormGroupInput>
                       <Label htmlFor="description">Descripcion:</Label>
-                      <TextArea 
+                      <TextArea
+                        className={errorInput === "description" ? "border-red-500" : ""}
                         name="description"
                         value={FormDataShippingMethods ? FormDataShippingMethods.description : ""}
                         onChange={handleDataChange}
@@ -142,6 +148,7 @@ export default function ModalShippingMethods({ loading, isOpen, closeModal, sele
                   <FormGroupInput>
                       <Label htmlFor="description">Tiempo estimado (min):</Label>
                       <InputField 
+                        className={errorInput === "estimated_days_min" ? "border-red-500" : ""}
                         type="number"
                         name="estimated_days_min"
                         value={FormDataShippingMethods ? FormDataShippingMethods.estimated_days_min : 0}
@@ -150,7 +157,8 @@ export default function ModalShippingMethods({ loading, isOpen, closeModal, sele
                   </FormGroupInput>
                   <FormGroupInput>
                       <Label htmlFor="description">Tiempo estimado (max):</Label>
-                      <InputField 
+                      <InputField
+                        className={errorInput === "estimated_days_max" ? "border-red-500" : ""} 
                         type="number"
                         name="estimated_days_max"
                         value={FormDataShippingMethods ? FormDataShippingMethods.estimated_days_max : 0}
@@ -162,6 +170,7 @@ export default function ModalShippingMethods({ loading, isOpen, closeModal, sele
                   <FormGroupInput>
                       <Label htmlFor="description">Precio:</Label>
                       <InputField 
+                        className={errorInput === "price" ? "border-red-500" : ""}
                         type="number"
                         name="price"
                         value={FormDataShippingMethods ? FormDataShippingMethods.price : 0}

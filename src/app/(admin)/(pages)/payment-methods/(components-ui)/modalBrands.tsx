@@ -17,6 +17,8 @@ import DropzoneComponent from "@/components/form/form-elements/DropZone";
 interface ModalPaymentMethodsProps {
     isOpen: boolean;
     loading: boolean;
+    errorInput: string | null;
+    setErrorInput: (field: string | null) => void;
     closeModal: () => void;
     selected: PaymentMethods | null;
     setSelected: (PaymentMethods: PaymentMethods | null) => void;
@@ -30,7 +32,7 @@ interface ModalPaymentMethodsProps {
     }
 }
 
-export default function ModalPaymentMethods({ loading, isOpen, closeModal, selected, setSelected, handleCreatePaymentMethods, alertProps } : ModalPaymentMethodsProps) {
+export default function ModalPaymentMethods({ errorInput, setErrorInput,loading, isOpen, closeModal, selected, setSelected, handleCreatePaymentMethods, alertProps } : ModalPaymentMethodsProps) {
 
     const emptyPaymentMethods: PaymentMethods = {
         name: "",
@@ -62,6 +64,7 @@ export default function ModalPaymentMethods({ loading, isOpen, closeModal, selec
       setFormDataPaymentMethods(emptyPaymentMethods);
       setSelected(null);
       alertProps.closeAlert();
+      setErrorInput(null);
     }
 
     const handleImageChange = (files: File[]) => {
@@ -112,6 +115,7 @@ export default function ModalPaymentMethods({ loading, isOpen, closeModal, selec
                   <FormGroupInput>
                       <Label htmlFor="name">Nombre:</Label>
                       <InputField
+                        className={errorInput === "name" ? "border-red-500" : ""}
                         id="input-name"
                         name="name"
                         value={FormDataPaymentMethods ? FormDataPaymentMethods.name : ""}
@@ -121,6 +125,7 @@ export default function ModalPaymentMethods({ loading, isOpen, closeModal, selec
                   <FormGroupInput>
                       <Label htmlFor="code">Code:</Label>
                       <InputField
+                        className={errorInput === "code" ? "border-red-500" : ""}
                         id="input-code"
                         name="code"
                         value={FormDataPaymentMethods ? FormDataPaymentMethods.code : ""}
@@ -132,6 +137,7 @@ export default function ModalPaymentMethods({ loading, isOpen, closeModal, selec
                   <FormGroupInput>
                       <Label htmlFor="account_name">Nombre de cuenta:</Label>
                       <InputField
+                        className={errorInput === "account_name" ? "border-red-500" : ""}
                         id="input-account_name"
                         name="account_name"
                         value={FormDataPaymentMethods ? FormDataPaymentMethods.account_name : ""}
@@ -141,6 +147,7 @@ export default function ModalPaymentMethods({ loading, isOpen, closeModal, selec
                   <FormGroupInput>
                       <Label htmlFor="account_number">Nro de cuenta:</Label>
                       <InputField
+                        className={errorInput === "account_number" ? "border-red-500" : ""}
                         id="input-account_number"
                         name="account_number"
                         value={FormDataPaymentMethods ? FormDataPaymentMethods.account_number : ""}
@@ -151,7 +158,8 @@ export default function ModalPaymentMethods({ loading, isOpen, closeModal, selec
                 <FormRow>
                   <FormGroupInput>
                       <Label htmlFor="description">Descripcion:</Label>
-                      <TextArea 
+                      <TextArea
+                        className={errorInput === "description" ? "border-red-500" : ""}
                         name="description"
                         value={FormDataPaymentMethods ? FormDataPaymentMethods.description : ""}
                         onChange={handleDataChange}

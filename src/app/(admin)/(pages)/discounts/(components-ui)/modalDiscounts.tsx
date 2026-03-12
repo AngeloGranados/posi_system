@@ -22,6 +22,8 @@ import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 interface ModalDiscountsProps {
     isOpen: boolean;
     loading: boolean;
+    errorInput: string | null;
+    setErrorInput: (field: string | null) => void;
     closeModal: () => void;
     selected: Discounts | null;
     setSelected: (Discounts: Discounts | null) => void;
@@ -35,7 +37,7 @@ interface ModalDiscountsProps {
     }
 }
 
-export default function ModalDiscounts({ loading, isOpen, closeModal, selected, setSelected, handleCreateDiscounts, alertProps } : ModalDiscountsProps) {
+export default function ModalDiscounts({ errorInput, setErrorInput, loading, isOpen, closeModal, selected, setSelected, handleCreateDiscounts, alertProps } : ModalDiscountsProps) {
 
     const [products, setProducts] = useState<Product[]>([]);
     const [productsFilter, setProductsFilter] = useState("");
@@ -78,6 +80,7 @@ export default function ModalDiscounts({ loading, isOpen, closeModal, selected, 
       setProductsFilter("");
       setSelectedProduct(null);
       alertProps.closeAlert();
+      setErrorInput(null);
     }
 
     const debounceFetch = useCallback(debounce((value) => {
@@ -192,6 +195,7 @@ export default function ModalDiscounts({ loading, isOpen, closeModal, selected, 
                           <Label htmlFor="product">Producto:</Label>
                           <div className="relative">
                             <InputField
+                              className={errorInput === "product_id" ? "border-red-500" : ""}
                               id="input-product"
                               name="product"
                               value={productsFilter}
@@ -208,6 +212,7 @@ export default function ModalDiscounts({ loading, isOpen, closeModal, selected, 
                   <FormGroupInput>
                       <Label htmlFor="discount_type">Tipo de Descuento:</Label>
                       <Select
+                        className={errorInput === "discount_type" ? "border-red-500" : ""}
                         name="discount_type"
                         options={selectOptionsTypeDiscount}
                         value={FormDataDiscounts && FormDataDiscounts.discount_type ? FormDataDiscounts.discount_type : ""}
@@ -217,6 +222,7 @@ export default function ModalDiscounts({ loading, isOpen, closeModal, selected, 
                   <FormGroupInput>
                       <Label htmlFor="description">Descuento:</Label>
                       <InputField 
+                        className={errorInput === "discount_value" ? "border-red-500" : ""}
                         type="number"
                         name="discount_value"
                         value={FormDataDiscounts && FormDataDiscounts.discount_value ? FormDataDiscounts.discount_value : 0}

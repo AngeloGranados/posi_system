@@ -19,6 +19,8 @@ import DropzoneComponent from "@/components/form/form-elements/DropZone";
 interface ModalCategoryProps {
     isOpen: boolean;
     loading: boolean;
+    errorInput: string | null;
+    setErrorInput: (field: string | null) => void;
     closeModal: () => void;
     selected: Categories | null;
     setSelected: (Category: Categories | null) => void;
@@ -32,7 +34,7 @@ interface ModalCategoryProps {
     }
 }
 
-export default function ModalCategory({ loading, isOpen, closeModal, selected, setSelected, handleCreateCategory, alertProps } : ModalCategoryProps) {
+export default function ModalCategory({ setErrorInput, errorInput, loading, isOpen, closeModal, selected, setSelected, handleCreateCategory, alertProps } : ModalCategoryProps) {
 
     const emptyCategory: Categories = {
         name: "",
@@ -62,14 +64,15 @@ export default function ModalCategory({ loading, isOpen, closeModal, selected, s
       setFormDataCategory(emptyCategory);
       setSelected(null);
       alertProps.closeAlert();
+      setErrorInput(null);
     }
 
     // Handler universal, siempre actualiza el estado
     const handleDataChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         e.preventDefault();
-        setFormDataCategory((prevData) => {   
-            if( name === "category_id" || name === "idbrand"){
+        setFormDataCategory((prevData) => {
+            if (name === "category_id" || name === "idbrand") {
                 const numericValue = parseInt(value);
                 return {
                     ...prevData,
@@ -124,6 +127,7 @@ export default function ModalCategory({ loading, isOpen, closeModal, selected, s
                   <FormGroupInput>
                       <Label htmlFor="name">Nombre:</Label>
                       <InputField
+                        className={errorInput === "name" ? "border-red-500" : ""}
                         id="input-name"
                         name="name"
                         value={FormDataCategory ? FormDataCategory.name : ""}
@@ -133,6 +137,7 @@ export default function ModalCategory({ loading, isOpen, closeModal, selected, s
                   <FormGroupInput>
                     <Label htmlFor="slug">Slug:</Label>
                     <InputField
+                      className={errorInput === "slug" ? "border-red-500" : ""}
                       id="input-slug"
                       name="slug"
                       value={FormDataCategory ? FormDataCategory.slug : ""}
@@ -144,7 +149,7 @@ export default function ModalCategory({ loading, isOpen, closeModal, selected, s
                   <FormGroupInput>
                     <Label htmlFor="description">Descripción:</Label>
                     <TextArea 
-                        className="text-color-black"
+                        className={errorInput === "description" ? "border-red-500" : ""}
                         name="description"
                         value={FormDataCategory ? FormDataCategory.description : ""}
                         onChange={handleDataChange}

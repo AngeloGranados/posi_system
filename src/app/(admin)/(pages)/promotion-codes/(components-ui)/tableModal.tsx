@@ -32,6 +32,7 @@ export default function TableModal() {
 
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
+    const [ errorInput, setErrorInput ] = useState<string | null>(null)
 
     const tableThPromoCodes: tableThPromoCodes[] = [
         { name: "id", value: "ID" },
@@ -71,18 +72,21 @@ export default function TableModal() {
         event.preventDefault();
 
         let error = null;
+        let fieldError = null;
 
         const requiredFields: (keyof PromoCodes)[] = ["code", "description", "discount_type", "min_purchase", "max_discount", "usage_limit", "valid_from", "valid_until"];
 
         for (const field of requiredFields) {
             if (!promoCodes[field] || (promoCodes[field] as string).toString().trim() === "") {
                 error = `El campo ${field} es obligatorio.`;
+                fieldError = field;
                 break;
             }
         }
 
         if (error) {    
             triggerAlert("Error", error, "error")
+            setErrorInput(fieldError);
             return;
         }
 
@@ -126,6 +130,8 @@ export default function TableModal() {
     return (
         <>
             <ModalPromoCodes 
+                errorInput={errorInput}
+                setErrorInput={setErrorInput}
                 loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 

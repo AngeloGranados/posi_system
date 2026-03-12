@@ -12,18 +12,20 @@ interface filterOptions {
 
 export async function getCategories(): Promise<Categories[]> {
     const response = await fetch(`${URL_API}`);
-    if (!response.ok) {
-        throw new Error("Error fetching categories");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }
 
 export async function deleteCategory(categoryId: number): Promise<void> {
     const response = await fetch(`${URL_API}/${categoryId}`, {
         method: "DELETE"
     });
-    if (!response.ok) {
-        throw new Error("Error deleting category");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
 }
 
@@ -41,11 +43,11 @@ export async function updateCategory(category: Categories): Promise<Categories> 
         body: formData
     });
 
-    if (!response.ok) {
-        throw new Error("Error updating category");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function createCategory(category: Categories): Promise<Categories> {
@@ -60,11 +62,11 @@ export async function createCategory(category: Categories): Promise<Categories> 
         body: formData
     });
 
-    if (!response.ok) {
-        throw new Error("Error creating category");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function getCategoriesFiltered(filterOptions: filterOptions): Promise<{ data: Categories[]; totalRows: number}>{
@@ -84,8 +86,9 @@ export async function getCategoriesFiltered(filterOptions: filterOptions): Promi
     }
 
     const response = await fetch(`${URL_API}/filter?${params.toString()}`);
-    if (!response.ok) {
-        throw new Error("Error fetching filtered categories");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }

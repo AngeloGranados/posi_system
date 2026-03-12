@@ -12,6 +12,8 @@ import { Brands } from "@/types/brands";
 interface ModalBrandsProps {
     isOpen: boolean;
     loading: boolean;
+    setErrorInput: (field: string | null) => void; 
+    errorInput: string | null;
     closeModal: () => void;
     selected: Brands | null;
     setSelected: (Brands: Brands | null) => void;
@@ -25,7 +27,7 @@ interface ModalBrandsProps {
     }
 }
 
-export default function ModalBrands({ loading, isOpen, closeModal, selected, setSelected, handleCreateBrands, alertProps } : ModalBrandsProps) {
+export default function ModalBrands({ setErrorInput, errorInput, loading, isOpen, closeModal, selected, setSelected, handleCreateBrands, alertProps } : ModalBrandsProps) {
 
     const emptyBrands: Brands = {
         name: "",
@@ -53,6 +55,7 @@ export default function ModalBrands({ loading, isOpen, closeModal, selected, set
       setFormDataBrands(emptyBrands);
       setSelected(null);
       alertProps.closeAlert();
+      setErrorInput(null);
     }
 
     // Handler universal, siempre actualiza el estado
@@ -91,6 +94,7 @@ export default function ModalBrands({ loading, isOpen, closeModal, selected, set
                   <FormGroupInput>
                       <Label htmlFor="name">Nombre:</Label>
                       <InputField
+                        className={errorInput === "name" ? "border-red-500" : ""}
                         id="input-name"
                         name="name"
                         value={FormDataBrands ? FormDataBrands.name : ""}
@@ -100,6 +104,7 @@ export default function ModalBrands({ loading, isOpen, closeModal, selected, set
                   <FormGroupInput>
                     <Label htmlFor="slug">Slug:</Label>
                     <InputField
+                      className={errorInput === "slug" ? "border-red-500" : ""}
                       id="input-slug"
                       name="slug"
                       value={FormDataBrands ? FormDataBrands.slug : ""}

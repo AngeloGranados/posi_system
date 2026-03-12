@@ -13,18 +13,20 @@ interface filterOptions {
 
 export async function getPromoCodes(): Promise<PromoCodes[]> {
     const response = await fetch(`${URL_API}`);
-    if (!response.ok) {
-        throw new Error("Error fetching promoCodes");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }
 
 export async function deletePromoCodes(promoCodesId: number): Promise<void> {
     const response = await fetch(`${URL_API}/${promoCodesId}`, {
         method: "DELETE"
     });
-    if (!response.ok) {
-        throw new Error("Error deleting promoCodes");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
 }
 
@@ -38,11 +40,11 @@ export async function updatePromoCodes(promoCodes: PromoCodes): Promise<PromoCod
         body: JSON.stringify(promoCodes)
     });
 
-    if (!response.ok) {
-        throw new Error("Error updating promoCodes");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function createPromoCodes(promoCodes: PromoCodes): Promise<PromoCodes> {
@@ -55,11 +57,11 @@ export async function createPromoCodes(promoCodes: PromoCodes): Promise<PromoCod
         body: JSON.stringify(promoCodes)
     });
 
-    if (!response.ok) {
-        throw new Error("Error creating promoCodes");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function getPromoCodesFiltered(filterOptions: filterOptions): Promise<{ data: PromoCodes[]; totalRows: number}>{
@@ -79,8 +81,9 @@ export async function getPromoCodesFiltered(filterOptions: filterOptions): Promi
     }
 
     const response = await fetch(`${URL_API}/filter?${params.toString()}`);
-    if (!response.ok) {
-        throw new Error("Error fetching filtered promoCodes");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }

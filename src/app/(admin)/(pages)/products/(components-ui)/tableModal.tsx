@@ -33,6 +33,7 @@ export default function TableModal() {
 
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
+    const [ errorInput, setErrorInput ] = useState<string | null>(null)
 
     const tableThProducts: tableThProduct[] = [
         { name: "id", value: "ID" },
@@ -67,32 +68,43 @@ export default function TableModal() {
         event.preventDefault();
 
         let error = null;
+        let fieldError = null;
 
         const requiredFields: (keyof Product)[] = ["name", "slug", "description_short", "description_long", "price", "category_id", "idbrand", "stock", "image"];
 
         for (const field of requiredFields) {
-            if (field !== "stock" && field !== "discount") {
+            if (field !== "stock" && field !== "discount" && field !== "price") {
                 if (!product[field] || (product[field] as string).toString().trim() === "") {
-                    error = `El campo ${field} es obligatorio.`;
+                    error = `Todos los campos son obligatorios.`;
+                    fieldError = field;
                     break;
                 }
             }
 
             if (field === "price" && product[field] <= 0) {
                 error = `El campo ${field} debe ser un número positivo.`;
+                fieldError = field;
                 break;
             }
 
             if (field === "image" && selectedProduct === null) {
                 if (!(product[field] instanceof File) || product[field].size === 0) {
-                    error = `El campo ${field} es obligatorio.`;
+                    error = `La imagen principal es obligatoria.`;
+                    fieldError = field;
                     break;
                 }
             }
         }
 
+        if (productAttributes.length > 0) {
+            if (productAttributes.some(attr => !attr.value || attr.value.trim() === "") || productAttributes.some(attr => !attr.key || attr.key <= 0)) {
+                error = "Todos los atributos deben tener un valor.";
+            }
+        }
+
         if (error) {    
             triggerAlert("Error", error, "error")
+            setErrorInput(fieldError);
             return;
         }
 
@@ -106,7 +118,11 @@ export default function TableModal() {
             await fetchProductsFiltered();
             closeModal();
         } catch (error) {
-            console.error("Error creating product:", error);
+            triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
+            const firstInput = document.querySelector('#alert') as HTMLElement | null;
+            if (firstInput) {
+                firstInput.focus();
+            }
         } finally {
             setLoading(false);
         }
@@ -138,6 +154,8 @@ export default function TableModal() {
     return (
         <>
             <ModalProduct 
+                errorInput={errorInput}
+                setErrorInput={setErrorInput}
                 loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 

@@ -40,6 +40,7 @@ export default function TableModal() {
 
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
+    const [ errorInput, setErrorInput ] = useState<string | null>(null)
 
     const tableThUsers: tableThUsers[] = [
         { name: "id", value: "ID" },
@@ -76,18 +77,21 @@ export default function TableModal() {
         event.preventDefault();
 
         let error = null;
+        let fieldError = null;
 
         const requiredFields: (keyof Users)[] = ["nombres", "apellidos", "telefono", "type", "password_hash"];
 
         for (const field of requiredFields) {
             if (!user[field] || (user[field] as string).toString().trim() === "") {
                 error = `El campo ${field} es obligatorio.`;
+                fieldError = field;
                 break;
             }
         }
 
         if (error) {    
             triggerAlert("Error", error, "error")
+            setErrorInput(fieldError);
             return;
         }
 
@@ -143,6 +147,8 @@ export default function TableModal() {
     return (
         <>
             <ModalUsers 
+                errorInput={errorInput}
+                setErrorInput={setErrorInput}
                 loading={loading}
                 isToChangePassword={isToChangePassword}
                 newContraseña={newContraseña}

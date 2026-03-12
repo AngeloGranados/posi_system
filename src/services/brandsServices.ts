@@ -11,19 +11,22 @@ interface filterOptions {
 
 export async function getBrands(): Promise<Brands[]> {
     const response = await fetch(`${URL_API}`);
-    if (!response.ok) {
-        throw new Error("Error fetching brands");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }
 
 export async function deleteBrands(brandId: number): Promise<void> {
     const response = await fetch(`${URL_API}/${brandId}`, {
         method: "DELETE"
     });
-    if (!response.ok) {
-        throw new Error("Error deleting brand");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
+    return data;
 }
 
 export async function updateBrands(brand: Brands): Promise<Brands> {
@@ -36,11 +39,11 @@ export async function updateBrands(brand: Brands): Promise<Brands> {
         body: JSON.stringify(brand)
     });
 
-    if (!response.ok) {
-        throw new Error("Error updating brand");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function createBrands(brand: Brands): Promise<Brands> {
@@ -53,11 +56,11 @@ export async function createBrands(brand: Brands): Promise<Brands> {
         body: JSON.stringify(brand)
     });
 
-    if (!response.ok) {
-        throw new Error("Error creating brand");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function getBrandsFiltered(filterOptions: filterOptions): Promise<{ data: Brands[]; totalRows: number}>{
@@ -77,8 +80,9 @@ export async function getBrandsFiltered(filterOptions: filterOptions): Promise<{
     }
 
     const response = await fetch(`${URL_API}/filter?${params.toString()}`);
-    if (!response.ok) {
-        throw new Error("Error fetching filtered brands");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }

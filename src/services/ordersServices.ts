@@ -26,24 +26,27 @@ export async function getOrdersFiltered(filterOptions: filterOptions): Promise<{
     }
 
     const response = await fetch(`${URL_API}/filter?${params.toString()}`);
-    if (!response.ok) {
-        throw new Error("Error fetching filtered orders");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }
 
 export async function getOrderById(orderId: number): Promise<Orders | null> {
     const response = await fetch(`${URL_API}/${orderId}`);
-    if (!response.ok) {
-        throw new Error("Error fetching order");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }
 
 export async function getOrderItemsByOrderId(orderId: number): Promise<OrderItems[]> {
     const response = await fetch(`${URL_API}/getOrderItemsByOrderId/${orderId}`);
-    if (!response.ok) {
-        throw new Error("Error fetching order items");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }

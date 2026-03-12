@@ -35,7 +35,8 @@ export default function TableModal() {
 
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
-
+    const [ errorInput, setErrorInput ] = useState<string | null>(null)
+    
     const tableThDiscounts: tableThDiscounts[] = [
         { name: "id", value: "ID" },
         { name: "product_id", value: "Producto" },
@@ -70,17 +71,20 @@ export default function TableModal() {
         event.preventDefault();
 
         let error = null;
+        let fieldError = null;
 
         const requiredFields: (keyof Discounts)[] = ["product_id", "discount_type", "discount_value", "valid_from", "valid_until"];
 
         for (const field of requiredFields) {
             if (!discounts[field] || (discounts[field] as string).toString().trim() === "") {
                 error = `El campo ${field} es obligatorio.`;
+                fieldError = field;
                 break;
             }
 
             if(field === "discount_value" && isNaN(Number(discounts.discount_value))){
                 error = `El valor de descuento debe ser un numero`;
+                fieldError = field;
                 break;
             }
 
@@ -90,11 +94,13 @@ export default function TableModal() {
 
                 if (field === "valid_from" && discounts.valid_from < new Date()){
                     error = `La fecha de inicio debe ser mayor a la fecha actual`;
+                    fieldError = field;
                     break;
                 }
 
                 if (field === "valid_until" && discounts.valid_until <= discounts.valid_from){
                     error = `La fecha final debe ser mayor a la de inicio`;
+                    fieldError = field;
                     break;
                 }
 
@@ -103,6 +109,7 @@ export default function TableModal() {
 
         if (error) {    
             triggerAlert("Error", error, "error")
+            setErrorInput(fieldError);
             return;
         }
 
@@ -149,6 +156,8 @@ export default function TableModal() {
     return (
         <>
             <ModalDiscounts 
+                errorInput={errorInput}
+                setErrorInput={setErrorInput}
                 loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 

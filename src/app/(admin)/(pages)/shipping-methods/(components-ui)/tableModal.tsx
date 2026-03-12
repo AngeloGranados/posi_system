@@ -33,6 +33,7 @@ export default function TableModal() {
 
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
+    const [ errorInput, setErrorInput ] = useState<string | null>(null)
 
     const tableThShippingMethods: tableThShippingMethods[] = [
         { name: "id", value: "ID" },
@@ -69,17 +70,20 @@ export default function TableModal() {
         event.preventDefault();
 
         let error = null;
+        let fieldError = null;
 
         const requiredFields: (keyof ShippingMethods)[] = ["name" ];
 
         for (const field of requiredFields) {
             if (!shippingMethod[field] || (shippingMethod[field] as string).toString().trim() === "") {
                 error = `El campo ${field} es obligatorio.`;
+                fieldError = field;
                 break;
             }
         }
 
-        if (error) {    
+        if (error) {
+            setErrorInput(fieldError);
             triggerAlert("Error", error, "error")
             return;
         }
@@ -123,7 +127,9 @@ export default function TableModal() {
 
     return (
         <>
-            <ModalShippingMethods 
+            <ModalShippingMethods
+                errorInput={errorInput} 
+                setErrorInput={setErrorInput}
                 loading={loading}
                 isOpen={isOpen} 
                 closeModal={closeModal} 

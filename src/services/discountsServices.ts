@@ -11,18 +11,20 @@ interface filterOptions {
 
 export async function getDiscounts(): Promise<Discounts[]> {
     const response = await fetch(`${URL_API}`);
-    if (!response.ok) {
-        throw new Error("Error fetching discounts");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }
 
 export async function deleteDiscounts(discountsId: number): Promise<void> {
     const response = await fetch(`${URL_API}/${discountsId}`, {
         method: "DELETE"
     });
-    if (!response.ok) {
-        throw new Error("Error deleting discounts");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
 }
 
@@ -38,11 +40,11 @@ export async function updateDiscounts(discounts: Discounts): Promise<Discounts> 
         body: JSON.stringify(discounts)
     });
 
-    if (!response.ok) {
-        throw new Error("Error updating discounts");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function createDiscounts(discounts: Discounts): Promise<Discounts> {
@@ -58,11 +60,11 @@ export async function createDiscounts(discounts: Discounts): Promise<Discounts> 
         body: JSON.stringify(discounts)
     });
 
-    if (!response.ok) {
-        throw new Error("Error creating discounts");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-
-    return response.json();
+    return data;
 }
 
 export async function getDiscountsFiltered(filterOptions: filterOptions): Promise<{ data: Discounts[]; totalRows: number}>{
@@ -82,8 +84,9 @@ export async function getDiscountsFiltered(filterOptions: filterOptions): Promis
     }
 
     const response = await fetch(`${URL_API}/filter?${params.toString()}`);
-    if (!response.ok) {
-        throw new Error("Error fetching filtered discounts");
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
     }
-    return response.json();
+    return data;
 }

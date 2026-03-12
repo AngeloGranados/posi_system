@@ -16,6 +16,8 @@ import DatePicker from "@/components/form/date-picker";
 interface ModalPromoCodesProps {
     isOpen: boolean;
     loading: boolean;
+    errorInput: string | null;
+    setErrorInput: (field: string | null) => void;
     closeModal: () => void;
     selected: PromoCodes | null;
     setSelected: (PromoCodes: PromoCodes | null) => void;
@@ -29,7 +31,7 @@ interface ModalPromoCodesProps {
     }
 }
 
-export default function ModalPromoCodes({ loading, isOpen, closeModal, selected, setSelected, handleCreatePromoCodes, alertProps } : ModalPromoCodesProps) {
+export default function ModalPromoCodes({ errorInput, setErrorInput, loading, isOpen, closeModal, selected, setSelected, handleCreatePromoCodes, alertProps } : ModalPromoCodesProps) {
 
     const emptyPromoCodes: PromoCodes = {
         code: "",
@@ -68,6 +70,7 @@ export default function ModalPromoCodes({ loading, isOpen, closeModal, selected,
       setFormDataPromoCodes(emptyPromoCodes);
       setSelected(null);
       alertProps.closeAlert();
+      setErrorInput(null);
     }
 
     // Handler universal, siempre actualiza el estado
@@ -119,6 +122,7 @@ export default function ModalPromoCodes({ loading, isOpen, closeModal, selected,
                   <FormGroupInput>
                       <Label htmlFor="code">Codigo:</Label>
                       <InputField
+                        className={errorInput === "code" ? "border-red-500" : ""}
                         id="input-code"
                         name="code"
                         value={FormDataPromoCodes && FormDataPromoCodes.code ? FormDataPromoCodes.code : ""}
@@ -130,6 +134,7 @@ export default function ModalPromoCodes({ loading, isOpen, closeModal, selected,
                   <FormGroupInput>
                       <Label htmlFor="description">Descripción:</Label>
                       <TextArea
+                        className={errorInput === "description" ? "border-red-500" : ""}
                         name="description"
                         value={FormDataPromoCodes && FormDataPromoCodes.description ? FormDataPromoCodes.description : ""}
                         onChange={handleDataChange}
@@ -140,6 +145,7 @@ export default function ModalPromoCodes({ loading, isOpen, closeModal, selected,
                   <FormGroupInput>
                       <Label htmlFor="discount_type">Tipo de Descuento:</Label>
                       <Select
+                        className={errorInput === "discount_type" ? "border-red-500" : ""}
                         name="discount_type"
                         options={selectOptionsTypeDiscount}
                         value={FormDataPromoCodes && FormDataPromoCodes.discount_type ? FormDataPromoCodes.discount_type : ""}
@@ -149,6 +155,7 @@ export default function ModalPromoCodes({ loading, isOpen, closeModal, selected,
                   <FormGroupInput>
                       <Label htmlFor="description">Descuento:</Label>
                       <InputField 
+                        className={errorInput === "discount_value" ? "border-red-500" : ""}
                         type="number"
                         name="discount_value"
                         value={FormDataPromoCodes && FormDataPromoCodes.discount_value ? FormDataPromoCodes.discount_value : 0}
@@ -160,6 +167,7 @@ export default function ModalPromoCodes({ loading, isOpen, closeModal, selected,
                   <FormGroupInput>
                       <Label htmlFor="discount_type">Minimo de Compra:</Label>
                       <InputField 
+                        className={errorInput === "min_purchase" ? "border-red-500" : ""}
                         type="number"
                         name="min_purchase"
                         value={FormDataPromoCodes && FormDataPromoCodes.min_purchase ? FormDataPromoCodes.min_purchase : 0}
@@ -169,6 +177,7 @@ export default function ModalPromoCodes({ loading, isOpen, closeModal, selected,
                   <FormGroupInput>
                       <Label htmlFor="max_discount">Maximo de Descuento:</Label>
                       <InputField 
+                        className={errorInput === "max_discount" ? "border-red-500" : ""}
                         type="number"
                         name="max_discount"
                         value={FormDataPromoCodes && FormDataPromoCodes.max_discount ? FormDataPromoCodes.max_discount : 0}
@@ -178,6 +187,7 @@ export default function ModalPromoCodes({ loading, isOpen, closeModal, selected,
                   <FormGroupInput>
                       <Label htmlFor="usage_limit">Limite de Uso:</Label>
                       <InputField 
+                        className={errorInput === "usage_limit" ? "border-red-500" : ""}
                         type="number"
                         name="usage_limit"
                         value={FormDataPromoCodes && FormDataPromoCodes.usage_limit ? FormDataPromoCodes.usage_limit : 0}
