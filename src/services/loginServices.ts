@@ -3,7 +3,7 @@ import { Users } from "@/types/users";
 
 const URL_API = `${process.env.NEXT_PUBLIC_API_URL}login`;
 
-export async function LoginAdmin(email: string, contrasena: string): Promise<{user: Users, token: string}> {
+export async function LoginAdmin(email: string, contrasena: string): Promise<{user: Users, token: string} | {error: string}> {
     const response = await fetch(`${URL_API}/loginAdmin`, {
         method: "POST",
         headers: {

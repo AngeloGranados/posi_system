@@ -55,6 +55,7 @@ const navItems: NavItem[] = [
       { name: "Codigos de Promoción", path: "/promotion-codes", pro: false  },
       { name: "Marcas", path: "/brands", pro: false  },
       { name: "Descuentos", path: "/discounts", pro: false  },
+      { name: "Atributos", path: "/attributes", new: true  },
     ],
   },
   {

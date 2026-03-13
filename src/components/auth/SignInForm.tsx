@@ -6,10 +6,13 @@ import Link from "next/link";
 import React, { useState } from "react";
 import InputField from "@/components/form/input/InputField";
 import { useRouter } from "next/navigation";
+import Alert from "../ui/alert/Alert";
+import useAlert from "@/hooks/useAlert";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const { showAlert, triggerAlert, alertTitle, alertMessage, alertVariant, closeAlert } = useAlert();
 
   const [FormDataLogin, setFormDataLogin] = useState({
     email: "",
@@ -30,29 +33,21 @@ export default function SignInForm() {
     e.preventDefault();
 
     if (!FormDataLogin.email || !FormDataLogin.contrasena) {
-      alert("Por favor, completa todos los campos.");
+      triggerAlert("Error", "Por favor, completa todos los campos obligatorios.", "error");
       return;
     }
 
     try {
       await LoginAdmin(FormDataLogin.email, FormDataLogin.contrasena);
+      closeAlert();
       router.push("/");
     } catch (error) {
-      console.error("Error al iniciar sesión:", error);
+      triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
     }
   }
   
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
-      <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
-        <Link
-          href="/"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          <ChevronLeftIcon />
-          Back to dashboard
-        </Link>
-      </div>
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
@@ -67,6 +62,15 @@ export default function SignInForm() {
               </div>
             </div>
             <form onSubmit={handleSubmitLogin}>
+              <div className="mb-5">
+                {showAlert && (
+                  <Alert
+                    title={alertTitle}
+                    message={alertMessage}
+                    variant={alertVariant}
+                  />
+                )}
+              </div>
               <div className="space-y-6">
                 <div>
                   <Label>

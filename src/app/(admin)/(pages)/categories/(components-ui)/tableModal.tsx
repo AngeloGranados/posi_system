@@ -103,7 +103,7 @@ export default function TableModal() {
             await fetchCategoriesFiltered();
             closeModal();
         } catch (error) {
-            console.error("Error creating category:", error);
+            triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
         } finally {
             setLoading(false);
         }
