@@ -46,6 +46,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
 
     const emptyProduct: Product = {
         name: "",
+        sku: "",
         slug: "",
         description_short: "",
         description_long: "",
@@ -277,6 +278,16 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                         id="input-slug"
                         name="slug"
                         value={FormDataProduct ? FormDataProduct.slug : ""}
+                        onChange={handleDataChange}
+                      />
+                    </FormGroupInput>
+                    <FormGroupInput>
+                      <Label htmlFor="sku">Sku:</Label>
+                      <InputField
+                        className={`${errorInput === "sku" ? "border-red-500" : ""}`}
+                        id="input-sku"
+                        name="sku"
+                        value={FormDataProduct ? FormDataProduct.sku : ""}
                         onChange={handleDataChange}
                       />
                     </FormGroupInput>

@@ -10,6 +10,7 @@ export interface tableThProduct {
 export interface Product {
     id?: number;
     name: string;
+    sku: string;
     slug: string;
     description_short: string;
     description_long: string;

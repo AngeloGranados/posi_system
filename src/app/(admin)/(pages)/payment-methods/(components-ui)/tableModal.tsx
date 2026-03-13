@@ -70,13 +70,21 @@ export default function TableModal() {
         let error = null;
         let fieldError = null;
 
-        const requiredFields: (keyof PaymentMethods)[] = ["name" ];
+        const requiredFields: (keyof PaymentMethods)[] = ["name", "code", "description", "account_name", "account_number", "image_url"];
 
         for (const field of requiredFields) {
             if (!paymentMethod[field] || (paymentMethod[field] as string).toString().trim() === "") {
                 error = `El campo ${field} es obligatorio.`;
                 fieldError = field;
                 break;
+            }
+
+            if(field === "image_url" && selectedPaymentMethods == null){
+                if (!(paymentMethod[field] instanceof File) || paymentMethod[field].size === 0) {
+                    error = `El campo ${field} es obligatorio y debe ser un archivo válido.`;
+                    fieldError = field;
+                    break;
+                }
             }
         }
 
@@ -97,7 +105,7 @@ export default function TableModal() {
             await fetchPaymentMethodsFiltered();
             closeModal();
         } catch (error) {
-            console.error("Error creating paymentMethod:", error);
+            triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
         } finally {
             setLoading(false);
         }

@@ -66,7 +66,7 @@ export default function TableModal() {
         let error = null;
         let fieldError = null;
 
-        const requiredFields: (keyof Brands)[] = ["name", "slug" ];
+        const requiredFields: (keyof Brands)[] = ["name", "slug"];
 
         for (const field of requiredFields) {
             if (!brands[field] || (brands[field] as string).toString().trim() === "") {
@@ -93,7 +93,7 @@ export default function TableModal() {
             await fetchBrandsFiltered();
             closeModal();
         } catch (error) {
-            console.error("Error creating brands:", error);
+            triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
         } finally {
             setLoading(false);
         }

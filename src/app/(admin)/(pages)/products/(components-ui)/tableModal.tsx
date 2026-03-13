@@ -70,7 +70,7 @@ export default function TableModal() {
         let error = null;
         let fieldError = null;
 
-        const requiredFields: (keyof Product)[] = ["name", "slug", "description_short", "description_long", "price", "category_id", "idbrand", "stock", "image"];
+        const requiredFields: (keyof Product)[] = ["name", "sku", "slug", "description_short", "description_long", "price", "category_id", "idbrand", "stock", "image"];
 
         for (const field of requiredFields) {
             if (field !== "stock" && field !== "discount" && field !== "price") {
@@ -207,8 +207,9 @@ export default function TableModal() {
                                                 }
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="text-[14px] font-bold">{product.name}</span>
-                                                <small className="text-gray-500">{product.slug}</small>
+                                                <span className="text-[17px] font-bold">{product.name}</span>
+                                                <small className="text-gray-800">{product.slug}</small>
+                                                <small className="text-gray-500">{product.sku}</small>
                                             </div>
                                         </div>
                                     </TableCell>

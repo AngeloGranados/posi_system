@@ -82,6 +82,28 @@ export default function TableModal() {
                 fieldError = field;
                 break;
             }
+
+            if ((field === "discount_value" || field === "max_discount" || field === "min_purchase" || field === "usage_limit")
+                && typeof promoCodes[field] === "number" && promoCodes[field] < 0
+            ) {
+                error = `El campo ${field} debe ser un número válido mayor o igual a 0.`;
+                fieldError = field;
+                break;
+            }
+
+            if (field === "valid_from" || field === "valid_until") {
+                if (field === "valid_from" && new Date(promoCodes[field]) < new Date()) {
+                    error = `El campo ${field} debe ser una fecha futura.`;
+                    fieldError = field;
+                    break;
+                }
+
+                if (field === "valid_until" && new Date(promoCodes[field]) < new Date(promoCodes.valid_from)) {
+                    error = `El campo ${field} debe ser una fecha futura.`;
+                    fieldError = field;
+                    break;
+                }
+            }
         }
 
         if (error) {    
@@ -100,7 +122,7 @@ export default function TableModal() {
             await fetchPromoCodesFiltered();
             closeModal();
         } catch (error) {
-            console.error("Error creating promoCodes:", error);
+            triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
         }
     }
 
@@ -109,7 +131,7 @@ export default function TableModal() {
             await deletePromoCodes(promoCodesId);
             await fetchPromoCodesFiltered();
         }catch(error){
-            console.error("Error deleting promoCodes:", error);
+            triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
         }
     } 
 

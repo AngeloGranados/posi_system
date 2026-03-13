@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function BrandsPage() {
     return (
         <div>
-            <PageBreadcrumb pageTitle="Brands" />
+            <PageBreadcrumb pageTitle="Marcas" />
             <div className="space-y-6">
                 <TableModal/>
             </div>

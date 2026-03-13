@@ -70,6 +70,7 @@ export async function createProduct(product: Product, images: File[] | string[],
     const formData = new FormData();
 
     formData.append("name", product.name);
+    formData.append("sku", product.sku);
     formData.append("slug", product.slug);
     formData.append("description_long", product.description_long);
     formData.append("description_short", product.description_short);
@@ -98,10 +99,10 @@ export async function createProduct(product: Product, images: File[] | string[],
 
 export async function updateProduct(product: Product, images: File[] | string[], productAttributes: { key: number; value: string }[]): Promise<Product> {
 
-    console.log(product, images, productAttributes);
     let formData = new FormData();
 
     formData.append("name", product.name);
+    formData.append("sku", product.sku);
     formData.append("slug", product.slug);
     formData.append("description_long", product.description_long);
     formData.append("description_short", product.description_short);
