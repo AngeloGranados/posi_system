@@ -57,7 +57,7 @@ export default function UserInfoCard({ userSession, setUserSession }: UserInfoCa
         }
 
         await changePassword({
-          idUser: userSession?.id as number,
+          idUser: userSession?.id as string,
           newPassword: newContraseña,
         });
       }
