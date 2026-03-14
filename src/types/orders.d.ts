@@ -1,5 +1,4 @@
 export type tableThNameOrders = 
-| "id"
 | "order_number"
 | "email"
 | "subtotal"
@@ -20,8 +19,7 @@ export interface tableThOrders {
 }
 
 export interface Orders {
-    id?: string,
-    order_number: string,
+    order_number?: string,
     user_id: string | null,
     session_id: string,
     email: string,

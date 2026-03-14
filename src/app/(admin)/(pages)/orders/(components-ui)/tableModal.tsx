@@ -30,13 +30,12 @@ export default function TableModal() {
     const [limit, setLimit] = useState(6)
     const [pageTotal, setPageTotal] = useState(1)
     const [orderBy, setOrderBy] = useState<orderByOrders>("ByDESC")
-    const [orderField, setOrderField] = useState<orderByAscDescOrders>("id")
+    const [orderField, setOrderField] = useState<orderByAscDescOrders>("order_number")
     const [filterlike, setFilterlike] = useState('')
 
     const [loading, setLoading] = useState(false);
 
     const tableThOrders: tableThOrders[] = [
-        { name: "id", value: "ID" },
         { name: "order_number", value: "N° Orden" },
         { name: "email", value: "Cliente" },
         { name: "subtotal", value: "Subtotal" },
@@ -91,7 +90,7 @@ export default function TableModal() {
             >
                 {
                     loading ? (
-                        <TableRow>
+                        <TableRow key={"loading"}>
                             <TableCell className="text-center py-4" colSpan={12}>   
                                 <div className="w-full h-50">
                                     <Skeleton width={'100%'} height={'100%'} />
@@ -101,8 +100,7 @@ export default function TableModal() {
                     ) : (
                         ordersList && ordersList.length > 0 ? (
                             ordersList.map((order) => (
-                                <TableRow key={order.id}>
-                                    <TableCell className="px-3 py-3 text-left">#{order.id}</TableCell>
+                                <TableRow key={`order-${order.order_number}`}>
                                     <TableCell className="px-3 py-3 text-left">{order.order_number}</TableCell>
                                     <TableCell className="px-3 py-3 text-left">
                                         <div className="flex items-center gap-3">
@@ -131,14 +129,14 @@ export default function TableModal() {
                                 </TableCell>
                                 <TableCell className="px-3 py-3">
                                     <div className="flex space-x-4">
-                                        <Button variant="outline" onClick={() => router.push(`/orders/${order.id}`)} className="text-blue-500"><EyeIcon width={16} height={16} fill="currentColor" /></Button>
+                                        <Button variant="outline" onClick={() => router.push(`/orders/${order.order_number}`)} className="text-blue-500"><EyeIcon width={16} height={16} fill="currentColor" /></Button>
                                         <Button variant="outline" className="text-red-500"><CancelIcon width={16} height={16} fill="currentColor" /></Button>
                                     </div>
                                 </TableCell>
                             </TableRow>
                         ))
                         ) : (
-                            <TableRow>
+                            <TableRow key={"no-orders"}>
                                 <TableCell className="text-center py-4" colSpan={12}>No se encontraron órdenes.</TableCell>
                             </TableRow>
                         )

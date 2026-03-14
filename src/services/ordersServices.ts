@@ -33,8 +33,8 @@ export async function getOrdersFiltered(filterOptions: filterOptions): Promise<{
     return data;
 }
 
-export async function getOrderById(orderId: number): Promise<Orders | null> {
-    const response = await fetch(`${URL_API}/${orderId}`);
+export async function getOrderById(orderNumber: string): Promise<Orders | null> {
+    const response = await fetch(`${URL_API}/${orderNumber}`);
     const data = await response.json();
     if (!response.ok || data.error) {
         throw new Error(data.error);
@@ -42,8 +42,8 @@ export async function getOrderById(orderId: number): Promise<Orders | null> {
     return data;
 }
 
-export async function getOrderItemsByOrderId(orderId: number): Promise<OrderItems[]> {
-    const response = await fetch(`${URL_API}/getOrderItemsByOrderId/${orderId}`);
+export async function getOrderItemsByOrderId(orderNumber: string): Promise<OrderItems[]> {
+    const response = await fetch(`${URL_API}/getOrderItemsByOrderId/${orderNumber}`);
     const data = await response.json();
     if (!response.ok || data.error) {
         throw new Error(data.error);

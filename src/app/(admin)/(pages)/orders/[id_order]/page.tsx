@@ -16,10 +16,12 @@ export default function OrderDetails() {
     const [order, setOrder] = useState<Orders | null>(null);
     const [orderItems, setOrderItems] = useState<OrderItems[]>([]);
 
+    const id_order = params.id_order ? params.id_order as string : "";
+
     useEffect(() => {
         const fetchOrder = async () => {
             try {
-                const orderData = await getOrderById(params.id_order ? parseInt(params.id_order as string) : 0);
+                const orderData = await getOrderById(id_order);
                 setOrder(orderData);
             } catch (error) {
                 console.error("Error fetching order:", error);
@@ -28,7 +30,7 @@ export default function OrderDetails() {
 
         const fetchItemsOrder = async () => {
             try {
-                const orderItems = await getOrderItemsByOrderId(params.id_order ? parseInt(params.id_order as string) : 0);
+                const orderItems = await getOrderItemsByOrderId(id_order);
                 setOrderItems(orderItems);
             }catch (error) {
                 console.error("Error fetching order items:", error);
@@ -45,7 +47,7 @@ export default function OrderDetails() {
     return (
         <div>
             <PageBreadcrumb pageTitle={`Detalle de Orden`} pageBaseName="Ordenes" pageBaseUrl="/orders"></PageBreadcrumb>
-            <ComponentCard title={`Orden #${order.id}`}>  
+            <ComponentCard title={`Orden #${order.order_number}`}>  
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                     {/* Estado */}
                     <div className="bg-white rounded-lg p-4 flex flex-col items-center shadow border">
