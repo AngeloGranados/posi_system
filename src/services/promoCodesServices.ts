@@ -20,7 +20,7 @@ export async function getPromoCodes(): Promise<PromoCodes[]> {
     return data;
 }
 
-export async function deletePromoCodes(promoCodesId: number): Promise<void> {
+export async function deletePromoCodes(promoCodesId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${promoCodesId}`, {
         method: "DELETE"
     });

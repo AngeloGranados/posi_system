@@ -8,7 +8,7 @@ export interface tableThPromoCodes {
 }
 
 export interface PromoCodes {
-    id?: number,
+    id?: string,
     code: string,
     description: string,
     discount_type: "percentage" | "fixed",

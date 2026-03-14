@@ -64,7 +64,7 @@ export default function TableModal() {
 
     const pageTotalToTable = Math.ceil(pageTotal / limit);
 
-    async function handleCreateProduct(event: React.FormEvent<HTMLFormElement>, product: Product, images: File[] | string[], productAttributes: { key: number; value: string }[]) {
+    async function handleCreateProduct(event: React.FormEvent<HTMLFormElement>, product: Product, images: File[] | string[], productAttributes: { key: string; value: string }[]) {
         event.preventDefault();
 
         let error = null;
@@ -97,7 +97,7 @@ export default function TableModal() {
         }
 
         if (productAttributes.length > 0) {
-            if (productAttributes.some(attr => !attr.value || attr.value.trim() === "") || productAttributes.some(attr => !attr.key || attr.key <= 0)) {
+            if (productAttributes.some(attr => !attr.value || attr.value.trim() === "") || productAttributes.some(attr => !attr.key || attr.key === "")) {
                 error = "Todos los atributos deben tener un valor.";
             }
         }
@@ -128,7 +128,7 @@ export default function TableModal() {
         }
     }
 
-    async function handleDeleteProduct(productId: number) {
+    async function handleDeleteProduct(productId: string) {
         try{ 
             await deleteProduct(productId);
             await fetchProductsFiltered();
@@ -231,7 +231,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(product)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeleteProduct(product.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeleteProduct(product.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

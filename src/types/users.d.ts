@@ -8,7 +8,7 @@ export interface tableThUsers {
 }
 
 export interface Users {
-    id? : number,
+    id? : string,
     email : string,
     password_hash? : string,
     nombres : string,

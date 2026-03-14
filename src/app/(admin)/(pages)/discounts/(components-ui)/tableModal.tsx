@@ -130,7 +130,7 @@ export default function TableModal() {
         }
     }
 
-    async function handleDeleteDiscounts(discountsId: number) {
+    async function handleDeleteDiscounts(discountsId: string) {
         try{ 
             await deleteDiscounts(discountsId);
             await fetchDiscountsFiltered();
@@ -236,7 +236,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(discounts)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeleteDiscounts(discounts.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeleteDiscounts(discounts.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

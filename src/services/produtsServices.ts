@@ -3,7 +3,7 @@ import { CategoryAttribute, ImagesProduct, orderByAscDescProduct, orderByProduct
 const URL_API: string = `${process.env.NEXT_PUBLIC_API_URL}products`;
 
 interface FilterParams {
-    categoryId?: number;
+    categoryId?: string;
     filterlike?: string;
     orderBy?: orderByProduct | null;
     orderField?: orderByAscDescProduct | null;
@@ -26,7 +26,7 @@ export async function getProductsFilter(Filterparams: FilterParams): Promise<Fil
 
     const params = new URLSearchParams();
 
-    if (Filterparams.categoryId) params.append("categoryId", Filterparams.categoryId.toString());
+    if (Filterparams.categoryId) params.append("categoryId", Filterparams.categoryId);
     if (Filterparams.page) params.append("page", Filterparams.page.toString());
     if (Filterparams.limit) params.append("limit", Filterparams.limit.toString());
     if (Filterparams.orderBy) {
@@ -65,7 +65,7 @@ export async function getProductsFilter(Filterparams: FilterParams): Promise<Fil
     return data;
 }
 
-export async function createProduct(product: Product, images: File[] | string[], productAttributes: { key: number; value: string }[] ): Promise<Product> {
+export async function createProduct(product: Product, images: File[] | string[], productAttributes: { key: string; value: string }[] ): Promise<Product> {
 
     const formData = new FormData();
 
@@ -97,7 +97,7 @@ export async function createProduct(product: Product, images: File[] | string[],
     return data;
 }
 
-export async function updateProduct(product: Product, images: File[] | string[], productAttributes: { key: number; value: string }[]): Promise<Product> {
+export async function updateProduct(product: Product, images: File[] | string[], productAttributes: { key: string; value: string }[]): Promise<Product> {
 
     let formData = new FormData();
 
@@ -135,7 +135,7 @@ export async function updateProduct(product: Product, images: File[] | string[],
     return data;
 }
 
-export async function deleteProduct(id: number): Promise<void> {
+export async function deleteProduct(id: string): Promise<void> {
     const response = await fetch(`${URL_API}/${id}`, {
         method: "DELETE",
     })
@@ -146,8 +146,9 @@ export async function deleteProduct(id: number): Promise<void> {
     return data;
 }
 
-export async function getImagesByProductId(productId: number): Promise<ImagesProduct[]> {
+export async function getImagesByProductId(productId: string): Promise<ImagesProduct[]> {
     const response = await fetch(`${URL_API}/images/${productId}`);
+    console.log("Response from getImagesByProductId:", response);
     const data = await response.json();
     if (!response.ok || data.error) {
         throw new Error(data.error);
@@ -155,7 +156,7 @@ export async function getImagesByProductId(productId: number): Promise<ImagesPro
     return data || [];
 }
 
-export async function getAttributesByProductId(productId: number): Promise<ProductAttribute[]> {
+export async function getAttributesByProductId(productId: string): Promise<ProductAttribute[]> {
     const response = await fetch(`${URL_API}/attributes/${productId}`);
     const data = await response.json();
     if (!response.ok || data.error) {
@@ -164,7 +165,7 @@ export async function getAttributesByProductId(productId: number): Promise<Produ
     return data || [];
 }
 
-export async function getCategoryAttributesByCategoryId(categoryId: number): Promise<CategoryAttribute[]> {
+export async function getCategoryAttributesByCategoryId(categoryId: string): Promise<CategoryAttribute[]> {
     const response = await fetch(`${URL_API}/categoryAttributesByCategoryId/${categoryId}`);
     const data = await response.json();
     if (!response.ok || data.error) {

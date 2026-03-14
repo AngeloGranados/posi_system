@@ -8,7 +8,7 @@ export interface tableThBrands {
 }
 
 export interface Brands {
-    id?: number;
+    id?: string;
     name: string;
     slug: string;
     created_at?: string;

@@ -19,7 +19,7 @@ export async function getCategories(): Promise<Categories[]> {
     return data;
 }
 
-export async function deleteCategory(categoryId: number): Promise<void> {
+export async function deleteCategory(categoryId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${categoryId}`, {
         method: "DELETE"
     });

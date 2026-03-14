@@ -8,8 +8,8 @@ export interface tableThAttributes {
 }
 
 export interface Attributes {
-    id?: number,
-    category_id: number,
+    id?: string,
+    category_id: string,
     category_name?: string,
     attribute_name: string,
     attribute_unit: string

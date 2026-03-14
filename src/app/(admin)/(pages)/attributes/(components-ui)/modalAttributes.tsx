@@ -33,12 +33,12 @@ interface ModalAttributesProps {
 export default function ModalAttributes({ errorInput, setErrorInput,loading, isOpen, closeModal, selected, setSelected, handleCreateAttributes, alertProps } : ModalAttributesProps) {
 
     const emptyAttributes: Attributes = {
-        category_id: 0,
+        category_id: "",
         attribute_name: "",
         attribute_unit: ""
     };
 
-    const [categories, setCategories] = useState<{ value: number; label: string }[]>([]);
+    const [categories, setCategories] = useState<{ value: string; label: string }[]>([]);
 
     // Si selected existe, usarlo; si no, usar emptyAttributes
     const [FormDataAttributes, setFormDataAttributes] = useState<Attributes>(selected || emptyAttributes);
@@ -57,7 +57,7 @@ export default function ModalAttributes({ errorInput, setErrorInput,loading, isO
       try {
         const response = await getCategories();
         const optionCategories = response.map((category) => ({
-          value: category.id as number,
+          value: category.id as string,
           label: category.name as string
         }))
         setCategories(optionCategories);
@@ -84,13 +84,6 @@ export default function ModalAttributes({ errorInput, setErrorInput,loading, isO
         e.preventDefault();
         setFormDataAttributes((prevData) => {  
 
-            if(name === "category_id"){
-              return {
-                ...prevData,
-                [name]: parseInt(value, 10) 
-              };
-            }
-          
             return {
                 ...prevData,
                 [name]: value

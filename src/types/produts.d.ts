@@ -8,7 +8,7 @@ export interface tableThProduct {
 }
 
 export interface Product {
-    id?: number;
+    id?: string;
     name: string;
     sku: string;
     slug: string;
@@ -17,8 +17,8 @@ export interface Product {
     image: File;
     images?: File[];
     price: number;
-    category_id: number;
-    idbrand: number;
+    category_id: string;
+    idbrand: string;
     rating?: number;
     reviews?: number;
     stock: number;
@@ -33,22 +33,22 @@ export interface Product {
 export interface ImagesProduct {
     alt_text: string;
     attribute_value: string | null;
-    id: number;
+    id: string;
     image_url: string;
-    product_id: number;
+    product_id: string;
     sort_order: number;
 }
 
 export interface ProductAttribute {
-    id?: number;
-    product_id: number;
-    category_attribute_id: number;
+    id?: string;
+    product_id: string;
+    category_attribute_id: string;
     attribute_value: string;
 }
 
 export interface CategoryAttribute {
-    id? : number;
-    category_id: number;
+    id? : string;
+    category_id: string;
     attribute_name: string;
     attribute_unit?: string;
 }

@@ -179,25 +179,29 @@ export default function ModalUsers({ setErrorInput, errorInput, loading, isOpen,
                       />
                   </FormGroupInput>
                 </FormRow>
-                <FormRow>
-                  <FormGroupInput>
-                  <Button onClick={() => setIsToChangePassword(!isToChangePassword)} variant="outline" size="sm" className="mb-4">
-                    Cambiar Contraseña
-                  </Button>
-                  {isToChangePassword && <div>
+                {
+                  selected && (
                     <FormRow>
                       <FormGroupInput>
-                        <Label>Contraseña Nueva</Label>
-                        <InputField type="password" value={newContraseña} name="newContraseña" onChange={(e) => setNewContraseña(e.target.value)} />
-                      </FormGroupInput>
-                      <FormGroupInput>
-                        <Label>Repetir Contraseña</Label>
-                        <InputField type="password" value={confirmContraseña} name="confirmContraseña" onChange={(e) => setConfirmContraseña(e.target.value)} />
-                      </FormGroupInput>
+                      <Button onClick={() => setIsToChangePassword(!isToChangePassword)} variant="outline" size="sm" className="mb-4">
+                        Cambiar Contraseña
+                      </Button>
+                      {isToChangePassword && <div>
+                        <FormRow>
+                          <FormGroupInput>
+                            <Label>Contraseña Nueva</Label>
+                            <InputField type="password" value={newContraseña} name="newContraseña" onChange={(e) => setNewContraseña(e.target.value)} />
+                          </FormGroupInput>
+                          <FormGroupInput>
+                            <Label>Repetir Contraseña</Label>
+                            <InputField type="password" value={confirmContraseña} name="confirmContraseña" onChange={(e) => setConfirmContraseña(e.target.value)} />
+                          </FormGroupInput>
+                        </FormRow>
+                      </div>}
+                    </FormGroupInput>
                     </FormRow>
-                  </div>}
-                </FormGroupInput>
-                </FormRow>
+                  )
+                }
               </div>
               <div className="flex items-center gap-3 mt-6 modal-footer sm:justify-end">
                 <button

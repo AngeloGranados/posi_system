@@ -8,8 +8,8 @@ export interface tableThDiscounts {
 }
 
 export interface Discounts {
-    id?: number,
-    product_id: number,
+    id?: string,
+    product_id: string,
     discount_type: "percentage" | "fixed" | "",
     discount_value: number,
     valid_from: Date,

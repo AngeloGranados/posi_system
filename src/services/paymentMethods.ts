@@ -19,7 +19,7 @@ export async function getPaymentMethods(): Promise<PaymentMethods[]> {
     return data;
 }
 
-export async function deletePaymentMethods(paymentMethodsId: number): Promise<void> {
+export async function deletePaymentMethods(paymentMethodsId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${paymentMethodsId}`, {
         method: "DELETE"
     });

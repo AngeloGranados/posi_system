@@ -104,7 +104,7 @@ export default function TableModal() {
                     }
 
                     await changePassword({ 
-                        idUser: selectedUsers.id as number,
+                        idUser: selectedUsers.id as string,
                         newPassword: newContraseña
                     })
                 }
@@ -117,11 +117,11 @@ export default function TableModal() {
             await fetchUsersFiltered();
             closeModal();
         } catch (error) {
-            console.error("Error creating user:", error);
+            triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
         }
     }
 
-    async function handleDeleteUsers(userId: number) {
+    async function handleDeleteUsers(userId: string) {
         try{ 
             await deleteUsers(userId);
             await fetchUsersFiltered();
@@ -228,7 +228,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(user)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeleteUsers(user.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeleteUsers(user.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

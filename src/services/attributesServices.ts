@@ -19,7 +19,7 @@ export async function getAttributes(): Promise<Attributes[]> {
     return response.json();
 }
 
-export async function deleteAttributes(attributesId: number): Promise<void> {
+export async function deleteAttributes(attributesId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${attributesId}`, {
         method: "DELETE"
     });

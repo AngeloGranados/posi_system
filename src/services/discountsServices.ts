@@ -18,7 +18,7 @@ export async function getDiscounts(): Promise<Discounts[]> {
     return data;
 }
 
-export async function deleteDiscounts(discountsId: number): Promise<void> {
+export async function deleteDiscounts(discountsId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${discountsId}`, {
         method: "DELETE"
     });

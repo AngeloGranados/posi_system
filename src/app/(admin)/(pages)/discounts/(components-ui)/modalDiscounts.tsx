@@ -45,7 +45,7 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
 
     const [loadingProducts, setLoadingProducts] = useState(false);
     const emptyDiscounts: Discounts = {
-        product_id: 0,
+        product_id: "",
         discount_type: "",
         discount_value: 0,
         valid_from: new Date(),
@@ -112,7 +112,7 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
     function handleProductInputChange(producto: Product) {
         setFormDataDiscounts((prevData) => ({
             ...prevData,
-            product_id: producto.id || 0
+            product_id: producto.id as string
         }));
         setSelectedProduct(producto);
         setProductsFilter("");
@@ -121,7 +121,7 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
     function handleDeleteProductSelection() {
         setFormDataDiscounts((prevData) => ({
             ...prevData,
-            product_id: 0
+            product_id: ""
         }));
         setSelectedProduct(null);
     }
@@ -131,14 +131,6 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
         const { name, value } = e.target;
         e.preventDefault();
         setFormDataDiscounts((prevData) => {      
-
-            if(name === "product_id") {
-                return {
-                    ...prevData,
-                    [name]: Number(value) 
-                };
-            }
-
             return {
                 ...prevData,
                 [name]: value

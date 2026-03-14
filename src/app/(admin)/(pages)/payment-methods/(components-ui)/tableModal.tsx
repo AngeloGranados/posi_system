@@ -111,7 +111,7 @@ export default function TableModal() {
         }
     }
 
-    async function handleDeletePaymentMethods(paymentMethodId: number) {
+    async function handleDeletePaymentMethods(paymentMethodId: string) {
         try{ 
             await deletePaymentMethods(paymentMethodId);
             await fetchPaymentMethodsFiltered();
@@ -212,7 +212,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(paymentMethod)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeletePaymentMethods(paymentMethod.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeletePaymentMethods(paymentMethod.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

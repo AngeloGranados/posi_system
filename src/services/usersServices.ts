@@ -21,7 +21,7 @@ export async function getUsers(): Promise<Users[]> {
     return data;
 }
 
-export async function deleteUsers(usersId: number): Promise<void> {
+export async function deleteUsers(usersId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${usersId}`, {
         method: "DELETE",
         credentials: "include",
@@ -66,7 +66,7 @@ export async function updateProfile(params: Users): Promise<void> {
     return data;
 }
 
-export async function changePassword(params: { idUser: number; newPassword: string }): Promise<void> {
+export async function changePassword(params: { idUser: string; newPassword: string }): Promise<void> {
     const response = await fetch(`${URL_API}/changepassword`, {
         method: "PUT",
         headers: {
@@ -94,6 +94,7 @@ export async function createUsers(users: Users): Promise<Users> {
     });
 
     const data = await response.json();
+    console.log("Response from createUsers:", data);
     if (!response.ok || data.error) {
         throw new Error(data.error);
     }

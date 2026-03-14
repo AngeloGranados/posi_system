@@ -32,7 +32,7 @@ interface ModalProductProps {
     closeModal: () => void;
     selected: Product | null;
     setSelected: (product: Product | null) => void;
-    handleCreateProduct: (e: React.FormEvent<HTMLFormElement>, product: Product, images: File[] | string[], productAttributes: { key: number; value: string }[]) => Promise<void>;
+    handleCreateProduct: (e: React.FormEvent<HTMLFormElement>, product: Product, images: File[] | string[], productAttributes: { key: string; value: string }[]) => Promise<void>;
     alertProps: {
       showAlert: boolean;
       alertMessage: string;
@@ -52,36 +52,37 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
         description_long: "",
         image: selected?.image || new File([], ""),
         price: 0,
-        category_id: 0,
-        idbrand: 0,
+        category_id: "",
+        idbrand: "",
         stock: 0,
         discount: 0,
     };
 
     // Options para selects
-    const [categories, setCategories] = useState<{ value: number; label: string }[]>([]);
-    const [brands, setBrands] = useState<{ value: number; label: string }[]>([]);
+    const [categories, setCategories] = useState<{ value: string; label: string }[]>([]);
+    const [brands, setBrands] = useState<{ value: string; label: string }[]>([]);
 
     // Si selected existe, usarlo; si no, usar emptyProduct
-    const [FormDataProduct, setFormDataProduct] = useState<Product>(selected || emptyProduct);
-    const [productAttributes, setProductAttributes] = useState<{ key: number; value: string }[]>([]);
-    const [categoryAttributes, setCategoryAttributes] = useState<{ value: number; label: string }[]>([]);
+    const [FormDataProduct, setFormDataProduct] = useState<Product>(emptyProduct);
+    const [productAttributes, setProductAttributes] = useState<{ key: string; value: string }[]>([]);
+    const [categoryAttributes, setCategoryAttributes] = useState<{ value: string; label: string }[]>([]);
 
     // images
     const [imageExtrasFiles, setImageExtrasFiles] = useState<File[] | string[]>(Array(4).fill(null));
 
-    // Actualiza el estado cuando cambia selected
     useEffect(() => {
-      if(isOpen && !selected){
+      if (!isOpen) return;
+
+      if (selected) {
+        setFormDataProduct(selected);
+        handleImagesByProductId(selected.id || "");
+        handlegetAttributesByProductId(selected.id || "");
+      } else {
         handleClearForm();
-      }else{
-        setFormDataProduct(selected || emptyProduct);
-        handleImagesByProductId(selected?.id || 0);
-        handlegetAttributesByProductId(selected?.id || 0);
-        handleFetchCategories();
-        handleFetchBrands();
       }
-    },[selected, isOpen]);
+      handleFetchCategories();
+      handleFetchBrands();
+    }, [isOpen, selected]);
 
     useEffect(() => {
       if(FormDataProduct.category_id) {
@@ -89,11 +90,11 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
       }
     }, [FormDataProduct.category_id]);
 
-    async function handlegetCategoryAttributesByCategoryId(categoryId: number) {
+    async function handlegetCategoryAttributesByCategoryId(categoryId: string) {
       try {
         const attributes = await getCategoryAttributesByCategoryId(categoryId);
         const formattedAttributes = attributes.map((attr: CategoryAttribute) => ({
-          value: attr.id as number,
+          value: attr.id as string,
           label: attr.attribute_name,
         }));
         setCategoryAttributes(formattedAttributes);
@@ -106,7 +107,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
       try {
         const categories = await getCategories();
         const formattedCategories = categories.map((cat: Categories) => ({
-          value: cat.id as number,
+          value: cat.id as string,
           label: cat.name,
         }));
         setCategories(formattedCategories);
@@ -119,7 +120,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
       try {
         const brands = await getBrands();
         const formattedBrands = brands.map((brand: Brands) => ({
-          value: brand.id as number,
+          value: brand.id as string,
           label: brand.name,
         }));
         setBrands(formattedBrands);
@@ -128,7 +129,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
       }
     }
 
-    async function handleImagesByProductId(productId: number) {
+    async function handleImagesByProductId(productId: string) {
       try {
         const images = await getImagesByProductId(productId);
         const imageFiles = images.map((img: ImagesProduct, index) => {
@@ -144,11 +145,11 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
       }
     }
 
-    async function handlegetAttributesByProductId(productId: number) {
+    async function handlegetAttributesByProductId(productId: string) {
       try {
         const attributes = await getAttributesByProductId(productId);
         const formattedAttributes = attributes.map((attr: ProductAttribute) => ({
-          key: attr.id as number,
+          key: attr.id as string,
           value: attr.attribute_value,
         }));
         setProductAttributes(formattedAttributes);
@@ -176,15 +177,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
         const { name, value } = e.target;
         e.preventDefault();
         setFormDataProduct((prevData) => {   
-            if( name === "category_id" || name === "idbrand"){
-                const numericValue = parseInt(value);
-                return {
-                    ...prevData,
-                    [name]: isNaN(numericValue) ? 0 : numericValue
-                };
-            }
-
-            if(name === "price" || name === "stock" || name === "discount") {
+              if(name === "price" || name === "stock" || name === "discount") {
                 const numericValue = parseFloat(value);
                 return {
                     ...prevData,
@@ -206,7 +199,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
         prevAttributes.map((attr, idx) => {
           if (idx === index) {
             if(field === "key") {
-              return { ...attr, key: parseInt(value) };
+              return { ...attr, key: value };
             } else {
               return { ...attr, value };
             }
@@ -219,7 +212,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
     const handleAddAttribute = () => {
       setProductAttributes((prevAttributes) => [
         ...prevAttributes,
-        { key: 0, value: "" }
+        { key: "", value: "" }
       ]);
     }
 
@@ -298,7 +291,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                       <Select
                         className={`${errorInput === "category_id" ? "border-red-500" : ""}`}
                         name="category_id"
-                        value={FormDataProduct ? FormDataProduct.category_id?.toString() : ""}
+                        value={FormDataProduct ? FormDataProduct.category_id : ""}
                         onChange={handleDataChange}
                         options={categories}
                       />
@@ -308,7 +301,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                       <Select
                         className={`${errorInput === "idbrand" ? "border-red-500" : ""}`}
                         name="idbrand"
-                        value={FormDataProduct ? FormDataProduct.idbrand?.toString() : ""}
+                        value={FormDataProduct ? FormDataProduct.idbrand : ""}
                         onChange={handleDataChange}
                         options={brands}
                       />

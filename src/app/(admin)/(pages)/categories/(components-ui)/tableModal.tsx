@@ -109,7 +109,7 @@ export default function TableModal() {
         }
     }
 
-    async function handleDeleteCategory(categoryId: number) {
+    async function handleDeleteCategory(categoryId: string) {
         try{ 
             await deleteCategory(categoryId);
             await fetchCategoriesFiltered();
@@ -197,7 +197,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(category)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeleteCategory(category.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeleteCategory(category.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

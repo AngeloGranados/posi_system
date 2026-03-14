@@ -8,7 +8,7 @@ export interface tableThPaymentMethods {
 }
 
 export interface PaymentMethods {
-    id?: number;
+    id?: string;
     code: string;
     name: string;
     description: string;

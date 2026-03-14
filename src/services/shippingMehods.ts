@@ -18,7 +18,7 @@ export async function getShippingMethods(): Promise<ShippingMethods[]> {
     return response.json();
 }
 
-export async function deleteShippingMethods(shippingMethodsId: number): Promise<void> {
+export async function deleteShippingMethods(shippingMethodsId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${shippingMethodsId}`, {
         method: "DELETE"
     });

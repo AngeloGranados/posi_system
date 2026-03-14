@@ -8,7 +8,7 @@ export interface tableThCategories {
 }
 
 export interface Categories {
-    id?: number;
+    id?: string;
     name: string;
     slug: string;
     description: string;

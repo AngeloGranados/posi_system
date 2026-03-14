@@ -122,7 +122,7 @@ export default function TableModal() {
         }
     }
 
-    async function handleDeleteShippingMethods(shippingMethodId: number) {
+    async function handleDeleteShippingMethods(shippingMethodId: string) {
         try{ 
             await deleteShippingMethods(shippingMethodId);
             await fetchShippingMethodsFiltered();
@@ -212,7 +212,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(shippingMethod)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeleteShippingMethods(shippingMethod.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeleteShippingMethods(shippingMethod.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

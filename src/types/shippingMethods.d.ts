@@ -8,7 +8,7 @@ export interface tableThShippingMethods {
 }
 
 export interface ShippingMethods {
-    id?: number,
+    id?: string,
     code: string,
     name: string,
     description: string,

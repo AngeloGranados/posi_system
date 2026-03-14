@@ -100,7 +100,7 @@ export default function TableModal() {
         }
     }
 
-    async function handleDeleteAttributes(attributeId: number) {
+    async function handleDeleteAttributes(attributeId: string) {
         try{ 
             await deleteAttributes(attributeId);
             await fetchAttributesFiltered();
@@ -168,7 +168,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(attribute)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeleteAttributes(attribute.id as number)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleDeleteAttributes(attribute.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

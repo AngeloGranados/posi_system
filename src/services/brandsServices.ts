@@ -18,7 +18,7 @@ export async function getBrands(): Promise<Brands[]> {
     return data;
 }
 
-export async function deleteBrands(brandId: number): Promise<void> {
+export async function deleteBrands(brandId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${brandId}`, {
         method: "DELETE"
     });
