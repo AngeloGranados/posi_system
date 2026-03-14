@@ -376,7 +376,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                                 <Select 
                                   onChange={e => handleAttributesChange(index, "key", e)}
                                   name="key"
-                                  value={attr.key}
+                                  value={attr.key ? attr.key : ""}
                                   options={categoryAttributes}
                                 />
                             </FormGroupInput>

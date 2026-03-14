@@ -207,7 +207,7 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
                         className={errorInput === "discount_type" ? "border-red-500" : ""}
                         name="discount_type"
                         options={selectOptionsTypeDiscount}
-                        value={FormDataDiscounts && FormDataDiscounts.discount_type ? FormDataDiscounts.discount_type : ""}
+                        value={FormDataDiscounts.discount_type ? FormDataDiscounts.discount_type : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
@@ -217,7 +217,7 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
                         className={errorInput === "discount_value" ? "border-red-500" : ""}
                         type="number"
                         name="discount_value"
-                        value={FormDataDiscounts && FormDataDiscounts.discount_value ? FormDataDiscounts.discount_value : 0}
+                        value={FormDataDiscounts.discount_value ? FormDataDiscounts.discount_value : 0}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>

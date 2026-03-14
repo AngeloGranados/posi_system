@@ -148,7 +148,7 @@ export default function ModalPromoCodes({ errorInput, setErrorInput, loading, is
                         className={errorInput === "discount_type" ? "border-red-500" : ""}
                         name="discount_type"
                         options={selectOptionsTypeDiscount}
-                        value={FormDataPromoCodes && FormDataPromoCodes.discount_type ? FormDataPromoCodes.discount_type : ""}
+                        value={FormDataPromoCodes.discount_type ? FormDataPromoCodes.discount_type : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>

@@ -116,7 +116,7 @@ export default function ModalAttributes({ errorInput, setErrorInput,loading, isO
                       <Label htmlFor="category_id">Categoria:</Label>
                       <Select 
                         className={errorInput === "category_id" ? "border-red-500" : ""}
-                        value={FormDataAttributes ? FormDataAttributes.category_id : ""}
+                        value={FormDataAttributes.category_id ? FormDataAttributes.category_id : ""}
                         name="category_id"
                         onChange={handleDataChange}
                         options={categories}
@@ -128,7 +128,7 @@ export default function ModalAttributes({ errorInput, setErrorInput,loading, isO
                         className={errorInput === "attribute_name" ? "border-red-500" : ""}
                         id="input-attribute_name"
                         name="attribute_name"
-                        value={FormDataAttributes ? FormDataAttributes.attribute_name : ""}
+                        value={FormDataAttributes.attribute_name ? FormDataAttributes.attribute_name : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
@@ -138,7 +138,7 @@ export default function ModalAttributes({ errorInput, setErrorInput,loading, isO
                         className={errorInput === "attribute_unit" ? "border-red-500" : ""}
                         id="input-attribute_unit"
                         name="attribute_unit"
-                        value={FormDataAttributes ? FormDataAttributes.attribute_unit : ""}
+                        value={FormDataAttributes.attribute_unit ? FormDataAttributes.attribute_unit : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
