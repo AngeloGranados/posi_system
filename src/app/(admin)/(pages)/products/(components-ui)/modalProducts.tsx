@@ -270,7 +270,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                         className={`${errorInput === "slug" ? "border-red-500" : ""}`}
                         id="input-slug"
                         name="slug"
-                        value={FormDataProduct ? FormDataProduct.slug : ""}
+                        value={FormDataProduct.slug ? FormDataProduct.slug : ""}
                         onChange={handleDataChange}
                       />
                     </FormGroupInput>
@@ -280,7 +280,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                         className={`${errorInput === "sku" ? "border-red-500" : ""}`}
                         id="input-sku"
                         name="sku"
-                        value={FormDataProduct ? FormDataProduct.sku : ""}
+                        value={FormDataProduct.sku ? FormDataProduct.sku : ""}
                         onChange={handleDataChange}
                       />
                     </FormGroupInput>
@@ -313,7 +313,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                       <TextArea 
                           className={`${errorInput === "description_short" ? "border-red-500" : ""}`}
                           name="description_short"
-                          value={FormDataProduct ? FormDataProduct.description_short : ""}
+                          value={FormDataProduct.description_short ? FormDataProduct.description_short : ""}
                           onChange={handleDataChange}
                       />
                     </FormGroupInput>
@@ -324,7 +324,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                       <TextArea 
                           className={`${errorInput === "description_long" ? "border-red-500" : ""}`}
                           name="description_long"
-                          value={FormDataProduct ? FormDataProduct.description_long : ""}
+                          value={FormDataProduct.description_long ? FormDataProduct.description_long : ""}
                           onChange={handleDataChange}
                       />
                     </FormGroupInput>
@@ -335,8 +335,10 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                         <InputField
                           className={`${errorInput === "price" ? "border-red-500" : ""}`}
                           id="input-price"
+                          type="number"
+                          step={0.01}
                           name="price"
-                          value={FormDataProduct ? FormDataProduct.price : ""}
+                          value={FormDataProduct.price ? FormDataProduct.price : ""}
                           onChange={handleDataChange}
                         />
                       </FormGroupInput>
@@ -345,8 +347,9 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                         <InputField
                           className={`${errorInput === "stock" ? "border-red-500" : ""}`}
                           id="input-stock"
+                          type="number"
                           name="stock"
-                          value={FormDataProduct ? FormDataProduct.stock : ""}
+                          value={FormDataProduct.stock ? FormDataProduct.stock : ""}
                           onChange={handleDataChange}
                         />
                       </FormGroupInput>
@@ -358,7 +361,8 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                             id="input-discount"
                             name="discount"
                             type="number"
-                            value={FormDataProduct ? FormDataProduct.discount : 0}
+                            step={0.01}
+                            value={FormDataProduct.discount ? FormDataProduct.discount : ""}
                             onChange={handleDataChange}
                           />
                         </FormGroupInput>

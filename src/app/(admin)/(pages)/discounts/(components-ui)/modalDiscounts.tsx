@@ -216,8 +216,9 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
                       <InputField 
                         className={errorInput === "discount_value" ? "border-red-500" : ""}
                         type="number"
+                        step={0.01}
                         name="discount_value"
-                        value={FormDataDiscounts.discount_value ? FormDataDiscounts.discount_value : 0}
+                        value={FormDataDiscounts.discount_value ? FormDataDiscounts.discount_value : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>

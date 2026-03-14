@@ -158,7 +158,7 @@ export default function ModalPromoCodes({ errorInput, setErrorInput, loading, is
                         className={errorInput === "discount_value" ? "border-red-500" : ""}
                         type="number"
                         name="discount_value"
-                        value={FormDataPromoCodes && FormDataPromoCodes.discount_value ? FormDataPromoCodes.discount_value : 0}
+                        value={FormDataPromoCodes.discount_value ? FormDataPromoCodes.discount_value : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
@@ -170,7 +170,7 @@ export default function ModalPromoCodes({ errorInput, setErrorInput, loading, is
                         className={errorInput === "min_purchase" ? "border-red-500" : ""}
                         type="number"
                         name="min_purchase"
-                        value={FormDataPromoCodes && FormDataPromoCodes.min_purchase ? FormDataPromoCodes.min_purchase : 0}
+                        value={FormDataPromoCodes.min_purchase ? FormDataPromoCodes.min_purchase : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
@@ -180,7 +180,7 @@ export default function ModalPromoCodes({ errorInput, setErrorInput, loading, is
                         className={errorInput === "max_discount" ? "border-red-500" : ""}
                         type="number"
                         name="max_discount"
-                        value={FormDataPromoCodes && FormDataPromoCodes.max_discount ? FormDataPromoCodes.max_discount : 0}
+                        value={FormDataPromoCodes.max_discount ? FormDataPromoCodes.max_discount : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>

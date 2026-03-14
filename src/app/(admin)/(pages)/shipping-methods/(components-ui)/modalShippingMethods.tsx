@@ -172,8 +172,9 @@ export default function ModalShippingMethods({ errorInput, setErrorInput, loadin
                       <InputField 
                         className={errorInput === "price" ? "border-red-500" : ""}
                         type="number"
+                        step={0.01}
                         name="price"
-                        value={FormDataShippingMethods ? FormDataShippingMethods.price : 0}
+                        value={FormDataShippingMethods.price ? FormDataShippingMethods.price : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
