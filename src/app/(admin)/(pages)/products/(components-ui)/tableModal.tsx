@@ -23,7 +23,7 @@ export default function TableModal() {
 
     // filters
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(6)
+    const [limit, setLimit] = useState(20)
     const [pageTotal, setPageTotal] = useState(1)
     const [orderBy, setOrderBy] = useState<orderByProduct | null>("ByDESC")
     const [orderField, setOrderField] = useState<orderByAscDescProduct | null>("id")
@@ -53,6 +53,7 @@ export default function TableModal() {
         setLoading(true);
         try {
             const response = await getProductsFilter({ orderBy, orderField, limit, page });
+            console.log("Response from getProductsFilter:", response);
             setProductsList(response.products);
             setPageTotal(response.total);
         }catch (error) {
