@@ -291,7 +291,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                       <Select
                         className={`${errorInput === "category_id" ? "border-red-500" : ""}`}
                         name="category_id"
-                        value={FormDataProduct ? FormDataProduct.category_id : ""}
+                        value={FormDataProduct.category_id ? FormDataProduct.category_id : ""}
                         onChange={handleDataChange}
                         options={categories}
                       />
@@ -301,7 +301,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                       <Select
                         className={`${errorInput === "idbrand" ? "border-red-500" : ""}`}
                         name="idbrand"
-                        value={FormDataProduct ? FormDataProduct.idbrand : ""}
+                        value={FormDataProduct.idbrand ? FormDataProduct.idbrand : ""}
                         onChange={handleDataChange}
                         options={brands}
                       />
