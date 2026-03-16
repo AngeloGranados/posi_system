@@ -53,7 +53,6 @@ export default function TableModal() {
         setLoading(true);
         try {
             const response = await getProductsFilter({ orderBy, orderField, limit, page });
-            console.log("Response from getProductsFilter:", response);
             setProductsList(response.products);
             setPageTotal(response.total);
         }catch (error) {

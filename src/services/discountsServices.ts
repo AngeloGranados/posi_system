@@ -30,8 +30,6 @@ export async function deleteDiscounts(discountsId: string): Promise<void> {
 
 export async function updateDiscounts(discounts: Discounts): Promise<Discounts> {
 
-    console.log("Updating discounts:", discounts); // Agrega este log para verificar los datos que se están enviando
-
     const response = await fetch(`${URL_API}/${discounts.id}`, {
         method: "PUT",
         headers: {
@@ -49,9 +47,6 @@ export async function updateDiscounts(discounts: Discounts): Promise<Discounts> 
 
 export async function createDiscounts(discounts: Discounts): Promise<Discounts> {
 
-    console.log("Creating discounts:", discounts); // Agrega este log para verificar los datos que se están enviando
-    
-    
     const response = await fetch(`${URL_API}`, {
         method: "POST",
         headers: {

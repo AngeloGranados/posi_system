@@ -94,7 +94,6 @@ export async function createUsers(users: Users): Promise<Users> {
     });
 
     const data = await response.json();
-    console.log("Response from createUsers:", data);
     if (!response.ok || data.error) {
         throw new Error(data.error);
     }

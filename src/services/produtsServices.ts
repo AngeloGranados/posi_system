@@ -148,7 +148,6 @@ export async function deleteProduct(id: string): Promise<void> {
 
 export async function getImagesByProductId(productId: string): Promise<ImagesProduct[]> {
     const response = await fetch(`${URL_API}/images/${productId}`);
-    console.log("Response from getImagesByProductId:", response);
     const data = await response.json();
     if (!response.ok || data.error) {
         throw new Error(data.error);

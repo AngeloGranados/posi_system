@@ -31,7 +31,6 @@ export async function deleteCategory(categoryId: string): Promise<void> {
 
 export async function updateCategory(category: Categories): Promise<Categories> {
 
-    console.log("Updating category:", category); // Agrega este log para verificar los datos
     const formData = new FormData();
     formData.append("name", category.name);
     formData.append("slug", category.slug);
