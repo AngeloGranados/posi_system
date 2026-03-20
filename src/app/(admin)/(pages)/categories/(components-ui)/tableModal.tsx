@@ -20,6 +20,7 @@ export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
     const [selectedCategory, setSelectedCategory] = useState<Categories | null>(null);
     const [categoriesList, setCategoriesList] = useState<Categories[]>([]);
+    const [isPrincipal, setIsPrincipal] = useState<boolean>(false);
 
     // filters
     const [page, setPage] = useState(1)
@@ -39,6 +40,7 @@ export default function TableModal() {
         { name: "id", value: "ID" },
         { name: "name", value: "Nombre" },
         { name: "description", value: "Descripción" },
+        { name: "parent_id", value: "Tipo" },
         { name: "actions", value: "Acciones" }
     ]
 
@@ -82,6 +84,13 @@ export default function TableModal() {
                     fieldError = field;
                     break;
                 }
+            }
+        }
+
+        if (!isPrincipal) {
+            if (!category.parent_id) {
+                error = "Debe seleccionar una categoría principal.";
+                fieldError = "parent_id";
             }
         }
 
@@ -138,6 +147,8 @@ export default function TableModal() {
                 errorInput={errorInput}
                 setErrorInput={setErrorInput}
                 loading={loading}
+                setIsPrincipal={setIsPrincipal}
+                isPrincipal={isPrincipal}
                 isOpen={isOpen} 
                 closeModal={closeModal} 
                 setSelected={setSelectedCategory} 
@@ -194,6 +205,13 @@ export default function TableModal() {
                                         </div>
                                     </TableCell>
                                     <TableCell className="px-5 my-4 line-clamp text-gray-700">{category.description}</TableCell>
+                                    <TableCell className="px-5 my-4 text-gray-700">
+                                        {
+                                        category.parent_id ? 
+                                        <span className="text-gray-500">Subcategoria de {category.parent_name}</span> 
+                                        : <span className="text-gray-500">Categoria Padre</span>
+                                        }
+                                    </TableCell>
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(category)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>

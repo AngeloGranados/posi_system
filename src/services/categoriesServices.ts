@@ -4,10 +4,11 @@ import { Categories, orderByAscDescCategories, orderByCategories } from "@/types
 const URL_API = `${process.env.NEXT_PUBLIC_API_URL}category`;
 
 interface filterOptions {
-    orderField: orderByAscDescCategories;
-    orderBy: orderByCategories;
-    limit: number;
-    page: number;
+    orderField?: orderByAscDescCategories;
+    orderBy?: orderByCategories;
+    limit?: number;
+    page?: number;
+    parent_id?: string;
 }
 
 export async function getCategories(): Promise<Categories[]> {
@@ -36,6 +37,7 @@ export async function updateCategory(category: Categories): Promise<Categories> 
     formData.append("slug", category.slug);
     formData.append("description", category.description);
     formData.append("image_url", category.image_url);
+    formData.append("parent_id", category.parent_id ? category.parent_id.toString() : "");
 
     const response = await fetch(`${URL_API}/${category.id}`, {
         method: "PUT",
@@ -54,6 +56,7 @@ export async function createCategory(category: Categories): Promise<Categories> 
     formData.append("name", category.name);
     formData.append("slug", category.slug);
     formData.append("description", category.description);
+    formData.append("parent_id", category.parent_id ? category.parent_id.toString() : "");
     formData.append("image_url", category.image_url);
 
     const response = await fetch(`${URL_API}`, {
@@ -74,6 +77,7 @@ export async function getCategoriesFiltered(filterOptions: filterOptions): Promi
 
     if(filterOptions.limit) params.append("limit", filterOptions.limit.toString());
     if(filterOptions.page) params.append("page", filterOptions.page.toString());
+    if(filterOptions.parent_id) params.append("ByIdParent", filterOptions.parent_id);
     if(filterOptions.orderBy){
         switch (filterOptions.orderBy) {
             case "ByASC":

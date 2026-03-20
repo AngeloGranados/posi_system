@@ -4,17 +4,15 @@ import { Modal } from "@/components/ui/modal";
 import InputField from "@/components/form/input/InputField";
 import React, { useEffect, useState } from "react";
 import Label from "@/components/form/Label";
-import Select from "@/components/form/Select";
 import TextArea from "@/components/form/input/TextArea";
-import FileInput from "@/components/form/input/FileInput";
-import Image from "next/image";
-import Button from "@/components/ui/button/Button";
 import Alert from "@/components/ui/alert/Alert";
-import useAlert from "@/hooks/useAlert";
 import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
 import { Categories } from "@/types/categories";
 import DropzoneComponent from "@/components/form/form-elements/DropZone";
+import Checkbox from "@/components/form/input/Checkbox";
+import Select from "@/components/form/Select";
+import { getCategories, getCategoriesFiltered } from "@/services/categoriesServices";
 
 interface ModalCategoryProps {
     isOpen: boolean;
@@ -25,6 +23,8 @@ interface ModalCategoryProps {
     selected: Categories | null;
     setSelected: (Category: Categories | null) => void;
     handleCreateCategory: (e: React.FormEvent<HTMLFormElement>, Category: Categories) => Promise<void>;
+    isPrincipal: boolean;
+    setIsPrincipal: (isPrincipal: boolean) => void;
     alertProps: {
       showAlert: boolean;
       alertMessage: string;
@@ -34,25 +34,31 @@ interface ModalCategoryProps {
     }
 }
 
-export default function ModalCategory({ setErrorInput, errorInput, loading, isOpen, closeModal, selected, setSelected, handleCreateCategory, alertProps } : ModalCategoryProps) {
+export default function ModalCategory({ setErrorInput, errorInput, loading, isOpen, closeModal, selected, setSelected, handleCreateCategory, alertProps, isPrincipal, setIsPrincipal } : ModalCategoryProps) {
 
     const emptyCategory: Categories = {
         name: "",
         slug: "",
         image_url: new File([], ""),
-        description: ""
+        description: "",
+        parent_id: null
     };
 
     // Si selected existe, usarlo; si no, usar emptyCategory
-    const [FormDataCategory, setFormDataCategory] = useState<Categories>(selected || emptyCategory);
+    const [FormDataCategory, setFormDataCategory] = useState<Categories>(emptyCategory);
+    const [categoriesOptions, setCategoriesOptions] = useState<{ value: string; label: string }[]>([]);
 
-    // Actualiza el estado cuando cambia selected
+   
     useEffect(() => {
-      if(isOpen && !selected){
+      if(!isOpen) return;
+
+      if(!selected){
         handleClearForm();
       }else{
         setFormDataCategory(selected || emptyCategory);
+        setIsPrincipal(selected ? selected.parent_id === null : true);
       }
+      fetchCategoriesOptions();
     },[selected, isOpen]);
 
     const handleCloseModal = () => {
@@ -65,6 +71,20 @@ export default function ModalCategory({ setErrorInput, errorInput, loading, isOp
       setSelected(null);
       alertProps.closeAlert();
       setErrorInput(null);
+      setIsPrincipal(true);
+    }
+
+    async function fetchCategoriesOptions() {
+      try {
+        const response = await getCategoriesFiltered({ parent_id: 'null' });
+        const options = response.data.map((category) => ({
+          value: category.id as string,
+          label: category.name
+        }));
+        setCategoriesOptions(options);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
     }
 
     // Handler universal, siempre actualiza el estado
@@ -72,22 +92,6 @@ export default function ModalCategory({ setErrorInput, errorInput, loading, isOp
         const { name, value } = e.target;
         e.preventDefault();
         setFormDataCategory((prevData) => {
-            if (name === "category_id" || name === "idbrand") {
-                const numericValue = parseInt(value);
-                return {
-                    ...prevData,
-                    [name]: isNaN(numericValue) ? 0 : numericValue
-                };
-            }
-
-            if(name === "price" || name === "stock" || name === "discount") {
-                const numericValue = parseFloat(value);
-                return {
-                    ...prevData,
-                    [name]: isNaN(numericValue) ? 0 : numericValue
-                };
-            }
-            
             return {
                 ...prevData,
                 [name]: value
@@ -155,6 +159,44 @@ export default function ModalCategory({ setErrorInput, errorInput, loading, isOp
                         onChange={handleDataChange}
                     />
                   </FormGroupInput>
+                </FormRow>
+                <FormRow>
+                  <FormGroupInput>
+                    <Label htmlFor="description">Tipo:</Label>
+                    <Checkbox 
+                      label="Principal"
+                      id="is_principal"
+                      name="is_principal"
+                      onChange={() => {
+                        setIsPrincipal(true)
+                        setFormDataCategory((prevData) => ({
+                          ...prevData,
+                          parent_id: null
+                        }))
+                      }}
+                      checked={isPrincipal}
+                    />
+                    <Checkbox 
+                      label="Subcategoría"
+                      id="is_subcategory"
+                      name="is_principal"
+                      onChange={() => setIsPrincipal(false)}
+                      checked={!isPrincipal}
+                    />
+                  </FormGroupInput>
+                  {
+                    !isPrincipal ? (
+                      <FormGroupInput>
+                        <Label htmlFor="parent_id">Categoría Padre:</Label>
+                        <Select 
+                          name="parent_id"
+                          value={FormDataCategory.parent_id || ""}
+                          onChange={handleDataChange}
+                          options={categoriesOptions}
+                        />
+                      </FormGroupInput>
+                    ) : null
+                  }
                 </FormRow>
               </div>
               <div className="flex flex-col gap-4 mt-8">
