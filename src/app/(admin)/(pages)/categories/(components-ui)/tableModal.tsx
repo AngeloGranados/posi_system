@@ -1,7 +1,7 @@
 'use client'
 
 import { useModal } from "@/hooks/useModal"
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useAlert from "@/hooks/useAlert";
 import TablePage from "@/components/tables/TablePage";
 import { TableRow, TableCell } from "@/components/ui/table";
@@ -15,6 +15,7 @@ import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { createCategory, deleteCategory, getCategoriesFiltered, updateCategory } from "@/services/categoriesServices";
 import { Categories, orderByAscDescCategories, orderByCategories, tableThCategories } from "@/types/categories";
 import ModalCategory from "./modalCategory";
+import debounce from "debounce";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -29,6 +30,7 @@ export default function TableModal() {
     const [orderBy, setOrderBy] = useState<orderByCategories>("ByASC")
     const [orderField, setOrderField] = useState<orderByAscDescCategories>("id")
     const [filterlike, setFilterlike] = useState('')
+    const [inputSearch, setInputSearch] = useState('')
 
     const [loading, setLoading] = useState(false);
 
@@ -47,7 +49,7 @@ export default function TableModal() {
     async function fetchCategoriesFiltered() {
         setLoading(true);
         try {
-            const response = await getCategoriesFiltered({orderBy, orderField, limit, page});// Agrega este log para verificar la respuesta
+            const response = await getCategoriesFiltered({orderBy, orderField, limit, page, filterlike});
             setCategoriesList(response.data);
             setPageTotal(response.totalRows);
         } catch (error) {
@@ -141,6 +143,15 @@ export default function TableModal() {
         openModal();
     };
 
+    const debounceOnchangeFilterLike = useCallback(debounce((value: string) => {
+        setFilterlike(value);
+    }, 500), []);
+
+    const handleOnchangeFilterLike = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputSearch(e.target.value);
+        debounceOnchangeFilterLike(e.target.value);
+    }
+
     return (
         <>
             <ModalCategory 
@@ -157,6 +168,8 @@ export default function TableModal() {
                 alertProps={{ showAlert, alertMessage, alertVariant, alertTitle, closeAlert }} 
             />
             <TablePage<Categories>
+                search={inputSearch}
+                setSearch={handleOnchangeFilterLike}
                 titleTable=""
                 buttonText="Agregar una Categoría"
                 orderField={orderField} 
@@ -165,6 +178,7 @@ export default function TableModal() {
                 OpenModal={handleOpenModal}  
                 handleOrderByAscDesc={handleOrderByAscDesc} 
                 pageTotal={pageTotalToTable} 
+                showSearch={true}
                 page={page}
                 setPage={setPage}
             >

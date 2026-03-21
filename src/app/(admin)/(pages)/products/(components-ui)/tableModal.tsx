@@ -3,7 +3,7 @@
 import { useModal } from "@/hooks/useModal"
 import { orderByAscDescProduct, orderByProduct, Product, tableThProduct } from "@/types/produts"
 import ModalProduct from "./modalProducts";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createProduct, deleteProduct, getProductsFilter, updateProduct } from "@/services/produtsServices";
 import useAlert from "@/hooks/useAlert";
 import TablePage from "@/components/tables/TablePage";
@@ -15,6 +15,7 @@ import Badge from "@/components/ui/badge/Badge";
 import EditIcon from "../../../../../../public/images/icons/edit-icon";
 import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
+import debounce from "debounce";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -28,6 +29,7 @@ export default function TableModal() {
     const [orderBy, setOrderBy] = useState<orderByProduct | null>("ByDESC")
     const [orderField, setOrderField] = useState<orderByAscDescProduct | null>("id")
     const [filterlike, setFilterlike] = useState('')
+    const [inputSearch, setInputSearch] = useState('')
 
     const [loading, setLoading] = useState(false);
 
@@ -47,12 +49,12 @@ export default function TableModal() {
 
     useEffect(() => {
         fetchProductsFiltered()
-    }, [limit, page, orderBy, filterlike, orderField]);
+    }, [limit, page, orderBy, filterlike, orderField, filterlike]);
 
     async function fetchProductsFiltered() {
         setLoading(true);
         try {
-            const response = await getProductsFilter({ orderBy, orderField, limit, page });
+            const response = await getProductsFilter({ orderBy, orderField, limit, page, filterlike });
             setProductsList(response.products);
             setPageTotal(response.total);
         }catch (error) {
@@ -151,6 +153,15 @@ export default function TableModal() {
         openModal();
     };
 
+    const debounceOnchangeFilterLike = useCallback(debounce((value: string) => {
+        setFilterlike(value);
+    }, 500), []);
+
+    const handleOnchangeFilterLike = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputSearch(e.target.value);
+        debounceOnchangeFilterLike(e.target.value);
+    }
+
     return (
         <>
             <ModalProduct 
@@ -166,6 +177,9 @@ export default function TableModal() {
             />
             <TablePage<Product>
                 titleTable=""
+                showSearch={true}
+                setSearch={handleOnchangeFilterLike}
+                search={inputSearch}
                 buttonText="Agregar un Producto"
                 orderField={orderField} 
                 orderBy={orderBy} 

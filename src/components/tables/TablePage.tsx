@@ -16,6 +16,10 @@ import { Discounts, orderByAscDescDiscounts, orderByDiscounts } from "@/types/di
 import { orderByAscDescOrders, orderByOrders, Orders } from "@/types/orders";
 import { orderByAscDescUsers, orderByUsers, Users } from "@/types/users";
 import { Attributes, orderByAscDescAttributes, orderByAttributes } from "@/types/attributes";
+import FormRow from "../form/group-input/FormRow";
+import FormGroupInput from "../form/group-input/FormGroupInput";
+import InputField from "../form/input/InputField";
+import Label from "../form/Label";
 
 
 type orderByAscDescT<T> = 
@@ -46,6 +50,9 @@ type orderByT<T> =
 
 interface TablePageProps<T> {
     titleTable: string;
+    showSearch?: boolean;
+    search?: string;
+    setSearch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     children: React.ReactNode;
     OpenModal?: (data: T | null) => void;
     tableThPage: { name: string, value: string }[];
@@ -58,7 +65,7 @@ interface TablePageProps<T> {
     buttonText?: string;
 }
 
-export default function TablePage<T>({ children, titleTable, buttonText, OpenModal, tableThPage, handleOrderByAscDesc, orderBy, orderField, pageTotal, page, setPage }: TablePageProps<T>) {
+export default function TablePage<T>({ showSearch = false, setSearch, search, children, titleTable, buttonText, OpenModal, tableThPage, handleOrderByAscDesc, orderBy, orderField, pageTotal, page, setPage }: TablePageProps<T>) {
 
     function handlePageChange(page: number){
         if(page < 1 || page > pageTotal) return;
@@ -68,7 +75,27 @@ export default function TablePage<T>({ children, titleTable, buttonText, OpenMod
     return (
         <div className="space-y-6">
             <ComponentCard title={titleTable}>
-                {buttonText && <Button onClick={() => OpenModal?.(null)} className="flex items-center leading-none float-right"><AddIcon width={17} height={17} fill="currentColor" /> {buttonText}</Button>}
+                <div className="flex items-center justify-between mb-4">
+                    <div>
+                        {
+                            showSearch && (
+                                <FormRow>
+                                    <FormGroupInput>
+                                        <InputField
+                                            name="search"
+                                            id="search"
+                                            value={search}
+                                            placeholder="Buscar..."
+                                            onChange={setSearch} />
+                                    </FormGroupInput>
+                                </FormRow>
+                            )
+                        }
+                    </div>   
+                    <div>
+                        {buttonText && <Button onClick={() => OpenModal?.(null)} className="flex items-center leading-none float-right"><AddIcon width={17} height={17} fill="currentColor" /> {buttonText}</Button>}
+                    </div>
+                </div>
                 <Table>
                     <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
                         <TableRow>
