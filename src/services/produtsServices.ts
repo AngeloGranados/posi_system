@@ -65,6 +65,15 @@ export async function getProductsFilter(Filterparams: FilterParams): Promise<Fil
     return data;
 }
 
+export async function getProductById(id: string): Promise<Product> {
+    const response = await fetch(`${URL_API}/${id}`);
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error || "Error fetching product");
+    }
+    return data;
+}
+
 export async function createProduct(product: Product, images: File[] | string[], productAttributes: { key: string; value: string }[] ): Promise<Product> {
 
     const formData = new FormData();

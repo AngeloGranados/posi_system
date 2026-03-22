@@ -1,14 +1,16 @@
-import { Attributes, orderByAscDescAttributes, orderByAttributes } from "@/types/attributes";
+import { Attributes, AttributesProduct, orderByAscDescAttributes, orderByAttributes } from "@/types/attributes";
 
 
 
 const URL_API = `${process.env.NEXT_PUBLIC_API_URL}attributes`;
 
 interface filterOptions {
-    orderField: orderByAscDescAttributes;
-    orderBy: orderByAttributes;
-    limit: number;
-    page: number;
+    product_id?: string;
+    orderField?: orderByAscDescAttributes;
+    orderBy?: orderByAttributes;
+    limit?: number;
+    page?: number;
+    ByImageAttributeValues?: boolean;
 }
 
 export async function getAttributes(): Promise<Attributes[]> {
@@ -81,6 +83,32 @@ export async function getAttributesFiltered(filterOptions: filterOptions): Promi
     }
 
     const response = await fetch(`${URL_API}/filter?${params.toString()}`);
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
+    }
+    return data;
+}
+
+export async function getAttributesProductsFiltered(filterOptions: filterOptions): Promise<{ data: AttributesProduct[]; totalRows: number}>{
+
+    const params = new URLSearchParams();
+
+    if(filterOptions.product_id) params.append("product_id", filterOptions.product_id.toString());
+    if(filterOptions.limit) params.append("limit", filterOptions.limit.toString());
+    if(filterOptions.page) params.append("page", filterOptions.page.toString());
+    if(filterOptions.orderBy){
+        switch (filterOptions.orderBy) {
+            case "ByASC":
+            case "ByDESC":
+                if (filterOptions.orderField) {
+                    params.append(filterOptions.orderBy, filterOptions.orderField);
+                }
+        }
+    }
+    if(filterOptions.ByImageAttributeValues) params.append("ByImageAttributeValues", "true");
+
+    const response = await fetch(`${URL_API}/filter/productsAttributes?${params.toString()}`);
     const data = await response.json();
     if (!response.ok || data.error) {
         throw new Error(data.error);

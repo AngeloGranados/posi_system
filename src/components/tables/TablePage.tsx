@@ -20,6 +20,7 @@ import FormRow from "../form/group-input/FormRow";
 import FormGroupInput from "../form/group-input/FormGroupInput";
 import InputField from "../form/input/InputField";
 import Label from "../form/Label";
+import { ImagesProducts, orderByAscDescImagesProducts, orderByImagesProducts } from "@/types/images_products";
 
 
 type orderByAscDescT<T> = 
@@ -33,6 +34,7 @@ T extends Discounts ? orderByAscDescDiscounts :
 T extends Orders ? orderByAscDescOrders :
 T extends Users ? orderByAscDescUsers :
 T extends Attributes ? orderByAscDescAttributes :
+T extends ImagesProducts ? orderByAscDescImagesProducts :
 never;
 
 type orderByT<T> =
@@ -46,6 +48,7 @@ type orderByT<T> =
   T extends Orders ? orderByOrders :
   T extends Users ? orderByUsers :
   T extends Attributes ? orderByAttributes :
+  T extends ImagesProducts ? orderByImagesProducts :
   never;
 
 interface TablePageProps<T> {

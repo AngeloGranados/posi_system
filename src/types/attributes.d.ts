@@ -15,3 +15,10 @@ export interface Attributes {
     attribute_unit: string
 }
 
+export interface AttributesProduct {
+    id?: string,
+    product_id?: string,
+    category_attribute_id?: string,
+    attribute_value?: string,
+}
+
