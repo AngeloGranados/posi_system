@@ -1,7 +1,7 @@
 'use client'
 
 import { useModal } from "@/hooks/useModal"
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useAlert from "@/hooks/useAlert";
 import TablePage from "@/components/tables/TablePage";
 import { TableRow, TableCell } from "@/components/ui/table";
@@ -14,6 +14,7 @@ import Image from "next/image";
 import { ImagesProducts, orderByAscDescImagesProducts, orderByImagesProducts, tableThImagesProducts } from "@/types/images_products";
 import { createImagesProducts, deleteImagesProducts, getImagesProductsFiltered, updateImagesProducts } from "@/services/imagesProductsServices";
 import ModalImagesProducts from "./modalImagesProducts";
+import debounce from "debounce";
 
 
 export default function TableModal() {
@@ -27,7 +28,8 @@ export default function TableModal() {
     const [pageTotal, setPageTotal] = useState(1)
     const [orderBy, setOrderBy] = useState<orderByImagesProducts>("ByDESC")
     const [orderField, setOrderField] = useState<orderByAscDescImagesProducts>("id")
-    const [filterlike, setFilterlike] = useState('')
+    const [filterLike, setFilterLike] = useState('')
+    const [inputSearch, setInputSearch] = useState('')
 
     const [loading, setLoading] = useState(false);
 
@@ -48,7 +50,7 @@ export default function TableModal() {
         setLoading(true);
         try {
             // El servicio debe retornar { data, totalItems }
-            const response = await getImagesProductsFiltered({orderBy, orderField, limit, page});
+            const response = await getImagesProductsFiltered({orderBy, orderField, limit, page, filterLike});
             setImagesProductsList(response.data);
             setPageTotal(response.totalRows); // Actualiza el total de elementos
         }catch (error) {
@@ -60,7 +62,16 @@ export default function TableModal() {
 
     useEffect(() => {
         fetchImagesProductsFiltered()
-    }, [limit, page, orderBy, filterlike, orderField]);
+    }, [limit, page, orderBy, filterLike, orderField]);
+
+    const debounceFilterLike = useCallback(debounce((value:string)=>{
+        setFilterLike(value);
+    }, 500), []);
+
+    function handleOnChangeFilterLike(e: React.ChangeEvent<HTMLInputElement>) {
+        setInputSearch(e.target.value);
+        debounceFilterLike(e.target.value);
+    }
 
     // El total de páginas debe ser calculado con el total de elementos
     const pageTotalToTable = Math.max(1, Math.ceil(pageTotal / limit));
@@ -151,6 +162,9 @@ export default function TableModal() {
             />
             <TablePage<ImagesProducts>
                 titleTable=""
+                showSearch={true}
+                search={inputSearch}
+                setSearch={handleOnChangeFilterLike}
                 buttonText="Agregar Imagen de Producto"
                 orderField={orderField} 
                 orderBy={orderBy} 

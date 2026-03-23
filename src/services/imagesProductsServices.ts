@@ -8,6 +8,7 @@ interface filterOptions {
     orderBy: orderByImagesProducts;
     limit: number;
     page: number;
+    filterLike: string;
 }
 
 export async function getImagesProducts(): Promise<ImagesProducts[]> {
@@ -92,6 +93,7 @@ export async function getImagesProductsFiltered(filterOptions: filterOptions): P
                 }
         }
     }
+    if(filterOptions.filterLike) params.append("filterLike", filterOptions.filterLike);
 
     const response = await fetch(`${URL_API}/filter?${params.toString()}`);
     const data = await response.json();
