@@ -76,7 +76,7 @@ export default function ModalCategory({ setErrorInput, errorInput, loading, isOp
 
     async function fetchCategoriesOptions() {
       try {
-        const response = await getCategoriesFiltered({ parent_id: 'null' });
+        const response = await getCategoriesFiltered({ parent_id: 'null', limit: 1000 });
         const options = response.data.map((category) => ({
           value: category.id as string,
           label: category.name
