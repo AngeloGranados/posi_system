@@ -16,6 +16,7 @@ import EditIcon from "../../../../../../public/images/icons/edit-icon";
 import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import debounce from "debounce";
+import { getAttributesProductsFiltered } from "@/services/attributesServices";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -24,7 +25,7 @@ export default function TableModal() {
 
     // filters
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(20)
+    const [limit, setLimit] = useState(100)
     const [pageTotal, setPageTotal] = useState(1)
     const [orderBy, setOrderBy] = useState<orderByProduct | null>("ByDESC")
     const [orderField, setOrderField] = useState<orderByAscDescProduct | null>("id")

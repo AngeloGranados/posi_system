@@ -25,7 +25,7 @@ export default function TableModal() {
 
     // filters
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(20)
+    const [limit, setLimit] = useState(100)
     const [pageTotal, setPageTotal] = useState(1)
     const [orderBy, setOrderBy] = useState<orderByCategories>("ByASC")
     const [orderField, setOrderField] = useState<orderByAscDescCategories>("id")

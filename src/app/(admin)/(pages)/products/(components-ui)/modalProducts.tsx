@@ -7,14 +7,10 @@ import React, { useEffect, useState } from "react";
 import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
 import TextArea from "@/components/form/input/TextArea";
-import FileInput from "@/components/form/input/FileInput";
-import Image from "next/image";
 import Button from "@/components/ui/button/Button";
 import Alert from "@/components/ui/alert/Alert";
-import useAlert from "@/hooks/useAlert";
 import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
-import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import DropzoneComponent from "@/components/form/form-elements/DropZone";
 import ImagesDropzone from "@/components/form/form-elements/ImagesDropZone";
 import AddIcon from "../../../../../../public/images/icons/add-icon";
@@ -23,6 +19,7 @@ import { getCategories } from "@/services/categoriesServices";
 import { Categories } from "@/types/categories";
 import { getBrands } from "@/services/brandsServices";
 import { Brands } from "@/types/brands";
+import AttributeRow from "./attributeRow";
 
 interface ModalProductProps {
     isOpen: boolean;
@@ -192,8 +189,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
         });
     }
 
-    const handleAttributesChange = (index: number, field: "key" | "value", e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      let { value } = e.target;
+    async function handleAttributesChange(index: number, field: "key" | "value", value: string) {
 
       setProductAttributes((prevAttributes) => (
         prevAttributes.map((attr, idx) => {
@@ -374,32 +370,14 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                     {categoryAttributes.length > 0 && FormDataProduct.category_id ? (<Button onClick={handleAddAttribute} className="mt-4 w-full bg-blue-100"><AddIcon width={20} height={20} fill="white"/> Añadir atributo</Button>) : null}
                       {
                         categoryAttributes && productAttributes.map((attr, index) => (
-                          <FormRow key={index}>
-                            <FormGroupInput>
-                                <Label htmlFor="key">Atributo:</Label>
-                                <Select 
-                                  onChange={e => handleAttributesChange(index, "key", e)}
-                                  name="key"
-                                  value={attr.key ? attr.key : ""}
-                                  options={categoryAttributes}
-                                />
-                            </FormGroupInput>
-                            <FormGroupInput>
-                                <Label htmlFor="value">Valor:</Label>
-                                <InputField
-                                  id="input-value"
-                                  name="value"
-                                  value={attr.value}
-                                  onChange={e => handleAttributesChange(index, "value", e)}
-                                />
-                            </FormGroupInput>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteAttribute(index)}
-                            >
-                              <DeleteIcon className="mb-4" fill="red" width={20} height={20} />
-                            </button>
-                          </FormRow>
+                          <AttributeRow
+                            key={index}
+                            attr={attr}
+                            index={index}
+                            handleAttributesChange={handleAttributesChange}
+                            categoryAttributes={categoryAttributes}
+                            handleDeleteAttribute={handleDeleteAttribute}
+                          />
                         ))
                       }
                     </div>

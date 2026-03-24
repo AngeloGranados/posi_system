@@ -8,6 +8,7 @@ interface filterOptions {
     product_id?: string;
     orderField?: orderByAscDescAttributes;
     orderBy?: orderByAttributes;
+    filterLike?: string;
     limit?: number;
     page?: number;
     ByImageAttributeValues?: boolean;
@@ -97,6 +98,7 @@ export async function getAttributesProductsFiltered(filterOptions: filterOptions
     if(filterOptions.product_id) params.append("product_id", filterOptions.product_id.toString());
     if(filterOptions.limit) params.append("limit", filterOptions.limit.toString());
     if(filterOptions.page) params.append("page", filterOptions.page.toString());
+    if(filterOptions.filterLike) params.append("filterLike", filterOptions.filterLike.toString());
     if(filterOptions.orderBy){
         switch (filterOptions.orderBy) {
             case "ByASC":
@@ -109,6 +111,21 @@ export async function getAttributesProductsFiltered(filterOptions: filterOptions
     if(filterOptions.ByImageAttributeValues) params.append("ByImageAttributeValues", "true");
 
     const response = await fetch(`${URL_API}/filter/productsAttributes?${params.toString()}`);
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
+    }
+    return data;
+}
+
+export async function getAttributesProductsValuesFiltered(filterOptions: filterOptions): Promise<{ data: AttributesProduct[]; totalRows: number}>{
+
+    const params = new URLSearchParams();
+
+    if(filterOptions.limit) params.append("limit", filterOptions.limit.toString());
+    if(filterOptions.filterLike) params.append("filterLike", filterOptions.filterLike.toString());
+
+    const response = await fetch(`${URL_API}/filter/productsAttributes/values?${params.toString()}`);
     const data = await response.json();
     if (!response.ok || data.error) {
         throw new Error(data.error);
