@@ -31,12 +31,16 @@ export async function deleteBrands(brandId: string): Promise<void> {
 
 export async function updateBrands(brand: Brands): Promise<Brands> {
 
+    const formData = new FormData();
+    formData.append("name", brand.name);
+    formData.append("label", brand.label);
+    formData.append("description", brand.description);
+    formData.append("slug", brand.slug);
+    formData.append("image_url", brand.image_url);
+
     const response = await fetch(`${URL_API}/${brand.id}`, {
         method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(brand)
+        body: formData
     });
 
     const data = await response.json();
@@ -48,12 +52,16 @@ export async function updateBrands(brand: Brands): Promise<Brands> {
 
 export async function createBrands(brand: Brands): Promise<Brands> {
 
+    const formData = new FormData();
+    formData.append("name", brand.name);
+    formData.append("label", brand.label);
+    formData.append("description", brand.description);
+    formData.append("slug", brand.slug);
+    formData.append("image_url", brand.image_url);
+
     const response = await fetch(`${URL_API}`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(brand)
+        body: formData
     });
 
     const data = await response.json();

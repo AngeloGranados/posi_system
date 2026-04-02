@@ -118,7 +118,7 @@ export default function ModalPaymentMethods({ errorInput, setErrorInput,loading,
                         className={errorInput === "name" ? "border-red-500" : ""}
                         id="input-name"
                         name="name"
-                        value={FormDataPaymentMethods ? FormDataPaymentMethods.name : ""}
+                        value={FormDataPaymentMethods.name ? FormDataPaymentMethods.name : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
@@ -128,7 +128,7 @@ export default function ModalPaymentMethods({ errorInput, setErrorInput,loading,
                         className={errorInput === "code" ? "border-red-500" : ""}
                         id="input-code"
                         name="code"
-                        value={FormDataPaymentMethods ? FormDataPaymentMethods.code : ""}
+                        value={FormDataPaymentMethods.code ? FormDataPaymentMethods.code : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
@@ -140,7 +140,7 @@ export default function ModalPaymentMethods({ errorInput, setErrorInput,loading,
                         className={errorInput === "account_name" ? "border-red-500" : ""}
                         id="input-account_name"
                         name="account_name"
-                        value={FormDataPaymentMethods ? FormDataPaymentMethods.account_name : ""}
+                        value={FormDataPaymentMethods.account_name ? FormDataPaymentMethods.account_name : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
@@ -150,7 +150,7 @@ export default function ModalPaymentMethods({ errorInput, setErrorInput,loading,
                         className={errorInput === "account_number" ? "border-red-500" : ""}
                         id="input-account_number"
                         name="account_number"
-                        value={FormDataPaymentMethods ? FormDataPaymentMethods.account_number : ""}
+                        value={FormDataPaymentMethods.account_number ? FormDataPaymentMethods.account_number : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
@@ -161,7 +161,7 @@ export default function ModalPaymentMethods({ errorInput, setErrorInput,loading,
                       <TextArea
                         className={errorInput === "description" ? "border-red-500" : ""}
                         name="description"
-                        value={FormDataPaymentMethods ? FormDataPaymentMethods.description : ""}
+                        value={FormDataPaymentMethods.description ? FormDataPaymentMethods.description : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
@@ -172,7 +172,7 @@ export default function ModalPaymentMethods({ errorInput, setErrorInput,loading,
                     <DropzoneComponent
                       onDrop={handleImageChange}
                       image={FormDataPaymentMethods.image_url}
-                      ImageDefault={selected?.image_url}
+                      ImageDefault={`payments/${selected?.image_url}`}
                     />
                   </FormGroupInput>
                 </FormRow>

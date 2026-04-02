@@ -24,9 +24,9 @@ import { ImagesProducts, orderByAscDescImagesProducts, orderByImagesProducts } f
 
 
 type orderByAscDescT<T> = 
+T extends Brands ? orderByAscDescBrands : 
 T extends Product ? orderByAscDescProduct : 
 T extends Categories ? orderByAscDescCategories : 
-T extends Brands ? orderByAscDescBrands : 
 T extends PaymentMethods ? orderByAscDescPaymentMethods :
 T extends ShippingMethods ? orderByAscDescShippingMethods :
 T extends PromoCodes ? orderByAscDescPromoCodes :
@@ -38,9 +38,9 @@ T extends ImagesProducts ? orderByAscDescImagesProducts :
 never;
 
 type orderByT<T> =
+  T extends Brands ? orderByBrands :
   T extends Product ? orderByProduct :
   T extends Categories ? orderByCategories :
-  T extends Brands ? orderByBrands :
   T extends PaymentMethods ? orderByPaymentMethods :
   T extends ShippingMethods ? orderByShippingMethods :
   T extends PromoCodes ? orderByPromoCodes :

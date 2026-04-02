@@ -12,8 +12,8 @@ import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { orderByAscDescPaymentMethods, orderByPaymentMethods, PaymentMethods, tableThPaymentMethods } from "@/types/paymentMethods";
 import { createPaymentMethods, deletePaymentMethods, getPaymentMethodsFiltered, updatePaymentMethods } from "@/services/paymentMethods";
-import ModalPaymentMethods from "./modalBrands";
 import Badge from "@/components/ui/badge/Badge";
+import ModalPaymentMethods from "./modalPayment";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -70,7 +70,7 @@ export default function TableModal() {
         let error = null;
         let fieldError = null;
 
-        const requiredFields: (keyof PaymentMethods)[] = ["name", "code", "description", "account_name", "account_number", "image_url"];
+        const requiredFields: (keyof PaymentMethods)[] = ["name", "code", "description", "image_url"];
 
         for (const field of requiredFields) {
             if (!paymentMethod[field] || (paymentMethod[field] as string).toString().trim() === "") {
@@ -182,7 +182,7 @@ export default function TableModal() {
                                                         width={64}
                                                         height={64}
                                                         unoptimized={process.env.NODE_ENV ? true : false}
-                                                        src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}${typeof paymentMethod.image_url === "string" ? paymentMethod.image_url : paymentMethod.image_url}`}
+                                                        src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}/payments/${typeof paymentMethod.image_url === "string" ? paymentMethod.image_url : paymentMethod.image_url}`}
                                                         alt={paymentMethod.name}
                                                         className="w-16 h-16 object-cover rounded"
                                                     />

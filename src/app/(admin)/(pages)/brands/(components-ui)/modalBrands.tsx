@@ -8,6 +8,8 @@ import Alert from "@/components/ui/alert/Alert";
 import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
 import { Brands } from "@/types/brands";
+import TextArea from "@/components/form/input/TextArea";
+import DropzoneComponent from "@/components/form/form-elements/DropZone";
 
 interface ModalBrandsProps {
     isOpen: boolean;
@@ -31,6 +33,9 @@ export default function ModalBrands({ setErrorInput, errorInput, loading, isOpen
 
     const emptyBrands: Brands = {
         name: "",
+        label: "",
+        description: "",
+        image_url: new File([], ""),
         slug: ""
     };
 
@@ -56,6 +61,16 @@ export default function ModalBrands({ setErrorInput, errorInput, loading, isOpen
       setSelected(null);
       alertProps.closeAlert();
       setErrorInput(null);
+    }
+
+    const handleImageChange = (files: File[]) => {
+      if (files && files.length > 0) {
+        const file = files[0];
+        setFormDataBrands((prevData) => ({
+          ...prevData,
+          image_url: file
+        }))
+      }
     }
 
     // Handler universal, siempre actualiza el estado
@@ -102,6 +117,16 @@ export default function ModalBrands({ setErrorInput, errorInput, loading, isOpen
                       />
                   </FormGroupInput>
                   <FormGroupInput>
+                      <Label htmlFor="label">Etiqueta:</Label>
+                      <InputField
+                        className={errorInput === "label" ? "border-red-500" : ""}
+                        id="input-label"
+                        name="label"
+                        value={FormDataBrands ? FormDataBrands.label : ""}
+                        onChange={handleDataChange}
+                      />
+                  </FormGroupInput>
+                  <FormGroupInput>
                     <Label htmlFor="slug">Slug:</Label>
                     <InputField
                       className={errorInput === "slug" ? "border-red-500" : ""}
@@ -109,6 +134,26 @@ export default function ModalBrands({ setErrorInput, errorInput, loading, isOpen
                       name="slug"
                       value={FormDataBrands ? FormDataBrands.slug : ""}
                       onChange={handleDataChange}
+                    />
+                  </FormGroupInput>
+                </FormRow>
+                <FormRow>
+                  <FormGroupInput>
+                      <Label htmlFor="description">Descripcion:</Label>
+                      <TextArea
+                        className={errorInput === "description" ? "border-red-500" : ""}
+                        name="description"
+                        value={FormDataBrands ? FormDataBrands.description : ""}
+                        onChange={handleDataChange}
+                      />
+                  </FormGroupInput>
+                </FormRow>
+                <FormRow>
+                  <FormGroupInput>
+                    <DropzoneComponent
+                      onDrop={handleImageChange}
+                      image={FormDataBrands.image_url}
+                      ImageDefault={`brands/${selected?.image_url}`}
                     />
                   </FormGroupInput>
                 </FormRow>

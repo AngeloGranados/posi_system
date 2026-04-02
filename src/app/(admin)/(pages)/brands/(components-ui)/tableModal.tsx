@@ -12,6 +12,7 @@ import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import ModalBrands from "./modalBrands";
 import { Brands, orderByAscDescBrands, orderByBrands, tableThBrands } from "@/types/brands";
 import { createBrands, deleteBrands, getBrandsFiltered, updateBrands } from "@/services/brandsServices";
+import Image from "next/image";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -35,7 +36,8 @@ export default function TableModal() {
     const tableThBrands: tableThBrands[] = [
         { name: "id", value: "ID" },
         { name: "name", value: "Nombre" },
-        { name: "slug", value: "Slug" },
+        { name: "label", value: "Etiqueta" },
+        { name: "description", value: "Descripción" },
         { name: "actions", value: "Acciones" }
     ]
 
@@ -66,13 +68,20 @@ export default function TableModal() {
         let error = null;
         let fieldError = null;
 
-        const requiredFields: (keyof Brands)[] = ["name", "slug"];
+        const requiredFields: (keyof Brands)[] = ["name", "slug", "description", "label", "image_url"];
 
         for (const field of requiredFields) {
             if (!brands[field] || (brands[field] as string).toString().trim() === "") {
                 error = `El campo ${field} es obligatorio.`;
                 fieldError = field;
                 break;
+            }
+
+            if (field === "image_url" && brands.image_url instanceof File && brands.image_url.size === 0) {
+                error = "El campo image_url debe ser un archivo válido.";
+                fieldError = field;
+                break;
+                
             }
         }
 
@@ -162,8 +171,30 @@ export default function TableModal() {
                             brandsList.map((brands) => (
                                 <TableRow key={brands.id}>
                                     <TableCell className="px-3 py-3 text-left">#{brands.id}</TableCell>
-                                    <TableCell className="px-3 py-3 text-left">{brands.name}</TableCell>
-                                    <TableCell className="px-3 py-3 text-left">{brands.slug}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="mb-2">
+                                                {
+                                                    brands.image_url && (
+                                                    <Image
+                                                        width={64}
+                                                        height={64}
+                                                        unoptimized={process.env.NODE_ENV ? true : false}
+                                                        src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}brands/${typeof brands.image_url === "string" ? brands.image_url : brands.image_url}`}
+                                                        alt={brands.name}
+                                                        className="w-16 h-16 object-cover rounded"
+                                                    />
+                                                    )
+                                                }
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[17px] font-bold">{brands.name}</span>
+                                                <small className="text-gray-800">{brands.slug}</small>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{brands.label}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{brands.description}</TableCell>
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(brands)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>

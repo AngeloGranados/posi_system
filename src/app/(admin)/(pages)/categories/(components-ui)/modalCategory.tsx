@@ -205,7 +205,7 @@ export default function ModalCategory({ setErrorInput, errorInput, loading, isOp
                     <DropzoneComponent
                       onDrop={handleImageChange}
                       image={FormDataCategory.image_url}
-                      ImageDefault={selected?.image_url}
+                      ImageDefault={`categories/${selected?.image_url}`}
                     />
                   </FormGroupInput>
                 </FormRow>
