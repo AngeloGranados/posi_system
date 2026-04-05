@@ -345,7 +345,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                           id="input-stock"
                           type="number"
                           name="stock"
-                          value={FormDataProduct.stock ? FormDataProduct.stock : ""}
+                          value={FormDataProduct.stock !== null ? FormDataProduct.stock : ""}
                           onChange={handleDataChange}
                         />
                       </FormGroupInput>
