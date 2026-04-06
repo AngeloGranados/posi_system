@@ -1,4 +1,4 @@
-export type tableThNameProduct = "id" | "name" | "price" | "stock" | "description_short" | "discount" | "is_active" | "actions";
+export type tableThNameProduct = "id" | "name" | "price" | "stock" | "description_short" | "category_name" | "discount" | "is_active" | "actions";
 export type orderByAscDescProduct = Exclude<tableThNameProduct, "actions">;
 export type orderByProduct = "ByPriceMinToMax" | "ByPriceMaxToMin" | "novedades" | "ByMostSold" | "ByNew" | "ByASC" | "ByDESC" | null;
 export interface tableThProduct { 

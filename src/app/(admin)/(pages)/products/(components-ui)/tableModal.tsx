@@ -43,6 +43,7 @@ export default function TableModal() {
         { name: "name", value: "Producto" },
         { name: "price", value: "Precio" },
         { name: "stock", value: "Stock" },
+        { name: "category_name", value: "Categoría" },
         { name: "description_short", value: "Descripción" },
         { name: "is_active", value: "Estado" },
         { name: "actions", value: "Acciones" },
@@ -235,6 +236,7 @@ export default function TableModal() {
                                             {product.stock}
                                         </div>
                                     </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{product.category_name}</TableCell>
                                     <TableCell className="px-3 my-4 line-clamp text-gray-700">{product.description_short}</TableCell>
                                     <TableCell className="px-3 py-4 text-lef">
                                         {
