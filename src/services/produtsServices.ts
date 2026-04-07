@@ -52,6 +52,9 @@ export async function getProductsFilter(Filterparams: FilterParams): Promise<Fil
                     params.append(Filterparams.orderBy, Filterparams.orderField);
                 }
                 break;
+            case "byNewEntry":
+                params.append("byNewEntry", "true");
+                break;
         }
         
     }
@@ -90,6 +93,7 @@ export async function createProduct(product: Product, images: File[] | string[],
     formData.append("discount", String(product.discount));
     formData.append("image", product.image);
     formData.append("product_attributes", JSON.stringify(productAttributes || []));
+    formData.append("is_new_entry", String(product.is_new_entry || false));
     
     images.forEach((file) => {
         formData.append("images", file);
@@ -122,6 +126,7 @@ export async function updateProduct(product: Product, images: File[] | string[],
     formData.append("discount", String(product.discount));
     formData.append("image", product.image);
     formData.append("product_attributes", JSON.stringify(productAttributes || []));
+    formData.append("is_new_entry", String(product.is_new_entry || false));
     
     if(images && images.length > 0) {
         if( typeof images[0] === "string") {

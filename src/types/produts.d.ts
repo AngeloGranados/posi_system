@@ -1,6 +1,6 @@
 export type tableThNameProduct = "id" | "name" | "price" | "stock" | "description_short" | "category_name" | "discount" | "is_active" | "actions";
 export type orderByAscDescProduct = Exclude<tableThNameProduct, "actions">;
-export type orderByProduct = "ByPriceMinToMax" | "ByPriceMaxToMin" | "novedades" | "ByMostSold" | "ByNew" | "ByASC" | "ByDESC" | null;
+export type orderByProduct = "ByPriceMinToMax" | "ByPriceMaxToMin" | "novedades" | "ByMostSold" | "ByNew" | "ByASC" | "ByDESC" | "byNewEntry" | null;
 export interface tableThProduct { 
     name: tableThNameProduct; 
     value: string;
@@ -28,6 +28,7 @@ export interface Product {
     created_at?: string; 
     updated_at?: string;
     category_name?: string;
+    is_new_entry?: boolean;
 }
 
 export interface ImagesProduct {

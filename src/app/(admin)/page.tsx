@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
+import NewEntrysTable from "@/components/ecommerce/NewEntrysTable";
 
 export const metadata: Metadata = {
   title:
@@ -13,6 +14,7 @@ export default function Ecommerce() {
       <div>
         <EcommerceMetrics />
         {/* <MonthlySalesChart /> */}
+        <NewEntrysTable />
       </div>
 
       {/* <div className="col-span-12 xl:col-span-5">

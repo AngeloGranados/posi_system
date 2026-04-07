@@ -20,6 +20,8 @@ import { Categories } from "@/types/categories";
 import { getBrands } from "@/services/brandsServices";
 import { Brands } from "@/types/brands";
 import AttributeRow from "./attributeRow";
+import { CheckCircleIcon } from "@/icons";
+import Checkbox from "@/components/form/input/Checkbox";
 
 interface ModalProductProps {
     isOpen: boolean;
@@ -53,6 +55,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
         idbrand: "",
         stock: 0,
         discount: 0,
+        is_new_entry: false,
     };
 
     // Options para selects
@@ -363,6 +366,20 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                           />
                         </FormGroupInput>
                       )}
+                  </FormRow>
+                  <FormRow>
+                    <FormGroupInput>
+                      <Checkbox 
+                        label="¿Es nuevo ingreso?"
+                        id="is_new_entry"
+                        name="is_new_entry"
+                        checked={FormDataProduct.is_new_entry || false}
+                        onChange={(checked) => setFormDataProduct((prevData) => ({
+                          ...prevData,
+                          is_new_entry: checked
+                        }))}
+                      />
+                    </FormGroupInput>
                   </FormRow>
                 </div>
                 <div>
