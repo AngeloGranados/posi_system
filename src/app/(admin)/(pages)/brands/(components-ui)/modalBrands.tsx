@@ -112,7 +112,7 @@ export default function ModalBrands({ setErrorInput, errorInput, loading, isOpen
                         className={errorInput === "name" ? "border-red-500" : ""}
                         id="input-name"
                         name="name"
-                        value={FormDataBrands ? FormDataBrands.name : ""}
+                        value={FormDataBrands.name ? FormDataBrands.name : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
@@ -122,7 +122,7 @@ export default function ModalBrands({ setErrorInput, errorInput, loading, isOpen
                         className={errorInput === "label" ? "border-red-500" : ""}
                         id="input-label"
                         name="label"
-                        value={FormDataBrands ? FormDataBrands.label : ""}
+                        value={FormDataBrands.label ? FormDataBrands.label : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
@@ -132,7 +132,7 @@ export default function ModalBrands({ setErrorInput, errorInput, loading, isOpen
                       className={errorInput === "slug" ? "border-red-500" : ""}
                       id="input-slug"
                       name="slug"
-                      value={FormDataBrands ? FormDataBrands.slug : ""}
+                      value={FormDataBrands.slug ? FormDataBrands.slug : ""}
                       onChange={handleDataChange}
                     />
                   </FormGroupInput>
@@ -143,7 +143,7 @@ export default function ModalBrands({ setErrorInput, errorInput, loading, isOpen
                       <TextArea
                         className={errorInput === "description" ? "border-red-500" : ""}
                         name="description"
-                        value={FormDataBrands ? FormDataBrands.description : ""}
+                        value={FormDataBrands.description ? FormDataBrands.description : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
