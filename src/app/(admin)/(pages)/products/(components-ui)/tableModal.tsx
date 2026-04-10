@@ -25,12 +25,15 @@ export default function TableModal() {
     const [productsList, setProductsList] = useState<Product[]>([]);
 
     // filters
-    const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(100)
+    const [filters, setFilters] = useState({
+        page: 1,
+        limit: 10,
+        orderBy: "ByDESC" as orderByProduct,
+        orderField: "id" as orderByAscDescProduct,
+        filterlike: "",
+    });
+
     const [pageTotal, setPageTotal] = useState(1)
-    const [orderBy, setOrderBy] = useState<orderByProduct | null>("ByDESC")
-    const [orderField, setOrderField] = useState<orderByAscDescProduct | null>("id")
-    const [filterlike, setFilterlike] = useState('')
     const [inputSearch, setInputSearch] = useState('')
 
     const [loading, setLoading] = useState(false);
@@ -53,12 +56,12 @@ export default function TableModal() {
 
     useEffect(() => {
         fetchProductsFiltered()
-    }, [limit, page, orderBy, filterlike, orderField, filterlike]);
+    }, [filters]);
 
     async function fetchProductsFiltered() {
         setLoading(true);
         try {
-            const response = await getProductsFilter({ orderBy, orderField, limit, page, filterlike });
+            const response = await getProductsFilter(filters);
             setProductsList(response.products);
             setPageTotal(response.total);
         }catch (error) {
@@ -68,7 +71,7 @@ export default function TableModal() {
         }
     }
 
-    const pageTotalToTable = Math.ceil(pageTotal / limit);
+    const pageTotalToTable = Math.ceil(pageTotal / filters.limit);
 
     async function handleCreateProduct(event: React.FormEvent<HTMLFormElement>, product: Product, images: File[] | string[], productAttributes: { key: string; value: string }[]) {
         event.preventDefault();
@@ -122,6 +125,7 @@ export default function TableModal() {
                 await createProduct(product, images, productAttributes);
             }
             await fetchProductsFiltered();
+            closeAlert();
             closeModal();
         } catch (error) {
             triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
@@ -164,11 +168,10 @@ export default function TableModal() {
     }
 
     async function handleOrderByAscDesc(field: orderByAscDescProduct) {
-        if(orderField === field){
-            setOrderBy(orderBy === "ByASC" ? "ByDESC" : "ByASC");
+        if(filters.orderField === field){
+            setFilters({ ...filters, orderBy: filters.orderBy === "ByASC" ? "ByDESC" : "ByASC" });
         } else {
-            setOrderField(field);
-            setOrderBy("ByASC");
+            setFilters({ ...filters, orderField: field, orderBy: "ByASC" });
         }
     }
 
@@ -178,7 +181,7 @@ export default function TableModal() {
     };
 
     const debounceOnchangeFilterLike = useCallback(debounce((value: string) => {
-        setFilterlike(value);
+        setFilters({ ...filters, filterlike: value });
     }, 500), []);
 
     const handleOnchangeFilterLike = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -205,14 +208,14 @@ export default function TableModal() {
                 setSearch={handleOnchangeFilterLike}
                 search={inputSearch}
                 buttonText="Agregar un Producto"
-                orderField={orderField} 
-                orderBy={orderBy} 
+                orderField={filters.orderField} 
+                orderBy={filters.orderBy} 
                 tableThPage={tableThProducts} 
                 OpenModal={handleOpenModal}  
                 handleOrderByAscDesc={handleOrderByAscDesc} 
                 pageTotal={pageTotalToTable} 
-                page={page}
-                setPage={setPage}
+                page={filters.page}
+                setPage={(page) => setFilters({ ...filters, page })}
             >
                 {
                     loading ? (

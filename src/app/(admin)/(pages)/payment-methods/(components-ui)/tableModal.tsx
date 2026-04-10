@@ -107,6 +107,7 @@ export default function TableModal() {
             }
 
             await fetchPaymentMethodsFiltered();
+            closeAlert();
             closeModal();
         } catch (error) {
             triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
@@ -115,14 +116,14 @@ export default function TableModal() {
         }
     }
 
-    async function handleDeletePaymentMethods(paymentMethodId: string) {
-        try{ 
-            await deletePaymentMethods(paymentMethodId);
-            await fetchPaymentMethodsFiltered();
-        }catch(error){
-            console.error("Error deleting paymentMethod:", error);
-        }
-    } 
+    // async function handleDeletePaymentMethods(paymentMethodId: string) {
+    //     try{ 
+    //         await deletePaymentMethods(paymentMethodId);
+    //         await fetchPaymentMethodsFiltered();
+    //     }catch(error){
+    //         console.error("Error deleting paymentMethod:", error);
+    //     }
+    // } 
 
     async function handleOrderByAscDesc(field: orderByAscDescPaymentMethods) {
         if(orderField === field){

@@ -68,7 +68,7 @@ export default function UserInfoCard({ userSession, setUserSession }: UserInfoCa
         ...prev,
         ...formDataUser
       }))
-
+      
       closeModal();
 
     } catch (error) {

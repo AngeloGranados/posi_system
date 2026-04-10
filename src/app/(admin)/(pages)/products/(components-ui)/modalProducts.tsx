@@ -56,6 +56,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
         stock: 0,
         discount: 0,
         is_new_entry: false,
+        details: ""
     };
 
     // Options para selects
@@ -378,6 +379,16 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                           ...prevData,
                           is_new_entry: checked
                         }))}
+                      />
+                    </FormGroupInput>
+                  </FormRow>
+                  <FormRow>
+                    <FormGroupInput>
+                      <Label htmlFor="details">Detalles adicionales (opcional):</Label>
+                      <TextArea
+                        name="details"
+                        value={FormDataProduct.details || ""}
+                        onChange={handleDataChange}
                       />
                     </FormGroupInput>
                   </FormRow>

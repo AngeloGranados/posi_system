@@ -29,6 +29,7 @@ export interface Product {
     updated_at?: string;
     category_name?: string;
     is_new_entry?: boolean;
+    details?: string;
 }
 
 export interface ImagesProduct {

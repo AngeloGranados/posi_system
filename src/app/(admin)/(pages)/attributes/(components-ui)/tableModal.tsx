@@ -92,6 +92,7 @@ export default function TableModal() {
             }
 
             await fetchAttributesFiltered();
+            closeAlert();
             closeModal();
         } catch (error) {
             console.error("Error creating attribute:", error);

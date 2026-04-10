@@ -100,6 +100,7 @@ export default function TableModal() {
             }
 
             await fetchBrandsFiltered();
+            closeAlert();
             closeModal();
         } catch (error) {
             triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");

@@ -126,6 +126,7 @@ export default function TableModal() {
             }
 
             await fetchDiscountsFiltered();
+            closeAlert();
             closeModal();
         } catch (error) {
             console.error("Error creating discounts:", error);
@@ -134,14 +135,14 @@ export default function TableModal() {
         }
     }
 
-    async function handleDeleteDiscounts(discountsId: string) {
-        try{ 
-            await deleteDiscounts(discountsId);
-            await fetchDiscountsFiltered();
-        }catch(error){
-            console.error("Error deleting discounts:", error);
-        }
-    } 
+    // async function handleDeleteDiscounts(discountsId: string) {
+    //     try{ 
+    //         await deleteDiscounts(discountsId);
+    //         await fetchDiscountsFiltered();
+    //     }catch(error){
+    //         console.error("Error deleting discounts:", error);
+    //     }
+    // } 
 
     async function handleChangeStatusDiscounts(discountsId: string, newStatus: boolean) {
 

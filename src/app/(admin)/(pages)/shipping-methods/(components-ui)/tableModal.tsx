@@ -120,20 +120,21 @@ export default function TableModal() {
             }
 
             await fetchShippingMethodsFiltered();
+            closeAlert();
             closeModal();
         } catch (error) {
             triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
         }
     }
 
-    async function handleDeleteShippingMethods(shippingMethodId: string) {
-        try{ 
-            await deleteShippingMethods(shippingMethodId);
-            await fetchShippingMethodsFiltered();
-        }catch(error){
-            console.error("Error deleting shippingMethod:", error);
-        }
-    } 
+    // async function handleDeleteShippingMethods(shippingMethodId: string) {
+    //     try{ 
+    //         await deleteShippingMethods(shippingMethodId);
+    //         await fetchShippingMethodsFiltered();
+    //     }catch(error){
+    //         console.error("Error deleting shippingMethod:", error);
+    //     }
+    // } 
 
     async function handleChangeStatusShippingMethods(shippingMethodId: string, newStatus: boolean) {
 

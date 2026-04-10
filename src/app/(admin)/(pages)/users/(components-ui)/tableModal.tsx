@@ -119,20 +119,21 @@ export default function TableModal() {
             }
 
             await fetchUsersFiltered();
+            closeAlert();
             closeModal();
         } catch (error) {
             triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
         }
     }
 
-    async function handleDeleteUsers(userId: string) {
-        try{ 
-            await deleteUsers(userId);
-            await fetchUsersFiltered();
-        }catch(error){
-            console.error("Error deleting user:", error);
-        }
-    } 
+    // async function handleDeleteUsers(userId: string) {
+    //     try{ 
+    //         await deleteUsers(userId);
+    //         await fetchUsersFiltered();
+    //     }catch(error){
+    //         console.error("Error deleting user:", error);
+    //     }
+    // } 
 
     async function handleChangeStatusUser(userId: string, newStatus: boolean) {
 

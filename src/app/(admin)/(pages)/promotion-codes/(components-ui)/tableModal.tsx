@@ -124,20 +124,21 @@ export default function TableModal() {
             }
 
             await fetchPromoCodesFiltered();
+            closeAlert();
             closeModal();
         } catch (error) {
             triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
         }
     }
 
-    async function handleDeletePromoCodes(promoCodesId: string) {
-        try{ 
-            await deletePromoCodes(promoCodesId);
-            await fetchPromoCodesFiltered();
-        }catch(error){
-            triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
-        }
-    } 
+    // async function handleDeletePromoCodes(promoCodesId: string) {
+    //     try{ 
+    //         await deletePromoCodes(promoCodesId);
+    //         await fetchPromoCodesFiltered();
+    //     }catch(error){
+    //         triggerAlert("Error", error instanceof Error ? error.message : "Error desconocido", "error");
+    //     }
+    // } 
 
     async function handleOrderByAscDesc(field: orderByAscDescPromoCodes) {
         if(orderField === field){
