@@ -11,9 +11,12 @@ import EditIcon from "../../../../../../public/images/icons/edit-icon";
 import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { orderByAscDescPaymentMethods, orderByPaymentMethods, PaymentMethods, tableThPaymentMethods } from "@/types/paymentMethods";
-import { createPaymentMethods, deletePaymentMethods, getPaymentMethodsFiltered, updatePaymentMethods } from "@/services/paymentMethods";
+import { changeStatusPaymentMethod, createPaymentMethods, deletePaymentMethods, getPaymentMethodsFiltered, updatePaymentMethods } from "@/services/paymentMethods";
 import Badge from "@/components/ui/badge/Badge";
 import ModalPaymentMethods from "./modalPayment";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -33,6 +36,7 @@ export default function TableModal() {
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
     const [ errorInput, setErrorInput ] = useState<string | null>(null)
+    const swalAlert = withReactContent(Swal);
 
     const tableThPaymentMethods: tableThPaymentMethods[] = [
         { name: "id", value: "ID" },
@@ -129,6 +133,26 @@ export default function TableModal() {
         }
     }
 
+    async function handleChangeStatusPaymentMethod(paymentMethodId: string, newStatus: boolean) {
+
+        swalAlert.fire({
+            title: '¿Estás seguro?',
+            text: `¿Deseas ${newStatus ? "activar" : "desactivar"} este método de pago?`,
+            icon: 'warning',
+            showCancelButton: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await changeStatusPaymentMethod(paymentMethodId, newStatus);
+                    swalAlert.fire('¡Hecho!', `El método de pago ha sido ${newStatus ? "activado" : "desactivado"}.`, 'success');
+                    await fetchPaymentMethodsFiltered();
+                } catch (error) {
+                    console.error("Error changing payment method status:", error);
+                }
+            }
+        });
+    }
+
     const handleOpenModal = (data: PaymentMethods | null) => {
         setSelectedPaymentMethods(data);
         openModal();
@@ -212,7 +236,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(paymentMethod)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeletePaymentMethods(paymentMethod.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleChangeStatusPaymentMethod(paymentMethod.id as string, !paymentMethod.is_active)} variant="outline" className="text-red-500"><ChangeStatusIcon width={16} height={16} fill="currentColor" /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

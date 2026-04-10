@@ -110,6 +110,22 @@ export async function createProduct(product: Product, images: File[] | string[],
     return data;
 }
 
+export async function changeStatusProduct(id: string, newStatus: boolean): Promise<{ success: boolean }> {
+    const response = await fetch(`${URL_API}/changeStatus/${id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ newStatus })
+    });
+
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error || "Error changing product status");
+    }
+    return data;
+}
+
 export async function updateProduct(product: Product, images: File[] | string[], productAttributes: { key: string; value: string }[]): Promise<Product> {
 
     let formData = new FormData();

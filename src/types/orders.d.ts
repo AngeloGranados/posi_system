@@ -9,6 +9,7 @@ export type tableThNameOrders =
 | "is_paid"
 | "created_at"
 | "actions";
+export type statusOrders = "pending" | "processing" | "shipped" | "delivered" | "cancelled" | null;
 
 export type orderByAscDescOrders = Exclude<tableThNameOrders, "actions">;
 export type orderByOrders = "ByASC" | "ByDESC";
@@ -32,7 +33,7 @@ export interface Orders {
     shipping_address_id: string,
     billing_address_id: string,
     promo_code_id: number | null,
-    status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled',
+    status: statusOrders,
     is_paid: boolean | number, 
     paid_at: Date | string | null,
     notes?: string | null,

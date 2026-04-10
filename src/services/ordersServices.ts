@@ -42,6 +42,32 @@ export async function getOrderById(orderNumber: string): Promise<Orders | null> 
     return data;
 }
 
+export async function updateStatusOrder(orderNumber: string, orderData: Partial<Orders>) {
+    const response = await fetch(`${URL_API}/${orderNumber}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+    });
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
+    }
+    return data;
+}
+
+export async function cancelOrder(orderNumber: string) {
+    const response = await fetch(`${URL_API}/cancelOrder/${orderNumber}`, {
+        method: "PATCH",
+    });
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
+    }
+    return data;
+}
+
 export async function getOrderItemsByOrderId(orderNumber: string): Promise<OrderItems[]> {
     const response = await fetch(`${URL_API}/getOrderItemsByOrderId/${orderNumber}`);
     const data = await response.json();

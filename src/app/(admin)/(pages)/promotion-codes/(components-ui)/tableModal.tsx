@@ -11,9 +11,12 @@ import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import ModalPromoCodes from "./modalPromoCodes";
 import { orderByAscDescPromoCodes, orderByPromoCodes, PromoCodes, tableThPromoCodes } from "@/types/promoCodes";
-import { createPromoCodes, deletePromoCodes, getPromoCodesFiltered, updatePromoCodes } from "@/services/promoCodesServices";
+import { changeStatusPromoCode, createPromoCodes, deletePromoCodes, getPromoCodesFiltered, updatePromoCodes } from "@/services/promoCodesServices";
 import Badge from "@/components/ui/badge/Badge";
 import { formatDate } from "@fullcalendar/core/index.js";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -33,6 +36,7 @@ export default function TableModal() {
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
     const [ errorInput, setErrorInput ] = useState<string | null>(null)
+    const swalAlert = withReactContent(Swal);
 
     const tableThPromoCodes: tableThPromoCodes[] = [
         { name: "id", value: "ID" },
@@ -144,6 +148,26 @@ export default function TableModal() {
         }
     }
 
+    async function handleChangeStatusPromoCodes(promoCodesId: string, newStatus: boolean) {
+
+            swalAlert.fire({
+                title: '¿Estás seguro?',
+                text: `¿Deseas ${newStatus ? "activar" : "desactivar"} este código promocional?`,
+                icon: 'warning',
+                showCancelButton: true,
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        await changeStatusPromoCode(promoCodesId, newStatus);
+                        swalAlert.fire('¡Hecho!', `El código promocional ha sido ${newStatus ? "activado" : "desactivado"}.`, 'success');
+                        await fetchPromoCodesFiltered();
+                    } catch (error) {
+                        console.error("Error changing promo code status:", error);
+                    }
+                }
+            });
+        }
+
     const handleOpenModal = (data: PromoCodes | null) => {
         setSelectedPromoCodes(data);
         openModal();
@@ -215,7 +239,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(promoCodes)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeletePromoCodes(promoCodes.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleChangeStatusPromoCodes(promoCodes.id as string, !promoCodes.is_active)} variant="outline" className="text-red-500"><ChangeStatusIcon width={16} height={16} fill="currentColor" /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

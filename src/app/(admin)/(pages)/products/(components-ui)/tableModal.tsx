@@ -4,7 +4,7 @@ import { useModal } from "@/hooks/useModal"
 import { orderByAscDescProduct, orderByProduct, Product, tableThProduct } from "@/types/produts"
 import ModalProduct from "./modalProducts";
 import { useCallback, useEffect, useState } from "react";
-import { createProduct, deleteProduct, getProductsFilter, updateProduct } from "@/services/produtsServices";
+import { changeStatusProduct, createProduct, deleteProduct, getProductsFilter, updateProduct } from "@/services/produtsServices";
 import useAlert from "@/hooks/useAlert";
 import TablePage from "@/components/tables/TablePage";
 import { TableRow, TableCell } from "@/components/ui/table";
@@ -14,8 +14,10 @@ import { formatPrice } from "../../../../../../util";
 import Badge from "@/components/ui/badge/Badge";
 import EditIcon from "../../../../../../public/images/icons/edit-icon";
 import Button from "@/components/ui/button/Button";
-import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import debounce from "debounce";
+import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -36,6 +38,7 @@ export default function TableModal() {
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
     const [ errorInput, setErrorInput ] = useState<string | null>(null)
+    const swalAlert = withReactContent(Swal);
 
     const tableThProducts: tableThProduct[] = [
         { name: "id", value: "ID" },
@@ -131,14 +134,34 @@ export default function TableModal() {
         }
     }
 
-    async function handleDeleteProduct(productId: string) {
-        try{ 
-            await deleteProduct(productId);
-            await fetchProductsFiltered();
-        }catch(error){
-            console.error("Error deleting product:", error);
-        }
-    } 
+    // async function handleDeleteProduct(productId: string) {
+    //     try{ 
+    //         await deleteProduct(productId);
+    //         await fetchProductsFiltered();
+    //     }catch(error){
+    //         console.error("Error deleting product:", error);
+    //     }
+    // } 
+
+    async function handleChangeStatusProduct(productId: string, newStatus: boolean) {
+
+        swalAlert.fire({
+            title: '¿Estás seguro?',
+            text: `¿Deseas ${newStatus ? "activar" : "desactivar"} este producto?`,
+            icon: 'warning',
+            showCancelButton: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await changeStatusProduct(productId, newStatus);
+                    swalAlert.fire('¡Hecho!', `El producto ha sido ${newStatus ? "activado" : "desactivado"}.`, 'success');
+                    await fetchProductsFiltered();
+                } catch (error) {
+                    console.error("Error changing product status:", error);
+                }
+            }
+        });
+    }
 
     async function handleOrderByAscDesc(field: orderByAscDescProduct) {
         if(orderField === field){
@@ -247,7 +270,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(product)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeleteProduct(product.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleChangeStatusProduct(product.id as string, !product.is_active)} variant="outline" className="text-red-500"><ChangeStatusIcon width={16} height={16} fill="currentColor" /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

@@ -1,3 +1,5 @@
+import { statusOrders } from "@/types/orders";
+
 export function formatPrice(price: number | string): string {
     if (typeof price === 'string') {
         price = parseFloat(price);
@@ -21,7 +23,7 @@ type BadgeColor =
   | "info"
   | "light"
   | "dark";
-export function verifyColorByStatus(status: string): BadgeColor {
+export function verifyColorByStatus(status: statusOrders): BadgeColor {
     return (
         status === 'pending' ? 'warning' : 
         status === "delivered" ? 'success' : 

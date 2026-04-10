@@ -31,6 +31,8 @@
     "react-dom": "^19.2.0",
     "react-dropzone": "^14.3.8",
     "react-loading-skeleton": "^3.5.0",
+    "sweetalert2": "^11.26.24",
+    "sweetalert2-react-content": "^5.1.2",
     "swiper": "^11.2.10",
     "tailwind-merge": "^2.6.0"
   },

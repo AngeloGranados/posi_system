@@ -10,12 +10,15 @@ import EditIcon from "../../../../../../public/images/icons/edit-icon";
 import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { Discounts, orderByAscDescDiscounts, orderByDiscounts, tableThDiscounts } from "@/types/discounts";
-import { createDiscounts, deleteDiscounts, getDiscountsFiltered, updateDiscounts } from "@/services/discountsServices";
+import { changeStatusDiscount, createDiscounts, deleteDiscounts, getDiscountsFiltered, updateDiscounts } from "@/services/discountsServices";
 import Badge from "@/components/ui/badge/Badge";
 import { formatDate } from "@fullcalendar/core/index.js";
 import { formatPrice } from "../../../../../../util";
 import Image from "next/image";
 import ModalDiscounts from "./modalDiscounts";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
 
 
 export default function TableModal() {
@@ -36,6 +39,7 @@ export default function TableModal() {
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
     const [ errorInput, setErrorInput ] = useState<string | null>(null)
+    const swalAlert = withReactContent(Swal);
     
     const tableThDiscounts: tableThDiscounts[] = [
         { name: "id", value: "ID" },
@@ -139,6 +143,26 @@ export default function TableModal() {
         }
     } 
 
+    async function handleChangeStatusDiscounts(discountsId: string, newStatus: boolean) {
+
+            swalAlert.fire({
+                title: '¿Estás seguro?',
+                text: `¿Deseas ${newStatus ? "activar" : "desactivar"} este descuento?`,
+                icon: 'warning',
+                showCancelButton: true,
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        await changeStatusDiscount(discountsId, newStatus);
+                        swalAlert.fire('¡Hecho!', `El descuento ha sido ${newStatus ? "activado" : "desactivado"}.`, 'success');
+                        await fetchDiscountsFiltered();
+                    } catch (error) {
+                        console.error("Error changing discount status:", error);
+                    }
+                }
+            });
+        }
+
     async function handleOrderByAscDesc(field: orderByAscDescDiscounts) {
         if(orderField === field){
             setOrderBy(orderBy === "ByASC" ? "ByDESC" : "ByASC");
@@ -236,7 +260,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(discounts)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeleteDiscounts(discounts.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleChangeStatusDiscounts(discounts.id as string, !discounts.is_active)} variant="outline" className="text-red-500"><ChangeStatusIcon width={16} height={16} fill="currentColor" /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

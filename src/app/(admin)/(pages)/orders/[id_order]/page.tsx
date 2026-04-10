@@ -1,20 +1,35 @@
 'use client'
 import ComponentCard from "@/components/common/ComponentCard";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
-import { getOrderById, getOrderItemsByOrderId } from "@/services/ordersServices";
-import { OrderItems, Orders } from "@/types/orders";
+import { getOrderById, getOrderItemsByOrderId, updateStatusOrder } from "@/services/ordersServices";
+import { OrderItems, Orders, statusOrders } from "@/types/orders";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { formatPrice, formatTelephone, verifyColorByStatus } from "../../../../../../util";
 import Badge from "@/components/ui/badge/Badge";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+import FormRow from "@/components/form/group-input/FormRow";
+import FormGroupInput from "@/components/form/group-input/FormGroupInput";
+import Label from "@/components/form/Label";
+import Select from "@/components/form/Select";
+import Checkbox from "@/components/form/input/Checkbox";
+import Button from "@/components/ui/button/Button";
+import { useRouter } from "next/navigation";
+import { formatDate } from "@fullcalendar/core/index.js";
 
 export default function OrderDetails() {
 
     const params = useParams();
+    const router = useRouter();
     const [order, setOrder] = useState<Orders | null>(null);
     const [orderItems, setOrderItems] = useState<OrderItems[]>([]);
+    const [FormDataOrder, setFormDataOrder] = useState<Partial<Orders>>({
+        status: null,
+        is_paid: false,
+    });
+    const [isValid, setIsValid] = useState(false);
+    const isPaidSelectedFirstTime = useRef(false);
 
     const id_order = params.id_order ? params.id_order as string : "";
 
@@ -40,20 +55,73 @@ export default function OrderDetails() {
         fetchItemsOrder();
     }, [params.id_order]);
 
+    useEffect(() => {
+        if(order){
+            setFormDataOrder({is_paid: typeof order.is_paid === "boolean" ? order.is_paid : order.is_paid === 1});
+        }
+    }, [order])
+
+    
+    useEffect(() => {
+
+        if ((FormDataOrder.status == null || FormDataOrder.status === "" as statusOrders) || !isPaidSelectedFirstTime.current) {
+            setIsValid(false);
+            return;
+        }
+
+        setIsValid(true);
+    }, [FormDataOrder])
+
+    async function handleUpdateStatusOrder() {
+        try {
+            if (!isValid) {
+                return;
+            }
+
+            const response = await updateStatusOrder(id_order, FormDataOrder)
+            alert("Estado de la orden actualizado correctamente");
+            router.push("/orders");
+        }catch (error) {
+            console.error("Error updating order status:", error);
+        }
+    }
+
+    function handleChangeIsPaid(value: boolean) {
+        if (!isPaidSelectedFirstTime.current) {
+            isPaidSelectedFirstTime.current = true;
+            setFormDataOrder({ ...FormDataOrder, is_paid: value });
+        } else {
+            setFormDataOrder({ ...FormDataOrder, is_paid: value });
+        }
+    }
+    
     if (!order || orderItems.length === 0) {
         return <div>Cargando...</div>;
     }
+
 
     return (
         <div>
             <PageBreadcrumb pageTitle={`Detalle de Orden`} pageBaseName="Ordenes" pageBaseUrl="/orders"></PageBreadcrumb>
             <ComponentCard title={`Orden #${order.order_number}`}>  
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div className={`grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 ${order.status === "cancelled" ? "opacity-50 pointer-events-none" : ""}`}>
                     {/* Estado */}
                     <div className="bg-white rounded-lg p-4 flex flex-col items-center shadow border">
                         <span className="text-xs text-gray-500 mb-1">ESTADO</span>
                         <Badge variant="light" 
                         color={verifyColorByStatus(order.status)}>{order.status}</Badge>
+                        <FormRow>
+                            <FormGroupInput>
+                                <Label htmlFor="status" className="text-center">Cambiar estado:</Label>
+                                <Select value={FormDataOrder.status ? FormDataOrder.status : ""} onChange={(e) => setFormDataOrder({ ...FormDataOrder, status: e.target.value as statusOrders })} options={[
+                                    { value: "pending", label: "Pendiente" },
+                                    { value: "processing", label: "En proceso" },
+                                    { value: "shipped", label: "Enviado" },
+                                    { value: "delivered", label: "Entregado" },
+                                    { value: "cancelled", label: "Cancelado" },
+                                ]} name="status" />
+                            </FormGroupInput>
+                        </FormRow>
                     </div>
                     {/* Total */}
                     <div className="bg-white rounded-lg p-4 flex flex-col items-center shadow border">
@@ -62,13 +130,25 @@ export default function OrderDetails() {
                     </div>
                     {/* Fecha */}
                     <div className="bg-white rounded-lg p-4 flex flex-col items-center shadow border">
-                        <span className="text-xs text-gray-500 mb-1">FECHA</span>
-                        <span className="text-lg font-semibold">{order.created_at ? new Date(order.created_at).toLocaleDateString() : "N/A"}</span>
+                        <div className="flex flex-col items-center mb-2">
+                            <span className="text-xs text-gray-500 mb-1">FECHA DE CREACIÓN:</span>
+                            <span className="text-lg font-semibold">{formatDate(order.created_at as Date, {year:"numeric", month:"numeric", day: "numeric", hour: "numeric"})}</span>
+                        </div>
+                        <div className="flex flex-col items-center mb-2">
+                            <span className="text-xs text-gray-500 mb-1">ULTIMA ACTUALIZACIÓN:</span>
+                            <span className="text-lg font-semibold">{formatDate(order.updated_at as Date, {year:"numeric", month:"numeric", day: "numeric", hour: "numeric"})}</span>
+                        </div>
                     </div>
                     {/* Pagada */}
-                    <div className="bg-white rounded-lg p-4 flex flex-col items-center shadow border">
+                    <div className={`bg-white rounded-lg p-4 flex flex-col items-center shadow border ${order.status === "cancelled" ? "opacity-50 pointer-events-none" : ""}`}>
                         <span className="text-xs text-gray-500 mb-1">PAGADA</span>
                         <span className={`px-2 py-1 rounded-full text-xs font-semibold ${order.is_paid ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{order.is_paid ? 'Sí' : 'No'}</span>
+                        <FormRow>
+                            <FormGroupInput>
+                                <Label htmlFor="status" className="text-center">Cambiar estado del Pago:</Label>
+                                <Checkbox checked={FormDataOrder.is_paid as boolean} onChange={() => handleChangeIsPaid(!FormDataOrder.is_paid as boolean)} name="is_paid" label={`${FormDataOrder.is_paid ? 'Marcar como no pagada' : 'Marcar como pagada'}`} />
+                            </FormGroupInput>
+                        </FormRow>
                     </div>
                 </div>
 
@@ -158,6 +238,11 @@ export default function OrderDetails() {
                     </div>
                 </div>
 
+                <div className="flex justify-end">
+                    <Button onClick={handleUpdateStatusOrder} disabled={!isValid}>
+                        Actualizar Estado
+                    </Button>
+                </div>
 
                 {/* Nota interna */}
                 {order.notes && (

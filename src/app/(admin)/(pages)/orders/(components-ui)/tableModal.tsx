@@ -9,13 +9,14 @@ import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { Orders, orderByAscDescOrders, orderByOrders, tableThOrders } from "@/types/orders";
 import { EyeIcon, UserIcon } from "@/icons";
-import { getOrdersFiltered } from "@/services/ordersServices";
+import { cancelOrder, getOrdersFiltered } from "@/services/ordersServices";
 import CancelIcon from "../../../../../../public/images/icons/cancel-icon";
 import { useRouter } from "next/navigation";
 import Badge from "@/components/ui/badge/Badge";
 import { formatPrice, verifyColorByStatus } from "../../../../../../util";
 import { formatDate } from "@fullcalendar/core/index.js";
-import Avatar from "@/components/ui/avatar/Avatar";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 
 export default function TableModal() {
@@ -34,6 +35,8 @@ export default function TableModal() {
     const [filterlike, setFilterlike] = useState('')
 
     const [loading, setLoading] = useState(false);
+
+    const sweetAlert = withReactContent(Swal);
 
     const tableThOrders: tableThOrders[] = [
         { name: "order_number", value: "N° Orden" },
@@ -59,6 +62,34 @@ export default function TableModal() {
         } finally {
             setLoading(false);
         }
+    }
+
+    async function handleCancelOrder(orderNumber: string) {
+
+        sweetAlert.fire({
+            title: "¿Estás seguro?",
+            text: `¿Deseas cancelar la orden ${orderNumber}? Esta acción no se puede deshacer.`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sí, cancelar",
+            cancelButtonText: "No, mantener",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await cancelOrder(orderNumber);
+                    sweetAlert.fire({
+                        title: "Orden Cancelada",
+                        text: `La orden ${orderNumber} ha sido cancelada exitosamente.`,
+                        icon: "success",
+                    })
+                    fetchOrdersFiltered();
+                } catch (error) {
+                    console.error("Error canceling order:", error);
+                }
+            }
+        })
     }
 
     useEffect(() => {
@@ -117,8 +148,16 @@ export default function TableModal() {
                                 <TableCell className="px-3 py-3 text-left">{formatPrice(order.total)}</TableCell>
                                 <TableCell className="px-3 py-3 text-left">
                                     <div className="flex flex-col items-center gap-2">
-                                        <Badge variant="light" color={verifyColorByStatus(order.status)}>{order.status}</Badge>
-                                        <Badge variant="light" color={ order.is_paid ? "success" : "dark" }>{order.is_paid ? "Pagado" : "No Pagado"}</Badge>
+                                        {
+                                            order.status === "cancelled" ? (
+                                                <Badge variant="light" color="error">Orden Cancelada</Badge>
+                                            ) : (
+                                                <>
+                                                    <Badge variant="light" color={verifyColorByStatus(order.status)}>{order.status}</Badge>
+                                                    <Badge variant="light" color={ order.is_paid ? "success" : "dark" }>{order.is_paid ? "Pagado" : "No Pagado"}</Badge>
+                                                </>
+                                            )
+                                        }
                                     </div>
                                 </TableCell>
                                 <TableCell className="px-3 py-3 text-left">
@@ -130,7 +169,7 @@ export default function TableModal() {
                                 <TableCell className="px-3 py-3">
                                     <div className="flex space-x-4">
                                         <Button variant="outline" onClick={() => router.push(`/orders/${order.order_number}`)} className="text-blue-500"><EyeIcon width={16} height={16} fill="currentColor" /></Button>
-                                        <Button variant="outline" className="text-red-500"><CancelIcon width={16} height={16} fill="currentColor" /></Button>
+                                        <Button variant="outline" onClick={() => handleCancelOrder(order.order_number as string)} className={`text-red-500 ${order.status === "cancelled" ? "opacity-50 pointer-events-none" : ""}`}><CancelIcon width={16} height={16} fill="currentColor" /></Button>
                                     </div>
                                 </TableCell>
                             </TableRow>

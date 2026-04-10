@@ -11,10 +11,13 @@ import EditIcon from "../../../../../../public/images/icons/edit-icon";
 import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { orderByAscDescShippingMethods, orderByShippingMethods, ShippingMethods, tableThShippingMethods } from "@/types/shippingMethods";
-import { createShippingMethods, deleteShippingMethods, getShippingMethodsFiltered, updateShippingMethods } from "@/services/shippingMehods";
+import { changeStatusShippingMethod, createShippingMethods, deleteShippingMethods, getShippingMethodsFiltered, updateShippingMethods } from "@/services/shippingMehods";
 import ModalShippingMethods from "./modalShippingMethods";
 import { verifyColorByStatus } from "../../../../../../util";
 import Badge from "@/components/ui/badge/Badge";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -34,6 +37,7 @@ export default function TableModal() {
     // Alert
     const { showAlert, alertMessage, alertVariant, alertTitle, triggerAlert, closeAlert } = useAlert()
     const [ errorInput, setErrorInput ] = useState<string | null>(null)
+    const swalAlert = withReactContent(Swal);
 
     const tableThShippingMethods: tableThShippingMethods[] = [
         { name: "id", value: "ID" },
@@ -131,6 +135,26 @@ export default function TableModal() {
         }
     } 
 
+    async function handleChangeStatusShippingMethods(shippingMethodId: string, newStatus: boolean) {
+
+            swalAlert.fire({
+                title: '¿Estás seguro?',
+                text: `¿Deseas ${newStatus ? "activar" : "desactivar"} este método de pago?`,
+                icon: 'warning',
+                showCancelButton: true,
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        await changeStatusShippingMethod(shippingMethodId, newStatus);
+                        swalAlert.fire('¡Hecho!', `El método de envío ha sido ${newStatus ? "activado" : "desactivado"}.`, 'success');
+                        await fetchShippingMethodsFiltered();
+                    } catch (error) {
+                        console.error("Error changing shipping method status:", error);
+                    }
+                }
+            });
+        }
+
     async function handleOrderByAscDesc(field: orderByAscDescShippingMethods) {
         if(orderField === field){
             setOrderBy(orderBy === "ByASC" ? "ByDESC" : "ByASC");
@@ -212,7 +236,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3">
                                         <div className="flex space-x-4">
                                             <Button onClick={() => handleOpenModal(shippingMethod)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeleteShippingMethods(shippingMethod.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            <Button onClick={() => handleChangeStatusShippingMethods(shippingMethod.id as string, !shippingMethod.is_active)} variant="outline" className="text-red-500"><ChangeStatusIcon width={16} height={16} fill="currentColor" /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

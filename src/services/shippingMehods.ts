@@ -86,3 +86,19 @@ export async function getShippingMethodsFiltered(filterOptions: filterOptions): 
     }
     return data;
 }
+
+export async function changeStatusShippingMethod(id: string, newStatus: boolean): Promise<{ success: boolean }> {
+    const response = await fetch(`${URL_API}/changeStatus/${id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ newStatus })
+    });
+
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error || "Error changing shipping method status");
+    }
+    return data;
+}
