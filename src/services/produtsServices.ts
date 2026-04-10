@@ -143,7 +143,7 @@ export async function updateProduct(product: Product, images: File[] | string[],
     formData.append("discount", String(product.discount));
     formData.append("image", product.image);
     formData.append("product_attributes", JSON.stringify(productAttributes || []));
-    formData.append("is_new_entry", String(product.is_new_entry || false));
+    formData.append("is_new_entry", product.is_new_entry ? 'true' : 'false');
     formData.append("details", String(product.details || ""));
     
     if(images && images.length > 0) {
