@@ -12,7 +12,7 @@ import DatePicker from "@/components/form/date-picker";
 import { Discounts } from "@/types/discounts";
 import { InputContainerProduct } from "@/components/form/form-elements/InputContainerProduct";
 import { getProductsFilter } from "@/services/produtsServices";
-import { Product } from "@/types/produts";
+import { FilterParams, Product } from "@/types/produts";
 import debounce from "debounce";
 import AddIcon from "../../../../../../public/images/icons/add-icon";
 import Image from "next/image";
@@ -100,7 +100,7 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
     async function fetchProducts(filterLike: string) {
         setLoadingProducts(true);
         try {
-          const response = await getProductsFilter({ filterlike: filterLike });
+          const response = await getProductsFilter({ filterlike: filterLike } as FilterParams);
           setProducts(response.products);
         }catch (error) {
           console.error("Error fetching products:", error);
