@@ -173,7 +173,7 @@ export default function TableModal() {
     }
 
     function handleCategoryChange(type: typeCategories) {
-        setFilters((prev) => ({ ...prev, typeCategories: type }));
+        setFilters((prev) => ({ ...prev, typeCategories: type, page: 1 }));
     }
 
     return (

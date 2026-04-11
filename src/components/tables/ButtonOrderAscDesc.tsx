@@ -7,7 +7,7 @@ interface ButtonOrderAscDescProps {
 export default function ButtonOrderAscDesc({ onClick, isAsc, isActive }: ButtonOrderAscDescProps) {
 
     return (
-        <button onClick={onClick} className={`w-10 h-10 flex items-center justify-center ${isActive ? "text-blue-500" : "text-gray-500"}`}>
+        <button onClick={onClick} className={`w-10 h-10 flex items-center justify-center ${isActive ? "text-red-500" : "text-red-500"}`}>
             <div
             className="w-full h-full flex flex-col items-center justify-center relative"
             >

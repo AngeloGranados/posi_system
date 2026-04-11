@@ -9,7 +9,6 @@ import Skeleton from "react-loading-skeleton";
 import Image from "next/image";
 import EditIcon from "../../../../../../public/images/icons/edit-icon";
 import Button from "@/components/ui/button/Button";
-import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { filterOptions, orderByAscDescPaymentMethods, orderByPaymentMethods, PaymentMethods, tableThPaymentMethods } from "@/types/paymentMethods";
 import { changeStatusPaymentMethod, createPaymentMethods, deletePaymentMethods, getPaymentMethodsFiltered, updatePaymentMethods } from "@/services/paymentMethods";
 import Badge from "@/components/ui/badge/Badge";
@@ -174,7 +173,7 @@ export default function TableModal() {
     };
 
     const handleStatusChange = (status: 'active' | 'inactive') => {
-        setFilters({ ...filters, byStatus: status });
+        setFilters({ ...filters, byStatus: status, page: 1 });
     }
 
     return (

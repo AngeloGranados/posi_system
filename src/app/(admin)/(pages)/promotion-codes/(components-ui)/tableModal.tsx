@@ -184,7 +184,7 @@ export default function TableModal() {
     };
 
     function handleStatusChange(status: 'active' | 'inactive') {
-        setFilters({ ...filters, byStatus: status });
+        setFilters({ ...filters, byStatus: status, page: 1 });
     }
 
     return (

@@ -194,11 +194,11 @@ export default function TableModal() {
     }
 
     function handleCategoryChange(categoryId: string | null) {
-        setFilters({ ...filters, categoryId: categoryId ? `${categoryId}` : "" });
+        setFilters({ ...filters, categoryId: categoryId ? `${categoryId}` : "", page: 1 });
     }
 
     function handleStatusChange(status: 'active' | 'inactive') {
-        setFilters({ ...filters, byStatus: status });
+        setFilters({ ...filters, byStatus: status, page: 1 });
     }
 
     return (

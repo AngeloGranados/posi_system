@@ -2,8 +2,6 @@ import FormGroupInput from "@/components/form/group-input/FormGroupInput";
 import FormRow from "@/components/form/group-input/FormRow";
 import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
-import { getCategoriesFiltered } from "@/services/categoriesServices";
-import { Categories } from "@/types/categories";
 import React, { useEffect } from "react";
 
 interface FiltersComponentProps {
