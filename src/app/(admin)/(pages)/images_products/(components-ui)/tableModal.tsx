@@ -15,6 +15,10 @@ import { ImagesProducts, orderByAscDescImagesProducts, orderByImagesProducts, ta
 import { createImagesProducts, deleteImagesProducts, getImagesProductsFiltered, updateImagesProducts } from "@/services/imagesProductsServices";
 import ModalImagesProducts from "./modalImagesProducts";
 import debounce from "debounce";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const SweetAlert = withReactContent(Swal);
 
 
 export default function TableModal() {
@@ -125,12 +129,22 @@ export default function TableModal() {
     }
 
     async function handleDeleteImagesProducts(imagesProductId: string) {
-        try{ 
-            await deleteImagesProducts(imagesProductId);
-            await fetchImagesProductsFiltered();
-        }catch(error){
-            console.error("Error deleting imagesProduct:", error);
-        }
+        SweetAlert.fire({
+            title: "¿Estás seguro?",
+            text: "Este registro sera eliminado permanentemente y podria borrar toda la información relacionada a este.",
+            icon: "warning",
+            showCancelButton: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await deleteImagesProducts(imagesProductId);
+                    SweetAlert.fire("¡Eliminado!", "La imagen del producto ha sido eliminada.", "success");
+                    await fetchImagesProductsFiltered();
+                }catch(error){
+                    console.error("Error deleting imagesProduct:", error);
+                }
+            }
+        })
     } 
 
     async function handleOrderByAscDesc(field: orderByAscDescImagesProducts) {

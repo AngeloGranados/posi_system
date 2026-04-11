@@ -17,6 +17,10 @@ import { Categories, filterOptions, orderByAscDescCategories, orderByCategories,
 import ModalCategory from "./modalCategory";
 import debounce from "debounce";
 import FiltersComponentCategories from "./filtersComponentDiscount";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const SweetAlert = withReactContent(Swal);
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -127,12 +131,23 @@ export default function TableModal() {
     }
 
     async function handleDeleteCategory(categoryId: string) {
-        try{ 
-            await deleteCategory(categoryId);
-            await fetchCategoriesFiltered();
-        }catch(error){
-            console.error("Error deleting category:", error);
-        }
+
+        SweetAlert.fire({
+            title: "¿Estás seguro?",
+            text: "Este registro sera eliminado permanentemente y podria borrar toda la información relacionada a este.",
+            icon: "warning",
+            showCancelButton: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {         
+                try{ 
+                    await deleteCategory(categoryId);
+                    SweetAlert.fire("¡Eliminado!", "La categoría ha sido eliminada.", "success");
+                    await fetchCategoriesFiltered();
+                }catch(error){
+                    console.error("Error deleting category:", error);
+                }
+            }
+        })
     } 
 
     async function handleOrderByAscDesc(field: orderByAscDescCategories) {

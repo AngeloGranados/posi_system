@@ -13,6 +13,10 @@ import ModalBrands from "./modalBrands";
 import { Brands, orderByAscDescBrands, orderByBrands, tableThBrands } from "@/types/brands";
 import { createBrands, deleteBrands, getBrandsFiltered, updateBrands } from "@/services/brandsServices";
 import Image from "next/image";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const SweetAlert = withReactContent(Swal);
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -110,12 +114,23 @@ export default function TableModal() {
     }
 
     async function handleDeleteBrands(brandsId: string) {
-        try{ 
-            await deleteBrands(brandsId);
-            await fetchBrandsFiltered();
-        }catch(error){
-            console.error("Error deleting brands:", error);
-        }
+
+        SweetAlert.fire({
+            title: "¿Estás seguro?",
+            text: "Este registro sera eliminado permanentemente y podria borrar toda la información relacionada a este.",
+            icon: "warning",
+            showCancelButton: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try{ 
+                    await deleteBrands(brandsId);
+                    SweetAlert.fire("¡Eliminado!", "La marca ha sido eliminada.", "success");
+                    await fetchBrandsFiltered();
+                }catch(error){
+                    console.error("Error deleting brands:", error);
+                }
+            }
+        })
     } 
 
     async function handleOrderByAscDesc(field: orderByAscDescBrands) {

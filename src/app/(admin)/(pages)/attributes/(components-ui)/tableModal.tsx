@@ -12,6 +12,10 @@ import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { Attributes, orderByAscDescAttributes, orderByAttributes, tableThAttributes } from "@/types/attributes";
 import { createAttributes, deleteAttributes, getAttributesFiltered, updateAttributes } from "@/services/attributesServices";
 import ModalAttributes from "./modalAttributes";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const SweetAlert = withReactContent(Swal);
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -102,12 +106,23 @@ export default function TableModal() {
     }
 
     async function handleDeleteAttributes(attributeId: string) {
-        try{ 
-            await deleteAttributes(attributeId);
-            await fetchAttributesFiltered();
-        }catch(error){
-            console.error("Error deleting attribute:", error);
-        }
+        
+        SweetAlert.fire({
+            title: "¿Estás seguro?",
+            text: "Este registro sera eliminado permanentemente y podria borrar toda la información relacionada a este.",
+            icon: "warning",
+            showCancelButton: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await deleteAttributes(attributeId);
+                    SweetAlert.fire("¡Eliminado!", "El atributo ha sido eliminado.", "success");
+                    await fetchAttributesFiltered();
+                } catch (error) {
+                    console.error("Error deleting attribute:", error);
+                }
+            }
+        })
     } 
 
     async function handleOrderByAscDesc(field: orderByAscDescAttributes) {
