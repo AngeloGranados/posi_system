@@ -30,7 +30,7 @@ export default function TableModal() {
     const [filters, setFilters] = useState<FilterParams>({
         categoryId: null,
         page: 1,
-        limit: 10,
+        limit: 100,
         orderBy: "ByDESC" as orderByProduct,
         orderField: "id" as orderByAscDescProduct,
         filterlike: "",

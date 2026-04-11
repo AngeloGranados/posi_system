@@ -26,10 +26,10 @@ export default function TableModal() {
 
     // filters
     const [filters, setFilters] = useState<filterOptions>({
-        orderBy: "ByDESC" as orderByPaymentMethods,
-        orderField: "id" as orderByAscDescPaymentMethods,
+        orderBy: "ByDESC",
+        orderField: "id",
         page: 1,
-        limit: 10,
+        limit: 100,
         byStatus: "active"
     });
     // const [page, setPage] = useState(1)

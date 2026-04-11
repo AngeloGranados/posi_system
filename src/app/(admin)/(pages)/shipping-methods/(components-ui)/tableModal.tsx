@@ -30,7 +30,7 @@ export default function TableModal() {
     const [filters, setFilters] = useState<filterOptions>({
         byStatus: 'active' as 'active' | 'inactive',
         page: 1,
-        limit: 10,
+        limit: 100,
         orderBy: "ByDESC" as orderByShippingMethods,
         orderField: "id" as orderByAscDescShippingMethods
     })
