@@ -191,7 +191,7 @@ export default function ModalShippingMethods({ errorInput, setErrorInput, loadin
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto ${loading ? "opacity-50 cursor-not-allowed bg-brand-600" : ""}`}
+                  className={`btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-red-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-400 sm:w-auto ${loading ? "opacity-50 cursor-not-allowed bg-red-500" : ""}`}
                 >
                   {loading ? "..cargando" : selected ? "Actualizar" : "Agregar"}
                 </button>

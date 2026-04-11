@@ -3,9 +3,8 @@ import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 import NewEntrysTable from "@/components/ecommerce/NewEntrysTable";
 
 export const metadata: Metadata = {
-  title:
-    "Next.js E-commerce Dashboard | TailAdmin - Next.js Dashboard Template",
-  description: "This is Next.js Home for TailAdmin Dashboard Template",
+  title: "POSI System - Ecommerce Dashboard",
+  description: "Ecommerce Dashboard page for POSI System",
 };
 
 export default function Ecommerce() {

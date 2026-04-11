@@ -11,7 +11,6 @@ import useAlert from "@/hooks/useAlert";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
   const { showAlert, triggerAlert, alertTitle, alertMessage, alertVariant, closeAlert } = useAlert();
 
   const [FormDataLogin, setFormDataLogin] = useState({
@@ -122,7 +121,7 @@ export default function SignInForm() {
                   </Link>
                 </div> */}
                 <div>
-                  <button type="submit" className="btn btn-primary flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600">
+                  <button type="submit" className="btn btn-primary flex w-full justify-center rounded-lg bg-red-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-400">
                     Sign in
                   </button>
                 </div>
