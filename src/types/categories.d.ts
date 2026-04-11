@@ -18,3 +18,13 @@ export interface Categories {
     created_at?: string;
 }
 
+export type typeCategories = "Mains" | "Subcategories" | null;
+export interface filterOptions {
+    orderField: orderByAscDescCategories;
+    orderBy: orderByCategories;
+    filterlike: string;
+    limit: number;
+    page: number;
+    parent_id: string;
+    typeCategories: typeCategories;
+}

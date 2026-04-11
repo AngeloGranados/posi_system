@@ -1,16 +1,9 @@
-import { Categories, orderByAscDescCategories, orderByCategories } from "@/types/categories";
+import { Categories, filterOptions, orderByAscDescCategories, orderByCategories } from "@/types/categories";
 
 
 const URL_API = `${process.env.NEXT_PUBLIC_API_URL}category`;
 
-interface filterOptions {
-    orderField?: orderByAscDescCategories;
-    orderBy?: orderByCategories;
-    filterlike?: string;
-    limit?: number;
-    page?: number;
-    parent_id?: string;
-}
+
 
 export async function getCategories(): Promise<Categories[]> {
     const response = await fetch(`${URL_API}`);
@@ -96,6 +89,7 @@ export async function getCategoriesFiltered(filterOptions: filterOptions): Promi
     if(filterOptions.page) params.append("page", filterOptions.page.toString());
     if(filterOptions.parent_id) params.append("ByIdParent", filterOptions.parent_id);
     if(filterOptions.filterlike) params.append("filterLike", filterOptions.filterlike);
+    if(filterOptions.typeCategories) params.append("typeCategories", filterOptions.typeCategories);
     if(filterOptions.orderBy){
         switch (filterOptions.orderBy) {
             case "ByASC":

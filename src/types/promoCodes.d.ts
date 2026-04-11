@@ -17,8 +17,8 @@ export interface PromoCodes {
     max_discount: number,
     usage_limit: number,
     used_count?: number,
-    valid_from: Date,
-    valid_until: Date,
+    valid_from: string,
+    valid_until: string,
     is_active?: boolean,
 }
 

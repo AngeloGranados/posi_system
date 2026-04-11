@@ -1,3 +1,5 @@
+import { SingletonRouter } from "next/router";
+
 export type tableThNameDiscounts = "id" | "product_id" | "discount_type" | "valid_from" | "is_active" | "actions";
 export type orderByAscDescDiscounts = Exclude<tableThNameDiscounts, "actions">;
 export type orderByDiscounts = "ByASC" | "ByDESC";
@@ -12,8 +14,8 @@ export interface Discounts {
     product_id: string,
     discount_type: "percentage" | "fixed" | "",
     discount_value: number,
-    valid_from: Date,
-    valid_until: Date,
+    valid_from: string,
+    valid_until: string,
     is_active?: boolean,
     product_image?: string,
     product_name?: string,

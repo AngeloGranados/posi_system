@@ -32,7 +32,7 @@ const FiltersComponent: React.FC<FiltersComponentProps> = ({ onCategoryChange, o
     async function fetchCategories() {
 
         try {
-            const response = await getCategoriesFiltered({ page: 1, limit: 1000 });
+            const response = await getCategoriesFiltered({ page: 1, limit: 1000, typeCategories: "Subcategories" });
             const categoriesData = response.data.map((category: Categories) => ({
                 value: category.id as string,
                 label: category.name as string

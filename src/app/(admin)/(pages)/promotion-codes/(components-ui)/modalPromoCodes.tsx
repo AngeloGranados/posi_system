@@ -41,8 +41,8 @@ export default function ModalPromoCodes({ errorInput, setErrorInput, loading, is
         min_purchase: 0,
         max_discount: 0,
         usage_limit: 0,
-        valid_from: new Date(),
-        valid_until: new Date()
+        valid_from: '',
+        valid_until: ''
     };
 
     // Si selected existe, usarlo; si no, usar emptyPromoCodes
@@ -54,8 +54,8 @@ export default function ModalPromoCodes({ errorInput, setErrorInput, loading, is
         handleClearForm();
       }else{
         if(selected) {
-          selected.valid_from = selected.valid_from ? new Date(selected.valid_from) : new Date();
-          selected.valid_until = selected.valid_until ? new Date(selected.valid_until) : new Date();
+          selected.valid_from = selected.valid_from;
+          selected.valid_until = selected.valid_until;
         }
         setFormDataPromoCodes(selected || emptyPromoCodes);
       }
@@ -205,7 +205,7 @@ export default function ModalPromoCodes({ errorInput, setErrorInput, loading, is
                         onChange={(dates, currentDateString) => {
                           setFormDataPromoCodes((prev) => ({
                             ...prev,
-                            valid_from: currentDateString ? new Date(currentDateString) : prev.valid_from,
+                            valid_from: currentDateString ? currentDateString : prev.valid_from,
                           }));
                         }}
                       />
@@ -219,7 +219,7 @@ export default function ModalPromoCodes({ errorInput, setErrorInput, loading, is
                         onChange={(dates, currentDateString) => {
                           setFormDataPromoCodes((prev) => ({
                             ...prev,
-                            valid_until: currentDateString ? new Date(currentDateString) : prev.valid_until,
+                            valid_until: currentDateString ? currentDateString : prev.valid_until,
                           }));
                         }}
                       />

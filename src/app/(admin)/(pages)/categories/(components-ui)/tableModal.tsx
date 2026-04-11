@@ -13,9 +13,10 @@ import EditIcon from "../../../../../../public/images/icons/edit-icon";
 import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import { createCategory, deleteCategory, getCategoriesFiltered, updateCategory } from "@/services/categoriesServices";
-import { Categories, orderByAscDescCategories, orderByCategories, tableThCategories } from "@/types/categories";
+import { Categories, filterOptions, orderByAscDescCategories, orderByCategories, tableThCategories, typeCategories } from "@/types/categories";
 import ModalCategory from "./modalCategory";
 import debounce from "debounce";
+import FiltersComponentCategories from "./filtersComponentDiscount";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -24,14 +25,18 @@ export default function TableModal() {
     const [isPrincipal, setIsPrincipal] = useState<boolean>(false);
 
     // filters
-    const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(100)
-    const [pageTotal, setPageTotal] = useState(1)
-    const [orderBy, setOrderBy] = useState<orderByCategories>("ByASC")
-    const [orderField, setOrderField] = useState<orderByAscDescCategories>("id")
-    const [filterlike, setFilterlike] = useState('')
+    const [filters, setFilters] = useState<filterOptions>({
+        orderField: "id",
+        orderBy: "ByASC",
+        filterlike: '',
+        limit: 100,
+        page: 1,
+        parent_id: '',
+        typeCategories: null
+    })
+    
     const [inputSearch, setInputSearch] = useState('')
-
+    const [pageTotal, setPageTotal] = useState(1)
     const [loading, setLoading] = useState(false);
 
     // Alert
@@ -49,7 +54,7 @@ export default function TableModal() {
     async function fetchCategoriesFiltered() {
         setLoading(true);
         try {
-            const response = await getCategoriesFiltered({orderBy, orderField, limit, page, filterlike});
+            const response = await getCategoriesFiltered(filters);
             setCategoriesList(response.data);
             setPageTotal(response.totalRows);
         } catch (error) {
@@ -61,9 +66,9 @@ export default function TableModal() {
 
     useEffect(() => {
         fetchCategoriesFiltered()
-    }, [limit, page, orderBy, filterlike, orderField]);
+    }, [filters]);
 
-    const pageTotalToTable = Math.ceil(pageTotal / limit);
+    const pageTotalToTable = Math.ceil(pageTotal / filters.limit);
 
     async function handleCreateCategory(event: React.FormEvent<HTMLFormElement>, category: Categories) {
         event.preventDefault();
@@ -131,11 +136,10 @@ export default function TableModal() {
     } 
 
     async function handleOrderByAscDesc(field: orderByAscDescCategories) {
-        if(orderField === field){
-            setOrderBy(orderBy === "ByASC" ? "ByDESC" : "ByASC");
+        if(filters.orderField === field){
+            setFilters((prev) => ({ ...prev, orderBy: prev.orderBy === "ByASC" ? "ByDESC" : "ByASC" }));
         } else {
-            setOrderField(field);
-            setOrderBy("ByASC");
+            setFilters((prev) => ({ ...prev, orderField: field, orderBy: "ByASC" }));
         }
     }
 
@@ -145,12 +149,16 @@ export default function TableModal() {
     };
 
     const debounceOnchangeFilterLike = useCallback(debounce((value: string) => {
-        setFilterlike(value);
+        setFilters((prev) => ({ ...prev, filterlike: value }));
     }, 500), []);
 
     const handleOnchangeFilterLike = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputSearch(e.target.value);
         debounceOnchangeFilterLike(e.target.value);
+    }
+
+    function handleCategoryChange(type: typeCategories) {
+        setFilters((prev) => ({ ...prev, typeCategories: type }));
     }
 
     return (
@@ -170,18 +178,19 @@ export default function TableModal() {
             />
             <TablePage<Categories>
                 search={inputSearch}
+                filters={<FiltersComponentCategories onTypeCategoryChange={handleCategoryChange} />}
                 setSearch={handleOnchangeFilterLike}
                 titleTable=""
                 buttonText="Agregar una Categoría"
-                orderField={orderField} 
-                orderBy={orderBy} 
+                orderField={filters.orderField} 
+                orderBy={filters.orderBy} 
                 tableThPage={tableThCategories} 
                 OpenModal={handleOpenModal}  
                 handleOrderByAscDesc={handleOrderByAscDesc} 
                 pageTotal={pageTotalToTable} 
                 showSearch={true}
-                page={page}
-                setPage={setPage}
+                page={filters.page}
+                setPage={(page) => setFilters((prev) => ({ ...prev, page }))}
             >
                 {
                     loading ? (

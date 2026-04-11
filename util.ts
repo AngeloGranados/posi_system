@@ -33,3 +33,9 @@ export function verifyColorByStatus(status: statusOrders): BadgeColor {
         'light'
     )
 }
+
+export function formatDate(dateString: string): string {
+    const data = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    return data.toLocaleDateString('es-PE', options);
+}

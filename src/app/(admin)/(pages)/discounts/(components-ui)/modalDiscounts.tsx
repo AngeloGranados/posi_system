@@ -48,8 +48,8 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
         product_id: "",
         discount_type: "",
         discount_value: 0,
-        valid_from: new Date(),
-        valid_until: new Date()
+        valid_from: '',
+        valid_until: ''
     };
 
     // Si selected existe, usarlo; si no, usar emptyDiscounts
@@ -61,8 +61,8 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
         handleClearForm();
       }else{
         if(selected) {
-          selected.valid_from = selected.valid_from ? new Date(selected.valid_from) : new Date();
-          selected.valid_until = selected.valid_until ? new Date(selected.valid_until) : new Date();
+          selected.valid_from = selected.valid_from;
+          selected.valid_until = selected.valid_until;
         }
         setFormDataDiscounts(selected || emptyDiscounts);
       }
@@ -149,7 +149,7 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
             onClose={handleCloseModal}
             className="max-w-[700px] p-6 lg:p-10"
           >
-            <form onSubmit={(e) => handleCreateDiscounts(e, FormDataDiscounts)} className="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[80vh]">
+            <form onSubmit={(e) => handleCreateDiscounts(e, FormDataDiscounts)} className="flex flex-col px-2 overflow-y-auto overflow-x-visible custom-scrollbar max-h-[80vh]">
               <div>
                 <h5 className="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl">
                   {selected ? `Editar Descuento` : `Agregar Descuento`}
@@ -233,7 +233,7 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
                         onChange={(dates, currentDateString) => {
                           setFormDataDiscounts((prev) => ({
                             ...prev,
-                            valid_from: currentDateString ? new Date(currentDateString) : prev.valid_from,
+                            valid_from: currentDateString ? currentDateString : prev.valid_from,
                           }));
                         }}
                       />
@@ -247,7 +247,7 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
                         onChange={(dates, currentDateString) => {
                           setFormDataDiscounts((prev) => ({
                             ...prev,
-                            valid_until: currentDateString ? new Date(currentDateString) : prev.valid_until,
+                            valid_until: currentDateString ? currentDateString : prev.valid_until,
                           }));
                         }}
                       />
