@@ -3,7 +3,7 @@ import FormRow from "@/components/form/group-input/FormRow";
 import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
 import { getCategoriesFiltered } from "@/services/categoriesServices";
-import { Categories } from "@/types/categories";
+import { Categories, filterOptions } from "@/types/categories";
 import React, { useEffect } from "react";
 
 interface FiltersComponentProps {
@@ -32,7 +32,7 @@ const FiltersComponent: React.FC<FiltersComponentProps> = ({ onCategoryChange, o
     async function fetchCategories() {
 
         try {
-            const response = await getCategoriesFiltered({ page: 1, limit: 1000, typeCategories: "Subcategories" });
+            const response = await getCategoriesFiltered({ page: 1, limit: 1000, typeCategories: "Subcategories" } as filterOptions);
             const categoriesData = response.data.map((category: Categories) => ({
                 value: category.id as string,
                 label: category.name as string

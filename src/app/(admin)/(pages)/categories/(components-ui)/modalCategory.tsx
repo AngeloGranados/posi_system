@@ -8,7 +8,7 @@ import TextArea from "@/components/form/input/TextArea";
 import Alert from "@/components/ui/alert/Alert";
 import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
-import { Categories } from "@/types/categories";
+import { Categories, filterOptions } from "@/types/categories";
 import DropzoneComponent from "@/components/form/form-elements/DropZone";
 import Checkbox from "@/components/form/input/Checkbox";
 import Select from "@/components/form/Select";
@@ -76,7 +76,7 @@ export default function ModalCategory({ setErrorInput, errorInput, loading, isOp
 
     async function fetchCategoriesOptions() {
       try {
-        const response = await getCategoriesFiltered({ parent_id: 'null', limit: 1000 });
+        const response = await getCategoriesFiltered({ parent_id: 'null', limit: 1000 } as filterOptions);
         const options = response.data.map((category) => ({
           value: category.id as string,
           label: category.name
