@@ -31,8 +31,8 @@ export default function TableModal() {
         categoryId: null,
         page: 1,
         limit: 100,
-        orderBy: "ByDESC" as orderByProduct,
-        orderField: "id" as orderByAscDescProduct,
+        orderBy: "ByDESC",
+        orderField: "id",
         filterlike: "",
         byStatus: "active"
     });
