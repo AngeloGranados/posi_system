@@ -10,7 +10,7 @@ import FormGroupInput from "@/components/form/group-input/FormGroupInput";
 import Select from "@/components/form/Select";
 import { InputContainerProduct } from "@/components/form/form-elements/InputContainerProduct";
 import { getProductById, getProductsFilter } from "@/services/produtsServices";
-import { Product } from "@/types/produts";
+import { FilterParams, Product } from "@/types/produts";
 import debounce from "debounce";
 import Image from "next/image";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
@@ -129,7 +129,7 @@ export default function ModalImagesProducts({ errorInput, setErrorInput, loading
     async function fetchProducts(filterLike: string) {
         setLoadingProducts(true);
         try {
-          const response = await getProductsFilter({ filterlike: filterLike });
+          const response = await getProductsFilter({ filterlike: filterLike } as FilterParams);
           setProducts(response.products);
         }catch (error) {
           console.error("Error fetching products:", error);

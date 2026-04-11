@@ -1,6 +1,6 @@
 'use client'
 
-import { orderByAscDescProduct, orderByProduct, Product, tableThProduct } from "@/types/produts";
+import { FilterParams, orderByAscDescProduct, orderByProduct, Product, tableThProduct } from "@/types/produts";
 import TablePage from "../tables/TablePage";
 import { TableCell, TableRow } from "../ui/table";
 import Skeleton from "react-loading-skeleton";
@@ -14,18 +14,14 @@ import debounce from "debounce";
 export default function NewEntrysTable() {
 
     // filter
-    const [filters, setFilters] = useState<{
-        page: number;
-        limit: number;
-        orderBy: orderByProduct | null;
-        orderField: orderByAscDescProduct | null;
-        filterlike: string;
-    }>({
+    const [filters, setFilters] = useState<FilterParams>({
+        categoryId: null,
+        filterlike: '',
+        orderBy: null,
+        orderField: null,
         page: 1,
         limit: 100,
-        orderBy: "byNewEntry",
-        orderField: "id",
-        filterlike: '',
+        byStatus: "active"
     })
 
     const [productsList, setProductsList] = useState<Product[]>([]);
@@ -51,7 +47,7 @@ export default function NewEntrysTable() {
     async function fetchProductsFiltered() {
     setLoading(true);
     try {
-        const response = await getProductsFilter({filterlike: filters.filterlike, orderBy: filters.orderBy, orderField: filters.orderField, page: filters.page, limit: filters.limit});
+        const response = await getProductsFilter(filters);
         setProductsList(response.products);
         setPageTotal(response.total);
     }catch (error) {
