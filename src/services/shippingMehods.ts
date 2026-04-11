@@ -1,14 +1,7 @@
-import { orderByAscDescShippingMethods, orderByShippingMethods, ShippingMethods } from "@/types/shippingMethods";
+import { filterOptions, orderByAscDescShippingMethods, orderByShippingMethods, ShippingMethods } from "@/types/shippingMethods";
 
 
 const URL_API = `${process.env.NEXT_PUBLIC_API_URL}shipping_methods`;
-
-interface filterOptions {
-    orderField: orderByAscDescShippingMethods;
-    orderBy: orderByShippingMethods;
-    limit: number;
-    page: number;
-}
 
 export async function getShippingMethods(): Promise<ShippingMethods[]> {
     const response = await fetch(`${URL_API}`);
@@ -69,6 +62,7 @@ export async function getShippingMethodsFiltered(filterOptions: filterOptions): 
 
     if(filterOptions.limit) params.append("limit", filterOptions.limit.toString());
     if(filterOptions.page) params.append("page", filterOptions.page.toString());
+    if(filterOptions.byStatus) params.append("byStatus", filterOptions.byStatus);
     if(filterOptions.orderBy){
         switch (filterOptions.orderBy) {
             case "ByASC":

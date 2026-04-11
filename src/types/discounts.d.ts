@@ -20,3 +20,11 @@ export interface Discounts {
     product_slug?: string
 }
 
+export interface filterOptions {
+    orderField: orderByAscDescDiscounts;
+    orderBy: orderByDiscounts;
+    limit: number;
+    page: number;
+    byStatus: 'active' | 'inactive'
+}
+

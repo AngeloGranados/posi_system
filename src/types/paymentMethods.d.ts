@@ -18,3 +18,11 @@ export interface PaymentMethods {
     is_active?: boolean;
 }
 
+export interface filterOptions {
+    orderField: orderByAscDescPaymentMethods;
+    orderBy: orderByPaymentMethods;
+    limit: number;
+    page: number;
+    byStatus: "active" | "inactive";
+}
+

@@ -10,13 +10,14 @@ import EditIcon from "../../../../../../public/images/icons/edit-icon";
 import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import ModalPromoCodes from "./modalPromoCodes";
-import { orderByAscDescPromoCodes, orderByPromoCodes, PromoCodes, tableThPromoCodes } from "@/types/promoCodes";
-import { changeStatusPromoCode, createPromoCodes, deletePromoCodes, getPromoCodesFiltered, updatePromoCodes } from "@/services/promoCodesServices";
+import { filterOptions, orderByAscDescPromoCodes, orderByPromoCodes, PromoCodes, tableThPromoCodes } from "@/types/promoCodes";
+import { changeStatusPromoCode, createPromoCodes, getPromoCodesFiltered, updatePromoCodes } from "@/services/promoCodesServices";
 import Badge from "@/components/ui/badge/Badge";
 import { formatDate } from "@fullcalendar/core/index.js";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
+import FiltersComponentPromoCodes from "./filtersComponentPromoCodes";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -24,13 +25,15 @@ export default function TableModal() {
     const [promoCodesList, setPromoCodesList] = useState<PromoCodes[]>([]);
 
     // filters
-    const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(100)
-    const [pageTotal, setPageTotal] = useState(1)
-    const [orderBy, setOrderBy] = useState<orderByPromoCodes>("ByDESC")
-    const [orderField, setOrderField] = useState<orderByAscDescPromoCodes>("id")
-    const [filterlike, setFilterlike] = useState('')
+    const [filters, setFilters] = useState<filterOptions>({
+        orderBy: "ByDESC",
+        orderField: "id",
+        page: 1,
+        limit: 100,
+        byStatus: "active"
+    });
 
+    const [pageTotal, setPageTotal] = useState(1)
     const [loading, setLoading] = useState(false);
 
     // Alert
@@ -55,7 +58,7 @@ export default function TableModal() {
         setLoading(true);
         try {
             // El servicio debe retornar { data, totalItems }
-            const response = await getPromoCodesFiltered({orderBy, orderField, limit, page});
+            const response = await getPromoCodesFiltered(filters);
             setPromoCodesList(response.data);
             setPageTotal(response.totalRows); // Actualiza el total de elementos
         }catch (error) {
@@ -66,11 +69,11 @@ export default function TableModal() {
     }
 
     useEffect(() => {
-        fetchPromoCodesFiltered()
-    }, [limit, page, orderBy, filterlike, orderField]);
+        fetchPromoCodesFiltered();
+    }, [filters]);
 
     // El total de páginas debe ser calculado con el total de elementos
-    const pageTotalToTable = Math.max(1, Math.ceil(pageTotal / limit));
+    const pageTotalToTable = Math.max(1, Math.ceil(pageTotal / filters.limit));
 
     async function handleCreatePromoCodes(event: React.FormEvent<HTMLFormElement>, promoCodes: PromoCodes) {
         event.preventDefault();
@@ -141,11 +144,17 @@ export default function TableModal() {
     // } 
 
     async function handleOrderByAscDesc(field: orderByAscDescPromoCodes) {
-        if(orderField === field){
-            setOrderBy(orderBy === "ByASC" ? "ByDESC" : "ByASC");
+        if(filters.orderField === field){
+            setFilters({
+                ...filters,
+                orderBy: filters.orderBy === "ByASC" ? "ByDESC" : "ByASC"
+            });
         } else {
-            setOrderField(field);
-            setOrderBy("ByASC");
+            setFilters({
+                ...filters,
+                orderField: field,
+                orderBy: "ByASC"
+            });
         }
     }
 
@@ -174,6 +183,10 @@ export default function TableModal() {
         openModal();
     };
 
+    function handleStatusChange(status: 'active' | 'inactive') {
+        setFilters({ ...filters, byStatus: status });
+    }
+
     return (
         <>
             <ModalPromoCodes 
@@ -189,15 +202,16 @@ export default function TableModal() {
             />
             <TablePage<PromoCodes>
                 titleTable=""
+                filters={<FiltersComponentPromoCodes onStatusChange={handleStatusChange} />}
                 buttonText="Agregar un Código Promocional"
-                orderField={orderField} 
-                orderBy={orderBy} 
+                orderField={filters.orderField} 
+                orderBy={filters.orderBy} 
                 tableThPage={tableThPromoCodes} 
                 OpenModal={handleOpenModal}  
                 handleOrderByAscDesc={handleOrderByAscDesc} 
                 pageTotal={pageTotalToTable} 
-                page={page}
-                setPage={setPage}
+                page={filters.page}
+                setPage={(page) => setFilters({ ...filters, page })}
             >
                 {
                     loading ? (

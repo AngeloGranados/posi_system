@@ -1,9 +1,9 @@
 'use client'
 
 import { useModal } from "@/hooks/useModal"
-import { orderByAscDescProduct, orderByProduct, Product, tableThProduct } from "@/types/produts"
+import { FilterParams, orderByAscDescProduct, orderByProduct, Product, tableThProduct } from "@/types/produts"
 import ModalProduct from "./modalProducts";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { changeStatusProduct, createProduct, deleteProduct, getProductsFilter, updateProduct } from "@/services/produtsServices";
 import useAlert from "@/hooks/useAlert";
 import TablePage from "@/components/tables/TablePage";
@@ -18,6 +18,8 @@ import debounce from "debounce";
 import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import Select from "@/components/form/Select";
+import FiltersComponent from "./filtersComponentProducts";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -25,12 +27,14 @@ export default function TableModal() {
     const [productsList, setProductsList] = useState<Product[]>([]);
 
     // filters
-    const [filters, setFilters] = useState({
+    const [filters, setFilters] = useState<FilterParams>({
+        categoryId: null,
         page: 1,
         limit: 10,
         orderBy: "ByDESC" as orderByProduct,
         orderField: "id" as orderByAscDescProduct,
         filterlike: "",
+        byStatus: "active"
     });
 
     const [pageTotal, setPageTotal] = useState(1)
@@ -189,6 +193,14 @@ export default function TableModal() {
         debounceOnchangeFilterLike(e.target.value);
     }
 
+    function handleCategoryChange(categoryId: string | null) {
+        setFilters({ ...filters, categoryId: categoryId ? `${categoryId}` : "" });
+    }
+
+    function handleStatusChange(status: 'active' | 'inactive') {
+        setFilters({ ...filters, byStatus: status });
+    }
+
     return (
         <>
             <ModalProduct 
@@ -204,6 +216,7 @@ export default function TableModal() {
             />
             <TablePage<Product>
                 titleTable=""
+                filters={<FiltersComponent onCategoryChange={handleCategoryChange} onStatusChange={handleStatusChange} />}
                 showSearch={true}
                 setSearch={handleOnchangeFilterLike}
                 search={inputSearch}

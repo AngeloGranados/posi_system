@@ -1,14 +1,7 @@
-import { orderByAscDescPaymentMethods, orderByPaymentMethods, PaymentMethods } from "@/types/paymentMethods";
+import { filterOptions, orderByAscDescPaymentMethods, orderByPaymentMethods, PaymentMethods } from "@/types/paymentMethods";
 
 
 const URL_API = `${process.env.NEXT_PUBLIC_API_URL}payment_methods`;
-
-interface filterOptions {
-    orderField: orderByAscDescPaymentMethods;
-    orderBy: orderByPaymentMethods;
-    limit: number;
-    page: number;
-}
 
 export async function getPaymentMethods(): Promise<PaymentMethods[]> {
     const response = await fetch(`${URL_API}`);
@@ -78,6 +71,7 @@ export async function getPaymentMethodsFiltered(filterOptions: filterOptions): P
 
     if(filterOptions.limit) params.append("limit", filterOptions.limit.toString());
     if(filterOptions.page) params.append("page", filterOptions.page.toString());
+    if(filterOptions.byStatus) params.append("byStatus", filterOptions.byStatus);
     if(filterOptions.orderBy){
         switch (filterOptions.orderBy) {
             case "ByASC":

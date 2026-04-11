@@ -1,21 +1,6 @@
-import { CategoryAttribute, ImagesProduct, orderByAscDescProduct, orderByProduct, Product, ProductAttribute } from "@/types/produts";
+import { CategoryAttribute, FilterParams, ImagesProduct, orderByAscDescProduct, orderByProduct, Product, ProductAttribute } from "@/types/produts";
 
 const URL_API: string = `${process.env.NEXT_PUBLIC_API_URL}products`;
-
-interface FilterParams {
-    categoryId?: string;
-    filterlike?: string;
-    orderBy?: orderByProduct | null;
-    orderField?: orderByAscDescProduct | null;
-    price_min?: number;
-    price_max?: number;
-    stock_min?: number;
-    stock_max?: number;
-    page?: number;
-    limit?: number;
-    discount_min?: number;
-    discount_max?: number;
-}
 
 interface FilterResponse {
     total: number;
@@ -29,6 +14,7 @@ export async function getProductsFilter(Filterparams: FilterParams): Promise<Fil
     if (Filterparams.categoryId) params.append("categoryId", Filterparams.categoryId);
     if (Filterparams.page) params.append("page", Filterparams.page.toString());
     if (Filterparams.limit) params.append("limit", Filterparams.limit.toString());
+    if (Filterparams.byStatus) params.append("byStatus", Filterparams.byStatus);
     if (Filterparams.orderBy) {
         switch (Filterparams.orderBy) {
             case "ByPriceMinToMax":

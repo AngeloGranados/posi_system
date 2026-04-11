@@ -64,11 +64,12 @@ interface TablePageProps<T> {
     orderField: orderByAscDescT<T> | null;
     pageTotal: number;
     page: number;
+    filters?: React.ReactNode;
     setPage: (page: number) => void;
     buttonText?: string;
 }
 
-export default function TablePage<T>({ showSearch = false, setSearch, search, children, titleTable, buttonText, OpenModal, tableThPage, handleOrderByAscDesc, orderBy, orderField, pageTotal, page, setPage }: TablePageProps<T>) {
+export default function TablePage<T>({ filters, showSearch = false, setSearch, search, children, titleTable, buttonText, OpenModal, tableThPage, handleOrderByAscDesc, orderBy, orderField, pageTotal, page, setPage }: TablePageProps<T>) {
 
     function handlePageChange(page: number){
         if(page < 1 || page > pageTotal) return;
@@ -95,6 +96,9 @@ export default function TablePage<T>({ showSearch = false, setSearch, search, ch
                             )
                         }
                     </div>   
+                    <div>
+                        { filters }
+                    </div>
                     <div>
                         {buttonText && <Button onClick={() => OpenModal?.(null)} className="flex items-center leading-none float-right"><AddIcon width={17} height={17} fill="currentColor" /> {buttonText}</Button>}
                     </div>

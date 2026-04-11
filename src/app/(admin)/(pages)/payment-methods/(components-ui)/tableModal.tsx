@@ -10,13 +10,14 @@ import Image from "next/image";
 import EditIcon from "../../../../../../public/images/icons/edit-icon";
 import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
-import { orderByAscDescPaymentMethods, orderByPaymentMethods, PaymentMethods, tableThPaymentMethods } from "@/types/paymentMethods";
+import { filterOptions, orderByAscDescPaymentMethods, orderByPaymentMethods, PaymentMethods, tableThPaymentMethods } from "@/types/paymentMethods";
 import { changeStatusPaymentMethod, createPaymentMethods, deletePaymentMethods, getPaymentMethodsFiltered, updatePaymentMethods } from "@/services/paymentMethods";
 import Badge from "@/components/ui/badge/Badge";
 import ModalPaymentMethods from "./modalPayment";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
+import FiltersComponentPaymentMethods from "./filtersComponentPaymentMethod";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -24,13 +25,20 @@ export default function TableModal() {
     const [paymentMethodList, setPaymentMethodsList] = useState<PaymentMethods[]>([]);
 
     // filters
-    const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(100)
+    const [filters, setFilters] = useState<filterOptions>({
+        orderBy: "ByDESC" as orderByPaymentMethods,
+        orderField: "id" as orderByAscDescPaymentMethods,
+        page: 1,
+        limit: 10,
+        byStatus: "active"
+    });
+    // const [page, setPage] = useState(1)
+    // const [limit, setLimit] = useState(100)
+    // const [orderBy, setOrderBy] = useState<orderByPaymentMethods>("ByDESC")
+    // const [orderField, setOrderField] = useState<orderByAscDescPaymentMethods>("id")
+    // const [filterlike, setFilterlike] = useState('')
+    
     const [pageTotal, setPageTotal] = useState(1)
-    const [orderBy, setOrderBy] = useState<orderByPaymentMethods>("ByDESC")
-    const [orderField, setOrderField] = useState<orderByAscDescPaymentMethods>("id")
-    const [filterlike, setFilterlike] = useState('')
-
     const [loading, setLoading] = useState(false);
 
     // Alert
@@ -51,7 +59,7 @@ export default function TableModal() {
         setLoading(true);
         try {
             // El servicio debe retornar { data, totalItems }
-            const response = await getPaymentMethodsFiltered({orderBy, orderField, limit, page});
+            const response = await getPaymentMethodsFiltered(filters);
             setPaymentMethodsList(response.data);
             setPageTotal(response.totalRows); // Actualiza el total de elementos
         }catch (error) {
@@ -63,10 +71,10 @@ export default function TableModal() {
 
     useEffect(() => {
         fetchPaymentMethodsFiltered()
-    }, [limit, page, orderBy, filterlike, orderField]);
+    }, [filters]);
 
     // El total de páginas debe ser calculado con el total de elementos
-    const pageTotalToTable = Math.max(1, Math.ceil(pageTotal / limit));
+    const pageTotalToTable = Math.max(1, Math.ceil(pageTotal / filters.limit));
 
     async function handleCreatePaymentMethods(event: React.FormEvent<HTMLFormElement>, paymentMethod: PaymentMethods) {
         event.preventDefault();
@@ -126,11 +134,17 @@ export default function TableModal() {
     // } 
 
     async function handleOrderByAscDesc(field: orderByAscDescPaymentMethods) {
-        if(orderField === field){
-            setOrderBy(orderBy === "ByASC" ? "ByDESC" : "ByASC");
+        if(filters.orderField === field){
+            setFilters({
+                ...filters,
+                orderBy: filters.orderBy === "ByASC" ? "ByDESC" : "ByASC"
+            });
         } else {
-            setOrderField(field);
-            setOrderBy("ByASC");
+            setFilters({
+                ...filters,
+                orderField: field,
+                orderBy: "ByASC"
+            });
         }
     }
 
@@ -159,6 +173,10 @@ export default function TableModal() {
         openModal();
     };
 
+    const handleStatusChange = (status: 'active' | 'inactive') => {
+        setFilters({ ...filters, byStatus: status });
+    }
+
     return (
         <>
             <ModalPaymentMethods 
@@ -174,15 +192,16 @@ export default function TableModal() {
             />
             <TablePage<PaymentMethods>
                 titleTable=""
+                filters={<FiltersComponentPaymentMethods onStatusChange={handleStatusChange} />}
                 buttonText="Agregar una nueva forma de pago"
-                orderField={orderField} 
-                orderBy={orderBy} 
+                orderField={filters.orderField} 
+                orderBy={filters.orderBy} 
                 tableThPage={tableThPaymentMethods} 
                 OpenModal={handleOpenModal}  
                 handleOrderByAscDesc={handleOrderByAscDesc} 
                 pageTotal={pageTotalToTable} 
-                page={page}
-                setPage={setPage}
+                page={filters.page}
+                setPage={(page) => setFilters({ ...filters, page })}
             >
                 {
                     loading ? (

@@ -1,13 +1,6 @@
-import { orderByAscDescDiscounts, orderByDiscounts, Discounts } from "@/types/discounts";
+import { Discounts, filterOptions } from "@/types/discounts";
 
 const URL_API = `${process.env.NEXT_PUBLIC_API_URL}discounts`;
-
-interface filterOptions {
-    orderField: orderByAscDescDiscounts;
-    orderBy: orderByDiscounts;
-    limit: number;
-    page: number;
-}
 
 export async function getDiscounts(): Promise<Discounts[]> {
     const response = await fetch(`${URL_API}`);
@@ -68,6 +61,7 @@ export async function getDiscountsFiltered(filterOptions: filterOptions): Promis
 
     if(filterOptions.limit) params.append("limit", filterOptions.limit.toString());
     if(filterOptions.page) params.append("page", filterOptions.page.toString());
+    if(filterOptions.byStatus) params.append("byStatus", filterOptions.byStatus);
     if(filterOptions.orderBy){
         switch (filterOptions.orderBy) {
             case "ByASC":

@@ -22,3 +22,11 @@ export interface PromoCodes {
     is_active?: boolean,
 }
 
+export interface filterOptions {
+    orderField: orderByAscDescPromoCodes;
+    orderBy: orderByPromoCodes;
+    limit: number;
+    page: number;
+    byStatus: "active" | "inactive";
+}
+

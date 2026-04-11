@@ -1,15 +1,8 @@
-import { orderByAscDescPromoCodes, orderByPromoCodes, PromoCodes } from "@/types/promoCodes";
+import { filterOptions, orderByAscDescPromoCodes, orderByPromoCodes, PromoCodes } from "@/types/promoCodes";
 
 
 
 const URL_API = `${process.env.NEXT_PUBLIC_API_URL}promo_codes`;
-
-interface filterOptions {
-    orderField: orderByAscDescPromoCodes;
-    orderBy: orderByPromoCodes;
-    limit: number;
-    page: number;
-}
 
 export async function getPromoCodes(): Promise<PromoCodes[]> {
     const response = await fetch(`${URL_API}`);
@@ -70,6 +63,7 @@ export async function getPromoCodesFiltered(filterOptions: filterOptions): Promi
 
     if(filterOptions.limit) params.append("limit", filterOptions.limit.toString());
     if(filterOptions.page) params.append("page", filterOptions.page.toString());
+    if(filterOptions.byStatus) params.append("byStatus", filterOptions.byStatus);
     if(filterOptions.orderBy){
         switch (filterOptions.orderBy) {
             case "ByASC":

@@ -9,7 +9,7 @@ import Skeleton from "react-loading-skeleton";
 import EditIcon from "../../../../../../public/images/icons/edit-icon";
 import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
-import { Discounts, orderByAscDescDiscounts, orderByDiscounts, tableThDiscounts } from "@/types/discounts";
+import { Discounts, filterOptions, orderByAscDescDiscounts, orderByDiscounts, tableThDiscounts } from "@/types/discounts";
 import { changeStatusDiscount, createDiscounts, deleteDiscounts, getDiscountsFiltered, updateDiscounts } from "@/services/discountsServices";
 import Badge from "@/components/ui/badge/Badge";
 import { formatDate } from "@fullcalendar/core/index.js";
@@ -19,6 +19,7 @@ import ModalDiscounts from "./modalDiscounts";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
+import FiltersComponentDiscounts from "./filtersComponentDiscount";
 
 
 export default function TableModal() {
@@ -27,13 +28,15 @@ export default function TableModal() {
     const [discountsList, setDiscountsList] = useState<Discounts[]>([]);
 
     // filters
-    const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(100)
+    const [filters, setFilters] = useState<filterOptions>({
+        orderField: "id",
+        orderBy: "ByDESC",
+        limit: 100,
+        page: 1,
+        byStatus: "active"
+    })
+    
     const [pageTotal, setPageTotal] = useState(1)
-    const [orderBy, setOrderBy] = useState<orderByDiscounts>("ByDESC")
-    const [orderField, setOrderField] = useState<orderByAscDescDiscounts>("id")
-    const [filterlike, setFilterlike] = useState('')
-
     const [loading, setLoading] = useState(false);
 
     // Alert
@@ -54,7 +57,7 @@ export default function TableModal() {
         setLoading(true);
         try {
             // El servicio debe retornar { data, totalItems }
-            const response = await getDiscountsFiltered({orderBy, orderField, limit, page});
+            const response = await getDiscountsFiltered(filters);
             setDiscountsList(response.data);
             setPageTotal(response.totalRows); // Actualiza el total de elementos
         }catch (error) {
@@ -66,10 +69,10 @@ export default function TableModal() {
 
     useEffect(() => {
         fetchDiscountsFiltered()
-    }, [limit, page, orderBy, filterlike, orderField]);
+    }, [filters]);
 
     // El total de páginas debe ser calculado con el total de elementos
-    const pageTotalToTable = Math.max(1, Math.ceil(pageTotal / limit));
+    const pageTotalToTable = Math.max(1, Math.ceil(pageTotal / filters.limit));
 
     async function handleCreateDiscounts(event: React.FormEvent<HTMLFormElement>, discounts: Discounts) {
         event.preventDefault();
@@ -165,11 +168,17 @@ export default function TableModal() {
         }
 
     async function handleOrderByAscDesc(field: orderByAscDescDiscounts) {
-        if(orderField === field){
-            setOrderBy(orderBy === "ByASC" ? "ByDESC" : "ByASC");
+        if(filters.orderField === field){
+            setFilters({
+                ...filters,
+                orderBy: filters.orderBy === "ByASC" ? "ByDESC" : "ByASC"
+            });
         } else {
-            setOrderField(field);
-            setOrderBy("ByASC");
+            setFilters({
+                ...filters,
+                orderField: field,
+                orderBy: "ByASC"
+            });
         }
     }
 
@@ -177,6 +186,10 @@ export default function TableModal() {
         setSelectedDiscounts(data);
         openModal();
     };
+
+    const handleStatusChange = (status: 'active' | 'inactive' ) => {
+        setFilters({ ...filters, byStatus: status });
+    }
 
     return (
         <>
@@ -193,15 +206,16 @@ export default function TableModal() {
             />
             <TablePage<Discounts>
                 titleTable=""
+                filters={<FiltersComponentDiscounts onStatusChange={handleStatusChange} />}
                 buttonText="Agregar un Descuento"
-                orderField={orderField} 
-                orderBy={orderBy} 
+                orderField={filters.orderField} 
+                orderBy={filters.orderBy} 
                 tableThPage={tableThDiscounts} 
                 OpenModal={handleOpenModal}  
                 handleOrderByAscDesc={handleOrderByAscDesc} 
                 pageTotal={pageTotalToTable} 
-                page={page}
-                setPage={setPage}
+                page={filters.page}
+                setPage={(page) => setFilters({ ...filters, page })}
             >
                 {
                     loading ? (

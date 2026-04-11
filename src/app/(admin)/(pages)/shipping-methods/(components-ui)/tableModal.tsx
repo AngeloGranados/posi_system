@@ -10,7 +10,7 @@ import Image from "next/image";
 import EditIcon from "../../../../../../public/images/icons/edit-icon";
 import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
-import { orderByAscDescShippingMethods, orderByShippingMethods, ShippingMethods, tableThShippingMethods } from "@/types/shippingMethods";
+import { filterOptions, orderByAscDescShippingMethods, orderByShippingMethods, ShippingMethods, tableThShippingMethods } from "@/types/shippingMethods";
 import { changeStatusShippingMethod, createShippingMethods, deleteShippingMethods, getShippingMethodsFiltered, updateShippingMethods } from "@/services/shippingMehods";
 import ModalShippingMethods from "./modalShippingMethods";
 import { verifyColorByStatus } from "../../../../../../util";
@@ -18,6 +18,8 @@ import Badge from "@/components/ui/badge/Badge";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
+import FiltersComponent from "./filtersComponentShippingMethods";
+import FiltersComponentShippingMethods from "./filtersComponentShippingMethods";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -25,12 +27,14 @@ export default function TableModal() {
     const [shippingMethodList, setShippingMethodsList] = useState<ShippingMethods[]>([]);
 
     // filters
-    const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(100)
-    const [pageTotal, setPageTotal] = useState(1)
-    const [orderBy, setOrderBy] = useState<orderByShippingMethods>("ByDESC")
-    const [orderField, setOrderField] = useState<orderByAscDescShippingMethods>("id")
-    const [filterlike, setFilterlike] = useState('')
+    const [filters, setFilters] = useState<filterOptions>({
+        byStatus: 'active' as 'active' | 'inactive',
+        page: 1,
+        limit: 10,
+        orderBy: "ByDESC" as orderByShippingMethods,
+        orderField: "id" as orderByAscDescShippingMethods
+    })
+     const [pageTotal, setPageTotal] = useState(1);
 
     const [loading, setLoading] = useState(false);
 
@@ -53,7 +57,7 @@ export default function TableModal() {
         setLoading(true);
         try {
             // El servicio debe retornar { data, totalItems }
-            const response = await getShippingMethodsFiltered({orderBy, orderField, limit, page});
+            const response = await getShippingMethodsFiltered(filters);
             setShippingMethodsList(response.data);
             setPageTotal(response.totalRows); // Actualiza el total de elementos
         }catch (error) {
@@ -65,10 +69,10 @@ export default function TableModal() {
 
     useEffect(() => {
         fetchShippingMethodsFiltered()
-    }, [limit, page, orderBy, filterlike, orderField]);
+    }, [filters]);
 
     // El total de páginas debe ser calculado con el total de elementos
-    const pageTotalToTable = Math.max(1, Math.ceil(pageTotal / limit));
+    const pageTotalToTable = Math.max(1, Math.ceil(pageTotal / filters.limit));
 
     async function handleCreateShippingMethods(event: React.FormEvent<HTMLFormElement>, shippingMethod: ShippingMethods) {
         event.preventDefault();
@@ -157,11 +161,10 @@ export default function TableModal() {
         }
 
     async function handleOrderByAscDesc(field: orderByAscDescShippingMethods) {
-        if(orderField === field){
-            setOrderBy(orderBy === "ByASC" ? "ByDESC" : "ByASC");
+        if(filters.orderField === field){
+            setFilters({ ...filters, orderBy: filters.orderBy === "ByASC" ? "ByDESC" : "ByASC" });
         } else {
-            setOrderField(field);
-            setOrderBy("ByASC");
+            setFilters({ ...filters, orderField: field, orderBy: "ByASC" });
         }
     }
 
@@ -169,6 +172,10 @@ export default function TableModal() {
         setSelectedShippingMethods(data);
         openModal();
     };
+
+    const handleStatusChange = (status: 'active' | 'inactive') => {
+        setFilters({ ...filters, byStatus: status });
+    }
 
     return (
         <>
@@ -185,15 +192,16 @@ export default function TableModal() {
             />
             <TablePage<ShippingMethods>
                 titleTable=""
+                filters={<FiltersComponentShippingMethods onStatusChange={handleStatusChange} />}
                 buttonText="Agregar un Método de Envío"
-                orderField={orderField} 
-                orderBy={orderBy} 
+                orderField={filters.orderField} 
+                orderBy={filters.orderBy} 
                 tableThPage={tableThShippingMethods} 
                 OpenModal={handleOpenModal}  
                 handleOrderByAscDesc={handleOrderByAscDesc} 
                 pageTotal={pageTotalToTable} 
-                page={page}
-                setPage={setPage}
+                page={filters.page}
+                setPage={(page) => setFilters({ ...filters, page })}
             >
                 {
                     loading ? (

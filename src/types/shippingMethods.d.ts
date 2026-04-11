@@ -6,7 +6,13 @@ export interface tableThShippingMethods {
     value: string;
     className?: string;
 }
-
+export interface filterOptions {
+    orderField: orderByAscDescShippingMethods;
+    orderBy: orderByShippingMethods;
+    byStatus: 'active' | 'inactive';
+    limit: number;
+    page: number;
+}
 export interface ShippingMethods {
     id?: string,
     code: string,

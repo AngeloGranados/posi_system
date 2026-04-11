@@ -32,6 +32,22 @@ export interface Product {
     details?: string;
 }
 
+export interface FilterParams {
+    categoryId: string | null;
+    filterlike: string;
+    orderBy: orderByProduct | null;
+    orderField: orderByAscDescProduct | null;
+    price_min?: number;
+    price_max?: number;
+    stock_min?: number;
+    stock_max?: number;
+    page: number;
+    limit: number;
+    discount_min?: number;
+    discount_max?: number;
+    byStatus: "active" | "inactive";
+}
+
 export interface ImagesProduct {
     alt_text: string;
     attribute_value: string | null;
