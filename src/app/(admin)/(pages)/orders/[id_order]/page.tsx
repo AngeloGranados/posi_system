@@ -204,6 +204,17 @@ export default function OrderDetails() {
                                                         </div>
                                                         <div>
                                                             <strong>{item.product_name}</strong>
+                                                            {
+                                                                item.selected_attributes && (
+                                                                    <div className="text-xs text-gray-800">
+                                                                        {
+                                                                            Object.entries(item.selected_attributes).map(([key, value]) => (
+                                                                                <div key={key}>{key}: {value}</div>
+                                                                            ))
+                                                                        }
+                                                                    </div>
+                                                                )
+                                                            }
                                                         </div>
                                                     </div>
                                                 </TableCell>

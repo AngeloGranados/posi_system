@@ -54,7 +54,7 @@ export interface OrderItems {
     product_id: string,
     quantity: number,
     price_at_added: number,
-    selected_attributes: { key: string; value: string }[] | null,
+    selected_attributes: { key: string; value: string } | null,
     created_at?: Date | string,
     updated_at?: Date | string,
     image_url?: string | null,
