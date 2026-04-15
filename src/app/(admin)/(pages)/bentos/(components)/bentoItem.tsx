@@ -88,7 +88,7 @@ export default function BentoItem({category, gridColumn, gridRow, backgroundImag
                                 categories?.map((cat, index) => (
                                     <button type='button' className='d-block w-full flex flex-col items-center justify-center' key={index} onClick={() => handleCategoryClick?.(cat, indexBento)}>
                                         <li key={cat.id} className='w-full group/item bg-gray-200 mb-4 overflow-hidden cursor-pointer'>
-                                            <p className='text-[1rem] font-bold text-center text-white bg-red-500'>{cat.description}</p>
+                                            <p className='text-[1rem] font-bold text-center text-white bg-red-500'>{cat.name}</p>
                                             <div className='w-full h-40 mb-2 flex overflow-hidden items-center justify-center'>
                                                 <Image className='group-hover/item:scale-105 w-full h-full object-cover' unoptimized={process.env.NODE_ENV ? true : false} src={`${process.env.NEXT_PUBLIC_URL_IMAGES}categories/${cat.image_url}`} alt={cat.name} width={100} height={100} />
                                             </div>
