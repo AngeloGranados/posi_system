@@ -30,7 +30,7 @@ export default function ConfigModal({ dataCompany }: ConfigModalProps) {
         companyAddress: dataCompany.companyAddress || ""
     });
 
-    const dataCachedRef = useRef(dataCompany);
+    const dataCachedRef = useRef(dataCompany || {});
 
     const [FormDataSocials, setRedesSociales] = useState<Record<RedSocial, string>>(dataCompany.socials || {});
     
