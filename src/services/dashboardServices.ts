@@ -41,7 +41,7 @@ export async function getDataCompany(): Promise<CompanyData> {
         throw new Error("Failed to fetch company data");
     }
 
-    console.log("Data received from API:", data);
+    console.log(typeof data, "Data received from API:", data);
 
     if (typeof data === "string") {
         data = JSON.parse(data);
