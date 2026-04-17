@@ -11,6 +11,39 @@ export async function getCardsTotalRegisters(): Promise<CardsTotalRegisters> {
     return data;
 }
 
+export async function configDataCompany(dataCompany: CompanyData): Promise<{ message: string }> {
+    const configDataCompany = new FormData();
+    configDataCompany.append("companyName", dataCompany.companyName);
+    configDataCompany.append("companyEmail", dataCompany.companyEmail);
+    configDataCompany.append("companyPhone", dataCompany.companyPhone);
+    configDataCompany.append("companyAddress", dataCompany.companyAddress);
+    configDataCompany.append("companyLogo", dataCompany.companyLogo);
+    configDataCompany.append("socials", JSON.stringify(dataCompany.socials));
+
+    const response = await fetch(`${URL_API}/configDataCompany`, {
+        method: "POST",
+        body: configDataCompany,
+    });
+    const data = await response.json();
+
+    if (!response.ok || data.error) {
+        throw new Error("Failed to configure company data");
+    }
+
+    return data;
+}
+
+export async function getDataCompany(): Promise<CompanyData> {
+    const response = await fetch(`${URL_API}/getConfigDataCompany`);
+    const data = await response.json();
+
+    if (!response.ok || data.error) {
+        throw new Error("Failed to fetch company data");
+    }
+
+    return data;
+}
+
 export async function configBentoCategories(configBento: Categories[]): Promise<{ message: string }> {
     const response = await fetch(`${URL_API}/configBentoCategories`, {
         method: "POST",
