@@ -35,10 +35,14 @@ export async function configDataCompany(dataCompany: CompanyData): Promise<{ mes
 
 export async function getDataCompany(): Promise<CompanyData> {
     const response = await fetch(`${URL_API}/getConfigDataCompany`);
-    const data = await response.json();
+    let data = await response.json();
 
     if (!response.ok || data.error) {
         throw new Error("Failed to fetch company data");
+    }
+
+    if (typeof data.socials === "string") {
+        data = JSON.parse(data);
     }
 
     return data;
