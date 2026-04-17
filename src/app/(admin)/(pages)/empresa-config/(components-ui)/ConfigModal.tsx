@@ -32,7 +32,7 @@ export default function ConfigModal({ dataCompany }: ConfigModalProps) {
 
     const dataCachedRef = useRef(dataCompany);
 
-    const [FormDataSocials, setRedesSociales] = useState<Record<RedSocial, string>>(dataCompany.socials);
+    const [FormDataSocials, setRedesSociales] = useState<Record<RedSocial, string>>(dataCompany.socials || {});
     
     function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target;
