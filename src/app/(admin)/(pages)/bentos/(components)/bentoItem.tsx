@@ -25,7 +25,7 @@ interface BentoItemProps {
 export default function BentoItem({category, gridColumn, gridRow, backgroundImage, children, handleCategoryClick, indexBento, handleClear, handleDeleteCategory }: BentoItemProps) {
 
     const [filters, setFilters] = useState<filterOptions>({
-        typeCategories: "Subcategories", 
+        typeCategories: "Mains", 
         limit: 10,
         filterlike: ''
     } as filterOptions);
