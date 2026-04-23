@@ -11,6 +11,11 @@ const configItems = [
         title: "Configurar datos de la empresa",
         icon: <EditIcon width={20} height={20} fill="red" />,
         url: "/empresa-config"
+    },
+    {
+        title: "Configurar Categorias - Pagina Principal",
+        icon: <EditIcon width={20} height={20} fill="red" />,
+        url: "/categories-main"
     }
 ]
 

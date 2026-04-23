@@ -81,6 +81,22 @@ export async function createCategory(category: Categories): Promise<Categories> 
     return data;
 }
 
+export async function configCategoriesProductRelevantNews(categoriesIds: string[]): Promise<{ message: string }> {
+    const response = await fetch(`${URL_API}/configCategoriesProductRelevantNews`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ categoriesIds })
+    });
+
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error);
+    }
+    return data;
+}
+
 export async function getCategoriesFiltered(filterOptions: filterOptions): Promise<{ data: Categories[]; totalRows: number}>{
 
     const params = new URLSearchParams();
