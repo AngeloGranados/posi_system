@@ -18,6 +18,7 @@ export async function configDataCompany(dataCompany: CompanyData): Promise<{ mes
     configDataCompany.append("companyPhone", dataCompany.companyPhone);
     configDataCompany.append("companyAddress", dataCompany.companyAddress);
     configDataCompany.append("companyLogo", dataCompany.companyLogo);
+    configDataCompany.append("companyPriceLimit", dataCompany.companyPriceLimit);
     configDataCompany.append("socials", JSON.stringify(dataCompany.socials));
 
     const response = await fetch(`${URL_API}/configDataCompany`, {
@@ -40,8 +41,6 @@ export async function getDataCompany(): Promise<CompanyData> {
     if (!response.ok || data.error) {
         throw new Error("Failed to fetch company data");
     }
-
-    console.log(typeof data, "Data received from API:", data);
 
     if (typeof data === "string") {
         data = JSON.parse(data);

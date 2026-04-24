@@ -12,6 +12,7 @@ type CompanyData = {
     companyPhone: string;
     companyLogo: File;
     companyAddress: string;
+    companyPriceLimit: string;
 }
 interface FormInfoCompanyData {
     FormData : CompanyData,
@@ -49,6 +50,19 @@ export default function FormInfoCompany({FormData, handleInputChange, handleLogo
                 </FormRow>
                 <FormRow>
                     <FormGroupInput>
+                        <Label className="text-gray-700" htmlFor="companyAddress">DIRECCIÓN</Label>
+                        <FormInput 
+                            id="companyAddress"
+                            name="companyAddress"
+                            type="text"
+                            placeholder="Ingresa la dirección de la tienda"
+                            value={FormData.companyAddress}
+                            onChange={handleInputChange}
+                        />
+                    </FormGroupInput>
+                </FormRow>
+                <FormRow>
+                    <FormGroupInput>
                         <Label className="text-gray-700" htmlFor="companyPhone">TELEFONO</Label>
                         <FormInput 
                             id="companyPhone"
@@ -60,13 +74,13 @@ export default function FormInfoCompany({FormData, handleInputChange, handleLogo
                         />
                     </FormGroupInput>
                     <FormGroupInput>
-                        <Label className="text-gray-700" htmlFor="companyAddress">DIRECCIÓN</Label>
+                        <Label className="text-gray-700" htmlFor="companyPriceLimit">Precio Limite</Label>
                         <FormInput 
-                            id="companyAddress"
-                            name="companyAddress"
+                            id="companyPriceLimit"
+                            name="companyPriceLimit"
                             type="text"
-                            placeholder="Ingresa la dirección de la tienda"
-                            value={FormData.companyAddress}
+                            placeholder="Ingresa el precio limite de la tienda"
+                            value={FormData.companyPriceLimit}
                             onChange={handleInputChange}
                         />
                     </FormGroupInput>

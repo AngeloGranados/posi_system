@@ -14,20 +14,14 @@ interface ConfigModalProps {
 }
 
 export default function ConfigModal({ dataCompany }: ConfigModalProps) {
-    type FormDataType = {
-        companyName: string;
-        companyEmail: string;
-        companyPhone: string;
-        companyLogo: File;
-        companyAddress: string;
-    }
 
     const [FormData, setFormData] = useState<FormDataType>({
         companyName: dataCompany.companyName || "",
         companyEmail: dataCompany.companyEmail || "",
         companyPhone: dataCompany.companyPhone || "",
         companyLogo: dataCompany.companyLogo || new File([], ""),
-        companyAddress: dataCompany.companyAddress || ""
+        companyAddress: dataCompany.companyAddress || "",
+        companyPriceLimit: dataCompany.companyPriceLimit || ""
     });
 
     const dataCachedRef = useRef(dataCompany || {});
@@ -65,10 +59,17 @@ export default function ConfigModal({ dataCompany }: ConfigModalProps) {
     }
 
     function validateFormData(FormData:FormDataType): boolean {
-        const requiredFields = ["companyName", "companyEmail", "companyPhone", "companyAddress", "companyLogo"];
+        const requiredFields = ["companyName", "companyEmail", "companyPhone", "companyAddress", "companyLogo", "companyPriceLimit"];
         for (const field of requiredFields) {
-            if (field !== "companyLogo" && !FormData[field as keyof FormDataType]) {
-                alert(`El campo ${field} es obligatorio.`);
+            if (field !== "companyPriceLimit") {
+                if (field !== "companyLogo" && !FormData[field as keyof FormDataType]) {
+                    alert(`El campo ${field} es obligatorio.`);
+                    return false;
+                }
+            }
+
+            if (field === "companyPriceLimit" && (FormData.companyPriceLimit === "" || isNaN(Number(FormData.companyPriceLimit)))) {
+                alert(`El campo ${field} es obligatorio y debe ser un número válido.`);
                 return false;
             }
 

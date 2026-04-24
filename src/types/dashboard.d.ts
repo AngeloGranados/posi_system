@@ -8,4 +8,13 @@ interface CompanyData {
     companyLogo: File;
     companyAddress: string;
     socials: Record<RedSocial, string>;
+    companyPriceLimit: string;
+}
+interface FormDataType {
+    companyName: string;
+    companyEmail: string;
+    companyPhone: string;
+    companyLogo: File;
+    companyAddress: string;
+    companyPriceLimit: string;
 }
