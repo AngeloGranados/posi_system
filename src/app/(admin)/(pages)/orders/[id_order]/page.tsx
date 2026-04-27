@@ -263,7 +263,8 @@ export default function OrderDetails() {
                                 {
                                     order && 
                                     order.payment_method_name && 
-                                    order.payment_method_name.toLowerCase() === "izipay" && (
+                                    (order.payment_method_name.toLowerCase() === "yape" ||
+                                    order.payment_method_name.toLowerCase() === "izipay") && (
                                         <div className="flex justify-between mb-2 text-sm">
                                             <span>Izipay</span>
                                             <span>{formatPrice((Number(order.total) / (1 - 0.05)) - Number(order.total))}</span>
@@ -272,7 +273,7 @@ export default function OrderDetails() {
                                 }
                                 <div className="flex justify-between mb-2 text-sm font-bold">
                                     <span>Total</span>
-                                    <span className="text-green-600">{order.payment_method_name && order.payment_method_name.toLowerCase() === "izipay" ? formatPrice((Number(order.total) + ((Number(order.total) / (1 - 0.05)) - Number(order.total)))) : formatPrice(Number(order.total))}</span>
+                                    <span className="text-green-600">{order.payment_method_name && (order.payment_method_name.toLowerCase() === "izipay" || order.payment_method_name.toLowerCase() === "yape") ? formatPrice((Number(order.total) + ((Number(order.total) / (1 - 0.05)) - Number(order.total)))) : formatPrice(Number(order.total))}</span>
                                 </div>
                             </div>
                         </div>
