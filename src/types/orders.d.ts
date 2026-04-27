@@ -22,6 +22,7 @@ export interface tableThOrders {
 export interface Orders {
     order_number?: string,
     user_id: string | null,
+    user_full_name: string | null,
     session_id: string,
     email: string,
     subtotal: number | string, 
@@ -30,8 +31,6 @@ export interface Orders {
     total: number | string,
     shipping_method_id: string,
     payment_method_id: string,
-    shipping_address_id: string,
-    billing_address_id: string,
     promo_code_id: number | null,
     status: statusOrders,
     is_paid: boolean | number, 
@@ -43,9 +42,14 @@ export interface Orders {
     payment_method_name?: string,
     payment_method_image?: string,
     shipping_method_name?: string,
-    shipping_address?: string,
-    shipping_phone?: string,
+    shipping_address_id: string,
+    shipping_address_details?: string,
+    shipping_address_phone?: string,
     shipping_address_name?: string,
+    billing_address_id: string,
+    billing_address_details?: string,
+    billing_address_name?: string,
+    billing_address_phone?: string,
 }
 
 export interface OrderItems {

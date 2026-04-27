@@ -37,6 +37,7 @@ export default function OrderDetails() {
         const fetchOrder = async () => {
             try {
                 const orderData = await getOrderById(id_order);
+                console.log("Order data fetched:", orderData);
                 setOrder(orderData);
             } catch (error) {
                 console.error("Error fetching order:", error);
@@ -99,7 +100,6 @@ export default function OrderDetails() {
         return <div>Cargando...</div>;
     }
 
-
     return (
         <div>
             <PageBreadcrumb pageTitle={`Detalle de Orden`} pageBaseName="Ordenes" pageBaseUrl="/orders"></PageBreadcrumb>
@@ -160,8 +160,8 @@ export default function OrderDetails() {
                             <div className="flex items-center gap-3 mb-2">
                                 <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold text-lg">{order.email?.charAt(0).toUpperCase()}</div>
                                 <div>
-                                    <div className="font-medium">{order.shipping_address_name}</div>
-                                    <div className="text-xs text-gray-400">Cliente desde {order.created_at ? new Date(order.created_at).getFullYear() : "-"}</div>
+                                    <div className="font-medium">{order.user_full_name || order.billing_address_name}</div>
+                                    {/* <div className="text-xs text-gray-400">Cliente desde {order.created_at ? new Date(order.created_at).getFullYear() : "-"}</div> */}
                                 </div>
                             </div>
                             <div className="text-xs text-gray-500 mb-1">EMAIL</div>
@@ -173,9 +173,19 @@ export default function OrderDetails() {
                             <span className="font-semibold text-gray-700 mb-2">Dirección de envío</span>
                             {/* Aquí deberías mostrar la dirección completa si la tienes */}
                             <div className="text-sm text-gray-600">
-                                {order.shipping_address} <br />
-                                {order.shipping_method_name} <br />
-                                {formatTelephone(order.shipping_phone as string)}
+                                {order.shipping_address_details} <br />
+                                {order.shipping_address_name} <br />
+                                {formatTelephone(order.shipping_address_phone as string)}
+                            </div>
+                        </div>
+                        {/* Dirección de facturación */}
+                        <div className="w-full bg-white rounded-lg p-6 shadow border flex flex-col">
+                            <span className="font-semibold text-gray-700 mb-2">Dirección de facturación</span>
+                            {/* Aquí deberías mostrar la dirección completa si la tienes */}
+                            <div className="text-sm text-gray-600">
+                                {order.billing_address_details} <br />
+                                {order.billing_address_name} <br />
+                                {formatTelephone(order.billing_address_phone as string)}
                             </div>
                         </div>
                     </div>
@@ -227,23 +237,43 @@ export default function OrderDetails() {
                                 </Table>
                             </div>
                         </div>
-                        {/* Resumen de totales */}
-                        <div className="w-80 bg-white rounded-lg p-6 shadow border flex flex-col max-w-md mx-auto mb-6">
-                            <div className="flex justify-between mb-2 text-sm">
-                                <span>Subtotal</span>
-                                <span>{formatPrice(order.subtotal)}</span>
+                        <div className="flex flex-col items-center gap-3 mb-2">
+                            <div className="w-full bg-white rounded-lg p-6 shadow border flex flex-col items-center text-center">
+                                <div className="flex items-center gap-3">
+                                   <div>
+                                        <div className="text-xs text-gray-400">Método de pago</div>
+                                        <div className="font-medium">{order.payment_method_name}</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="flex justify-between mb-2 text-sm">
-                                <span>Envío</span>
-                                <span>{formatPrice(order.shipping_cost === 0 ? 'Gratis' : `${order.shipping_cost}`)}</span>
-                            </div>
-                            <div className="flex justify-between mb-2 text-sm">
-                                <span>Descuento</span>
-                                <span>{formatPrice(order.discount)}</span>
-                            </div>
-                            <div className="flex justify-between mb-2 text-sm font-bold">
-                                <span>Total</span>
-                                <span className="text-green-600">{formatPrice(order.total)}</span>
+                            {/* Resumen de totales */}
+                            <div className="w-80 bg-white rounded-lg p-6 shadow border flex flex-col max-w-md mx-auto mb-6">
+                                <div className="flex justify-between mb-2 text-sm">
+                                    <span>Subtotal</span>
+                                    <span>{formatPrice(order.subtotal)}</span>
+                                </div>
+                                <div className="flex justify-between mb-2 text-sm">
+                                    <span>Envío</span>
+                                    <span>{formatPrice(order.shipping_cost === 0 ? 'Gratis' : `${order.shipping_cost}`)}</span>
+                                </div>
+                                <div className="flex justify-between mb-2 text-sm">
+                                    <span>Descuento</span>
+                                    <span>{formatPrice(order.discount)}</span>
+                                </div>
+                                {
+                                    order && 
+                                    order.payment_method_name && 
+                                    order.payment_method_name.toLowerCase() === "izipay" && (
+                                        <div className="flex justify-between mb-2 text-sm">
+                                            <span>Izipay</span>
+                                            <span>{formatPrice((Number(order.total) / (1 - 0.05)) - Number(order.total))}</span>
+                                        </div>
+                                    )
+                                }
+                                <div className="flex justify-between mb-2 text-sm font-bold">
+                                    <span>Total</span>
+                                    <span className="text-green-600">{order.payment_method_name && order.payment_method_name.toLowerCase() === "izipay" ? formatPrice((Number(order.total) + ((Number(order.total) / (1 - 0.05)) - Number(order.total)))) : formatPrice(Number(order.total))}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
