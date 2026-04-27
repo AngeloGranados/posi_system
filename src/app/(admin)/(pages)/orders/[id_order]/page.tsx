@@ -175,7 +175,7 @@ export default function OrderDetails() {
                             <div className="text-sm text-gray-600">
                                 {order.shipping_address_details} <br />
                                 {order.shipping_address_name} <br />
-                                {formatTelephone(order.shipping_address_phone as string)}
+                                {formatTelephone(order.shipping_address_phone as string || "")}
                             </div>
                         </div>
                         {/* Dirección de facturación */}
@@ -185,7 +185,7 @@ export default function OrderDetails() {
                             <div className="text-sm text-gray-600">
                                 {order.billing_address_details} <br />
                                 {order.billing_address_name} <br />
-                                {formatTelephone(order.billing_address_phone as string)}
+                                {formatTelephone(order.billing_address_phone as string || "")}
                             </div>
                         </div>
                     </div>

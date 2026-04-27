@@ -8,6 +8,7 @@ export function formatPrice(price: number | string): string {
 }
 
 export function formatTelephone(phone: string): string {
+    if (!phone) return "";
     const digitsOnly = phone.replace(/\D/g, '');
     if (digitsOnly.length === 9) {
         return `+51 ${digitsOnly.slice(0, 3)} ${digitsOnly.slice(3, 6)} ${digitsOnly.slice(6)}`;
