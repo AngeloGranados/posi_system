@@ -17,6 +17,7 @@ import debounce from "debounce";
 import AddIcon from "../../../../../../public/images/icons/add-icon";
 import Image from "next/image";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
+import { getNowDate } from "../../../../../../util";
 
 
 interface ModalDiscountsProps {
@@ -229,8 +230,9 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
                       <DatePicker 
                         id="valid_from"
                         placeholder="Seleccionar fecha"
-                        defaultDate={FormDataDiscounts.valid_from || new Date()}
+                        defaultDate={FormDataDiscounts.valid_from || getNowDate()}
                         onChange={(dates, currentDateString) => {
+                          console.log("Fecha seleccionada:", currentDateString);
                           setFormDataDiscounts((prev) => ({
                             ...prev,
                             valid_from: currentDateString ? currentDateString : prev.valid_from,
@@ -243,7 +245,7 @@ export default function ModalDiscounts({ errorInput, setErrorInput, loading, isO
                       <DatePicker 
                         id="valid_until"
                         placeholder="Seleccionar fecha"
-                        defaultDate={FormDataDiscounts.valid_until}
+                        defaultDate={FormDataDiscounts.valid_until || getNowDate()}
                         onChange={(dates, currentDateString) => {
                           setFormDataDiscounts((prev) => ({
                             ...prev,

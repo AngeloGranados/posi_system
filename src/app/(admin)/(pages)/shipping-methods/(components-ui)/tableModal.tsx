@@ -83,16 +83,12 @@ export default function TableModal() {
         const requiredFields: (keyof ShippingMethods)[] = ["code", "description" , "estimated_days_max", "estimated_days_min", "name", "price"];
 
         for (const field of requiredFields) {
-            if (!shippingMethod[field] || (shippingMethod[field] as string).toString().trim() === "") {
-                error = `El campo ${field} es obligatorio.`;
-                fieldError = field;
-                break;
-            }
-
-            if(field === "price" && shippingMethod[field] < 0) {
-                error = `El campo ${field} debe ser un número válido mayor o igual a 0.`;
-                fieldError = field;
-                break;
+            if (field !== "price") {
+                if (!shippingMethod[field] || (shippingMethod[field] as string).toString().trim() === "") {
+                    error = `El campo ${field} es obligatorio.`;
+                    fieldError = field;
+                    break;
+                }
             }
 
             if(field === "estimated_days_min" || field === "estimated_days_max"){

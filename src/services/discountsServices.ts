@@ -23,6 +23,8 @@ export async function deleteDiscounts(discountsId: string): Promise<void> {
 
 export async function updateDiscounts(discounts: Discounts): Promise<Discounts> {
 
+    console.log("Updating discount with data:", discounts);
+
     const response = await fetch(`${URL_API}/${discounts.id}`, {
         method: "PUT",
         headers: {

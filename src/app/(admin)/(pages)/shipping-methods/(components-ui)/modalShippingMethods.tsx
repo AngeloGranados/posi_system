@@ -80,7 +80,7 @@ export default function ModalShippingMethods({ errorInput, setErrorInput, loadin
             if(name === "price"){
                 return {
                     ...prevData,
-                    [name]: parseFloat(value) 
+                    [name]: value === "" ? 0 : parseFloat(value)
                 };
             }
 
@@ -174,7 +174,7 @@ export default function ModalShippingMethods({ errorInput, setErrorInput, loadin
                         type="number"
                         step={0.01}
                         name="price"
-                        value={FormDataShippingMethods.price ? FormDataShippingMethods.price : ""}
+                        value={FormDataShippingMethods.price !== null ? FormDataShippingMethods.price : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>

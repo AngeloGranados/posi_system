@@ -13,13 +13,14 @@ import { Discounts, filterOptions, orderByAscDescDiscounts, orderByDiscounts, ta
 import { changeStatusDiscount, createDiscounts, deleteDiscounts, getDiscountsFiltered, updateDiscounts } from "@/services/discountsServices";
 import Badge from "@/components/ui/badge/Badge";
 import { formatDate } from "@fullcalendar/core/index.js";
-import { formatPrice } from "../../../../../../util";
+import { formatPrice, getNowDate } from "../../../../../../util";
 import Image from "next/image";
 import ModalDiscounts from "./modalDiscounts";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
 import FiltersComponentDiscounts from "./filtersComponentDiscount";
+import { get } from "http";
 
 
 export default function TableModal() {
@@ -96,11 +97,12 @@ export default function TableModal() {
             }
 
             if(field === "valid_from" || field === "valid_until") {
-                const valid_from = new Date(discounts.valid_from);
-                const valid_until = new Date(discounts.valid_until);
 
-                if (field === "valid_from" && valid_from < new Date()){
-                    error = `La fecha de inicio debe ser mayor a la fecha actual`;
+                const valid_from = discounts.valid_from;
+                const valid_until = discounts.valid_until;
+
+                if (field === "valid_from" && valid_from < getNowDate()) {
+                    error = `La fecha de inicio  debe ser mayor a la fecha actual`;
                     fieldError = field;
                     break;
                 }
