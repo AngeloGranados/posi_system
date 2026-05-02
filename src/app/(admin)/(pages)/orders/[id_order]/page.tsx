@@ -6,7 +6,7 @@ import { OrderItems, Orders, statusOrders } from "@/types/orders";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { formatPrice, formatTelephone, verifyColorByStatus } from "../../../../../../util";
+import { calculateIzipayAmount, calculateYapeAmount, formatPrice, formatTelephone, verifyColorByStatus } from "../../../../../../util";
 import Badge from "@/components/ui/badge/Badge";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import FormRow from "@/components/form/group-input/FormRow";
@@ -99,6 +99,13 @@ export default function OrderDetails() {
     if (!order || orderItems.length === 0) {
         return <div>Cargando...</div>;
     }
+
+    const baseAmount = order.total;
+    const comissionIzipay = calculateIzipayAmount(baseAmount) - Number(baseAmount);
+    const comissionYape = calculateYapeAmount(baseAmount) - Number(baseAmount);
+    
+    const totalIzipay = calculateIzipayAmount(baseAmount);
+    const totalYape = calculateYapeAmount(baseAmount);
 
     return (
         <div>
@@ -266,14 +273,27 @@ export default function OrderDetails() {
                                     (order.payment_method_name.toLowerCase() === "yape" ||
                                     order.payment_method_name.toLowerCase() === "izipay") && (
                                         <div className="flex justify-between mb-2 text-sm">
-                                            <span>Izipay</span>
-                                            <span>{formatPrice((Number(order.total) / (1 - 0.05)) - Number(order.total))}</span>
+                                            <span>{order.payment_method_name.toLowerCase() === "izipay" ? "Comisión Izipay" : "Comisión Yape"}</span>
+                                            <span>{order.payment_method_name.toLowerCase() === "izipay" ? formatPrice(comissionIzipay) : formatPrice(comissionYape)}</span> 
+                                        </div>
+                                    )
+                                }
+                                {
+                                    order && order.payment_method_name && order.payment_method_name.toLowerCase() === "yape" && (
+                                        <div className="flex justify-between mb-2 text-sm">
+                                            <span>Total con comisión:</span>
+                                            <span>{formatPrice(totalYape)}</span>
                                         </div>
                                     )
                                 }
                                 <div className="flex justify-between mb-2 text-sm font-bold">
-                                    <span>Total</span>
-                                    <span className="text-green-600">{order.payment_method_name && (order.payment_method_name.toLowerCase() === "izipay" || order.payment_method_name.toLowerCase() === "yape") ? formatPrice((Number(order.total) + ((Number(order.total) / (1 - 0.05)) - Number(order.total)))) : formatPrice(Number(order.total))}</span>
+                                    <span>{order.payment_method_name && order.payment_method_name.toLowerCase() === "yape" ? "Total sin comisión:" : "Total"}</span>
+                                    <span className="text-green-600">{
+                                    order && order.payment_method_name &&
+                                    order.payment_method_name.toLowerCase() === 'izipay' ?
+                                    formatPrice(totalIzipay) :
+                                    formatPrice(order.total)
+                                }</span>
                                 </div>
                             </div>
                         </div>
