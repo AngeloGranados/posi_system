@@ -2,8 +2,12 @@ import { Categories } from "@/types/categories";
 
 const URL_API = `${process.env.NEXT_PUBLIC_API_URL}dashboard`;
 
-export async function getCardsTotalRegisters(): Promise<CardsTotalRegisters> {
-    const response = await fetch(`${URL_API}/cardsTotalRegisters`);
+export async function getCardsTotalRegisters(access_token_admin: string): Promise<CardsTotalRegisters> {
+    const response = await fetch(`${URL_API}/cardsTotalRegisters`, {
+        headers: {
+            Cookie: `access_token_admin=${access_token_admin}`,
+        }
+    });
     const data = await response.json();
     if (!response.ok || data.error) {
         throw new Error("Failed to fetch total registers");
@@ -24,6 +28,7 @@ export async function configDataCompany(dataCompany: CompanyData): Promise<{ mes
     const response = await fetch(`${URL_API}/configDataCompany`, {
         method: "POST",
         body: configDataCompany,
+        credentials: "include",
     });
     const data = await response.json();
 
@@ -35,7 +40,9 @@ export async function configDataCompany(dataCompany: CompanyData): Promise<{ mes
 }
 
 export async function getDataCompany(): Promise<CompanyData> {
-    const response = await fetch(`${URL_API}/getConfigDataCompany`);
+    const response = await fetch(`${URL_API}/getConfigDataCompany`, {
+        credentials: "include",
+    });
     let data = await response.json();
 
     if (!response.ok || data.error) {
@@ -52,6 +59,7 @@ export async function getDataCompany(): Promise<CompanyData> {
 export async function configBentoCategories(configBento: Categories[]): Promise<{ message: string }> {
     const response = await fetch(`${URL_API}/configBentoCategories`, {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },

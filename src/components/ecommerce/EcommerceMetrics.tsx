@@ -1,10 +1,16 @@
 import { BellIcon, BoxIcon, BoxIconLine, ChatIcon, DocsIcon, GroupIcon, InfoIcon, MailIcon, TaskIcon } from "@/icons";
 import EcommerceMetricsItems from "./EcommerceMetricsItems";
 import { getCardsTotalRegisters } from "@/services/dashboardServices";
+import { cookies } from "next/headers";
 
 export const EcommerceMetrics = async () => {
 
-  const data = await getCardsTotalRegisters();
+  const cookie = await cookies();
+  const accessToken = cookie.get("access_token_admin")?.value;
+
+  const data = await getCardsTotalRegisters(accessToken as string);
+
+  if (!data) return null;
 
   const iconsMap: Record<namesCardsTotalRegisters, { icon: React.ReactNode, url: string }> = {
     "Productos": { icon: <BoxIcon className="text-gray-800 size-6 dark:text-white/90" />, url: "/products" },
