@@ -15,7 +15,8 @@ export async function getPromoCodes(): Promise<PromoCodes[]> {
 
 export async function deletePromoCodes(promoCodesId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${promoCodesId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include"
     });
     const data = await response.json();
     if (!response.ok || data.error) {
@@ -30,6 +31,7 @@ export async function updatePromoCodes(promoCodes: PromoCodes): Promise<PromoCod
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify(promoCodes)
     });
 
@@ -47,6 +49,7 @@ export async function createPromoCodes(promoCodes: PromoCodes): Promise<PromoCod
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify(promoCodes)
     });
 
@@ -88,6 +91,7 @@ export async function changeStatusPromoCode(id: string, newStatus: boolean): Pro
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify({ newStatus })
     });
 

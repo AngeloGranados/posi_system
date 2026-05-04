@@ -22,7 +22,8 @@ export async function getImagesProducts(): Promise<ImagesProducts[]> {
 
 export async function deleteImagesProducts(imagesProductId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${imagesProductId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include"
     });
     const data = await response.json();
     if (!response.ok || data.error) {
@@ -43,6 +44,7 @@ export async function updateImagesProducts(imagesProduct: ImagesProducts): Promi
 
     const response = await fetch(`${URL_API}/${imagesProduct.id}`, {
         method: "PUT",
+        credentials: "include",
         body: formData
     });
 
@@ -68,6 +70,7 @@ export async function createImagesProducts(imagesProduct: ImagesProducts): Promi
 
     const response = await fetch(`${URL_API}`, {
         method: "POST",
+        credentials: "include",
         body: dataToFetch
     });
 

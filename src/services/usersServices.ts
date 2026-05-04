@@ -24,7 +24,7 @@ export async function getUsers(): Promise<Users[]> {
 export async function deleteUsers(usersId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${usersId}`, {
         method: "DELETE",
-        credentials: "include",
+        credentials: "include"
     });
     const data = await response.json();
     if (!response.ok || data.error) {
@@ -132,6 +132,7 @@ export async function changeStatusUser(id: string, newStatus: boolean): Promise<
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify({ newStatus })
     });
 

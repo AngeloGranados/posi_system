@@ -24,7 +24,8 @@ export async function getAttributes(): Promise<Attributes[]> {
 
 export async function deleteAttributes(attributesId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${attributesId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include"
     });
     const data = await response.json();
     if (!response.ok || data.error) {
@@ -40,6 +41,7 @@ export async function updateAttributes(attributes: Attributes): Promise<Attribut
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify(attributes)
     });
 
@@ -57,6 +59,7 @@ export async function createAttributes(attributes: Attributes): Promise<Attribut
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify(attributes)
     });
 

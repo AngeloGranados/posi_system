@@ -13,7 +13,8 @@ export async function getDiscounts(): Promise<Discounts[]> {
 
 export async function deleteDiscounts(discountsId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${discountsId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include"
     });
     const data = await response.json();
     if (!response.ok || data.error) {
@@ -23,13 +24,12 @@ export async function deleteDiscounts(discountsId: string): Promise<void> {
 
 export async function updateDiscounts(discounts: Discounts): Promise<Discounts> {
 
-    console.log("Updating discount with data:", discounts);
-
     const response = await fetch(`${URL_API}/${discounts.id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify(discounts)
     });
 
@@ -47,6 +47,7 @@ export async function createDiscounts(discounts: Discounts): Promise<Discounts> 
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify(discounts)
     });
 
@@ -88,6 +89,7 @@ export async function changeStatusDiscount(id: string, newStatus: boolean): Prom
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify({ newStatus })
     });
 

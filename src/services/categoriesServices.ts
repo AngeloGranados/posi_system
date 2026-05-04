@@ -16,7 +16,8 @@ export async function getCategories(): Promise<Categories[]> {
 
 export async function deleteCategory(categoryId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${categoryId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include"
     });
     const data = await response.json();
     if (!response.ok || data.error) {
@@ -30,6 +31,7 @@ export async function changeStatusCategory(id: string, newStatus: boolean): Prom
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify({ newStatus })
     });
 
@@ -51,6 +53,7 @@ export async function updateCategory(category: Categories): Promise<Categories> 
 
     const response = await fetch(`${URL_API}/${category.id}`, {
         method: "PUT",
+        credentials: "include", 
         body: formData
     });
 
@@ -71,6 +74,7 @@ export async function createCategory(category: Categories): Promise<Categories> 
 
     const response = await fetch(`${URL_API}`, {
         method: "POST",
+        credentials: "include",
         body: formData
     });
 

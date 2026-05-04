@@ -48,6 +48,7 @@ export async function updateStatusOrder(orderNumber: string, orderData: Partial<
         headers: {
             "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(orderData),
     });
     const data = await response.json();

@@ -20,7 +20,8 @@ export async function getBrands(): Promise<Brands[]> {
 
 export async function deleteBrands(brandId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${brandId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include"
     });
     const data = await response.json();
     if (!response.ok || data.error) {
@@ -40,6 +41,7 @@ export async function updateBrands(brand: Brands): Promise<Brands> {
 
     const response = await fetch(`${URL_API}/${brand.id}`, {
         method: "PUT",
+        credentials: "include",
         body: formData
     });
 
@@ -61,6 +63,7 @@ export async function createBrands(brand: Brands): Promise<Brands> {
 
     const response = await fetch(`${URL_API}`, {
         method: "POST",
+        credentials: "include",
         body: formData
     });
 

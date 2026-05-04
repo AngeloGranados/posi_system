@@ -88,7 +88,8 @@ export async function createProduct(product: Product, images: File[] | string[],
 
     const response = await fetch(URL_API, {
       method: "POST",
-      body: formData
+      body: formData,
+      credentials: "include"
     });
     const data = await response.json();
     if (!response.ok || data.error) {
@@ -103,6 +104,7 @@ export async function changeStatusProduct(id: string, newStatus: boolean): Promi
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify({ newStatus })
     });
 
@@ -144,7 +146,8 @@ export async function updateProduct(product: Product, images: File[] | string[],
 
     const response = await fetch(`${URL_API}/${product.id}`, {
       method: "PUT",
-      body: formData
+      body: formData,
+      credentials: "include"
     });
     const data = await response.json();
     if (!response.ok || data.error) {
@@ -156,6 +159,7 @@ export async function updateProduct(product: Product, images: File[] | string[],
 export async function deleteProduct(id: string): Promise<void> {
     const response = await fetch(`${URL_API}/${id}`, {
         method: "DELETE",
+        credentials: "include"
     })
     const data = await response.json()
     if (!response.ok || data.error) {

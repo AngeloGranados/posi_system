@@ -13,7 +13,8 @@ export async function getShippingMethods(): Promise<ShippingMethods[]> {
 
 export async function deleteShippingMethods(shippingMethodsId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${shippingMethodsId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include"
     });
     const data = await response.json();
     if (!response.ok || data.error) {
@@ -29,6 +30,7 @@ export async function updateShippingMethods(shippingMethods: ShippingMethods): P
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify(shippingMethods)
     });
 
@@ -43,6 +45,7 @@ export async function createShippingMethods(shippingMethods: ShippingMethods): P
 
      const response = await fetch(`${URL_API}`, {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
@@ -87,6 +90,7 @@ export async function changeStatusShippingMethod(id: string, newStatus: boolean)
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify({ newStatus })
     });
 

@@ -14,7 +14,8 @@ export async function getPaymentMethods(): Promise<PaymentMethods[]> {
 
 export async function deletePaymentMethods(paymentMethodsId: string): Promise<void> {
     const response = await fetch(`${URL_API}/${paymentMethodsId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include"
     });
     const data = await response.json();
     if (!response.ok || data.error) {
@@ -34,6 +35,7 @@ export async function updatePaymentMethods(paymentMethods: PaymentMethods): Prom
 
     const response = await fetch(`${URL_API}/${paymentMethods.id}`, {
         method: "PUT",
+        credentials: "include",
         body: formData
     });
 
@@ -55,6 +57,7 @@ export async function createPaymentMethods(paymentMethods: PaymentMethods): Prom
 
     const response = await fetch(`${URL_API}`, {
         method: "POST",
+        credentials: "include",
         body: formData
     });
 
@@ -96,6 +99,7 @@ export async function changeStatusPaymentMethod(id: string, newStatus: boolean):
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify({ newStatus })
     });
 
