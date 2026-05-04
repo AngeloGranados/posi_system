@@ -6,7 +6,8 @@ export async function getCardsTotalRegisters(access_token_admin: string): Promis
     const response = await fetch(`${URL_API}/cardsTotalRegisters`, {
         headers: {
             Cookie: `access_token_admin=${access_token_admin}`,
-        }
+        },
+        credentials: "include",
     });
     const data = await response.json();
     if (!response.ok || data.error) {
