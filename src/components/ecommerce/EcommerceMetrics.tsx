@@ -8,7 +8,9 @@ export const EcommerceMetrics = async () => {
   const cookie = await cookies();
   const accessToken = cookie.get("access_token_admin")?.value;
 
-  const data = await getCardsTotalRegisters(accessToken as string);
+  if (!accessToken) return null;
+
+  const data = await getCardsTotalRegisters(accessToken);
 
   if (!data) return null;
 
