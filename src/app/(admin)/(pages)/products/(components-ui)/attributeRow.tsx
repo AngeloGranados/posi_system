@@ -28,6 +28,23 @@ const AttributeRow = React.memo(function AttributeRow({
   const [filterLike, setFilterLike] = useState("");
   const [attributesValuesList, setAttributesValuesList] = useState<{ key: string; value: string }[]>([]);
 
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(()=> {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setLocalFilter("");
+        setAttributesValuesList([]);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [])
+
     useEffect(() => {
         fetchAttributesValues()
     }, [filterLike]); 
@@ -72,7 +89,7 @@ const AttributeRow = React.memo(function AttributeRow({
                 handleOnchangeFilterLike(e);
             }}
             />
-            <div className={`absolute bg-white shadow-sm shadow-black py-1 px-2 z-10 left-0 right-0 top-[40px] mt-1 ${localFilter && attributesValuesList.length > 0 ? "block" : "hidden"}`}>
+            <div ref={containerRef} className={`absolute bg-white shadow-sm shadow-black py-1 px-2 z-10 left-0 right-0 top-[40px] mt-1 ${localFilter && attributesValuesList.length > 0 ? "block" : "hidden"}`}>
                 <ul className="text-sm text-gray-600">
                     {attributesValuesList && attributesValuesList
                     .map((attrValue, idx) => (
