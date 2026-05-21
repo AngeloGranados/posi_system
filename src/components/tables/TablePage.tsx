@@ -21,6 +21,7 @@ import FormGroupInput from "../form/group-input/FormGroupInput";
 import InputField from "../form/input/InputField";
 import Label from "../form/Label";
 import { ImagesProducts, orderByAscDescImagesProducts, orderByImagesProducts } from "@/types/images_products";
+import { orderByAscDescTestimonios, orderByTestimonios, Testimonios } from "@/types/testimonios";
 
 
 type orderByAscDescT<T> = 
@@ -35,6 +36,7 @@ T extends Orders ? orderByAscDescOrders :
 T extends Users ? orderByAscDescUsers :
 T extends Attributes ? orderByAscDescAttributes :
 T extends ImagesProducts ? orderByAscDescImagesProducts :
+T extends Testimonios ? orderByAscDescTestimonios :
 never;
 
 type orderByT<T> =
@@ -49,6 +51,7 @@ type orderByT<T> =
   T extends Users ? orderByUsers :
   T extends Attributes ? orderByAttributes :
   T extends ImagesProducts ? orderByImagesProducts :
+  T extends Testimonios ? orderByTestimonios :
   never;
 
 interface TablePageProps<T> {

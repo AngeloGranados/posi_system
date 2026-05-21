@@ -134,7 +134,8 @@ export default function TableModal() {
             closeAlert();
             closeModal();
         } catch (error) {
-            console.error("Error creating discounts:", error);
+            triggerAlert("Error", error instanceof Error ? error.message : String(error), "error");
+            console.error("Error saving discount:", error);
         } finally {
             setLoading(false);
         }
