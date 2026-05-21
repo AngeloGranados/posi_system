@@ -191,7 +191,7 @@ export default function TableModal() {
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell className="text-center py-4" colSpan={12}>No se encontraron métodos de pago.</TableCell>
+                                <TableCell className="text-center py-4" colSpan={12}>No se encontraron atributos.</TableCell>
                             </TableRow>
                         )
                     )
