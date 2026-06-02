@@ -101,12 +101,6 @@ export default function TableModal() {
                 const valid_from = discounts.valid_from;
                 const valid_until = discounts.valid_until;
 
-                if (field === "valid_from" && valid_from < getNowDate()) {
-                    error = `La fecha de inicio  debe ser mayor a la fecha actual`;
-                    fieldError = field;
-                    break;
-                }
-
                 if (field === "valid_until" && valid_until <= valid_from){
                     error = `La fecha final debe ser mayor a la de inicio`;
                     fieldError = field;

@@ -22,6 +22,7 @@ import InputField from "../form/input/InputField";
 import Label from "../form/Label";
 import { ImagesProducts, orderByAscDescImagesProducts, orderByImagesProducts } from "@/types/images_products";
 import { orderByAscDescTestimonios, orderByTestimonios, Testimonios } from "@/types/testimonios";
+import { Blog, orderByAscDescBlog, orderByBlog } from "@/types/blog";
 
 
 type orderByAscDescT<T> = 
@@ -37,6 +38,7 @@ T extends Users ? orderByAscDescUsers :
 T extends Attributes ? orderByAscDescAttributes :
 T extends ImagesProducts ? orderByAscDescImagesProducts :
 T extends Testimonios ? orderByAscDescTestimonios :
+T extends Blog ? orderByAscDescBlog :
 never;
 
 type orderByT<T> =
@@ -52,6 +54,7 @@ type orderByT<T> =
   T extends Attributes ? orderByAttributes :
   T extends ImagesProducts ? orderByImagesProducts :
   T extends Testimonios ? orderByTestimonios :
+  T extends Blog ? orderByBlog :
   never;
 
 interface TablePageProps<T> {

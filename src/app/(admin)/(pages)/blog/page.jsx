@@ -1,10 +1,10 @@
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import TableModal from "./(components-ui)/tableModal";
 
-export default function AttributesPage() {
+export default function Blog() {
     return (
         <div>
-            <PageBreadcrumb pageTitle="Atributos" />
+            <PageBreadcrumb pageTitle="Blog" />
             <TableModal />    
         </div>
     )
