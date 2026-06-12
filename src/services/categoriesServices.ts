@@ -48,6 +48,7 @@ export async function updateCategory(category: Categories): Promise<Categories> 
     formData.append("name", category.name);
     formData.append("slug", category.slug);
     formData.append("description", category.description);
+    formData.append("description_seo", category.description_seo);
     formData.append("image_url", category.image_url);
     formData.append("parent_id", category.parent_id ? category.parent_id.toString() : "");
 
@@ -69,6 +70,7 @@ export async function createCategory(category: Categories): Promise<Categories> 
     formData.append("name", category.name);
     formData.append("slug", category.slug);
     formData.append("description", category.description);
+    formData.append("description_seo", category.description_seo);
     formData.append("parent_id", category.parent_id ? category.parent_id.toString() : "");
     formData.append("image_url", category.image_url);
 

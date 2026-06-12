@@ -12,6 +12,7 @@ export interface Categories {
     name: string;
     slug: string;
     description: string;
+    description_seo: string;
     image_url: File;
     parent_id?: string | null;
     parent_name?: string | null;

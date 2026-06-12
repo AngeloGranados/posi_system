@@ -41,6 +41,7 @@ export default function ModalCategory({ setErrorInput, errorInput, loading, isOp
         slug: "",
         image_url: new File([], ""),
         description: "",
+        description_seo: "",
         parent_id: null
     };
 
@@ -156,6 +157,17 @@ export default function ModalCategory({ setErrorInput, errorInput, loading, isOp
                         className={errorInput === "description" ? "border-red-500" : ""}
                         name="description"
                         value={FormDataCategory ? FormDataCategory.description : ""}
+                        onChange={handleDataChange}
+                    />
+                  </FormGroupInput>
+                </FormRow>
+                <FormRow>
+                  <FormGroupInput>
+                    <Label htmlFor="description">Descripción SEO (HTML):</Label>
+                    <TextArea 
+                        className={errorInput === "description_seo" ? "border-red-500" : ""}
+                        name="description_seo"
+                        value={FormDataCategory ? FormDataCategory.description_seo : ""}
                         onChange={handleDataChange}
                     />
                   </FormGroupInput>
