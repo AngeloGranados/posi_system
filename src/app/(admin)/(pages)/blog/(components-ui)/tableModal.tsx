@@ -16,6 +16,7 @@ import { Blog, orderByAscDescBlog, orderByBlog, tableThBlog } from "@/types/blog
 import { createBlog, deleteBlog, getBlogFiltered, updateBlog } from "@/services/blogServices";
 import Image from "next/image";
 import Badge from "@/components/ui/badge/Badge";
+import { formarSegToHuman } from "../../../../../../util";
 
 const SweetAlert = withReactContent(Swal);
 
@@ -43,7 +44,9 @@ export default function TableModal() {
     const tableThBlog: tableThBlog[] = [
         { name: "id", value: "ID" },
         { name: "title", value: "Post" },
+        { name: "category_id", value: "Categoría" },
         { name: "author", value: "Autor" },
+        { name: "duration", value: "Duración" },
         { name: "published_at", value: "Publicado el" },
         { name: "created_at", value: "Creado el" },
         { name: "is_published", value: "Estado" },
@@ -77,11 +80,17 @@ export default function TableModal() {
         let error = null;
         let fieldError = null;
 
-        const requiredFields: (keyof Blog)[] = ["author", "title", "slug", "content", "published_at", "image_url", "summary"];
+        const requiredFields: (keyof Blog)[] = ["author", "title", "slug", "category_id", "content", "published_at", "image_url", "summary"];
 
         for (const field of requiredFields) {
             if (!blog[field] || (blog[field] as string).toString().trim() === "") {
                 error = `El campo ${field} es obligatorio.`;
+                fieldError = field;
+                break;
+            }
+
+            if ((field === "category_id" && isNaN(Number(blog[field]))) || (field === "duration" && isNaN(Number(blog[field])))) {
+                error = `El campo ${field} debe ser un número válido.`;
                 fieldError = field;
                 break;
             }
@@ -205,7 +214,9 @@ export default function TableModal() {
                                             </div>
                                         </div>
                                     </TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{blog.blog_category_name}</TableCell>
                                     <TableCell className="px-3 py-3 text-left">{blog.author}</TableCell>
+                                    <TableCell className="px-3 py-3 text-left">{formarSegToHuman(blog.duration)}</TableCell>
                                     <TableCell className="px-3 py-3 text-left">{blog.published_at ? new Date(blog.published_at).toLocaleDateString() : "No publicado"}</TableCell>
                                     <TableCell className="px-3 py-3 text-left">{blog.created_at ? new Date(blog.created_at).toLocaleDateString() : "No publicado"}</TableCell>
                                     <TableCell className="px-3 py-3 text-left text-gray-500">

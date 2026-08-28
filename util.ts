@@ -17,6 +17,15 @@ export function formatTelephone(phone: string): string {
     return phone;
 }
 
+export function formarSegToHuman(segundos: number): string {
+    if (isNaN(segundos)) return "0h 0m 0s";
+    const horas = Math.floor(segundos / 3600);
+    const minutos = Math.floor((segundos % 3600) / 60);
+    const segs = segundos % 60;
+
+    return `${horas}h ${minutos}m ${segs}s`;
+}
+
 type BadgeColor =
   | "primary"
   | "success"

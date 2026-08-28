@@ -57,8 +57,9 @@ const navItems: NavItem[] = [
       { name: "Descuentos", path: "/discounts", pro: false  },
       { name: "Atributos", path: "/attributes", new: false  },
       { name: "Imagenes de Productos", path: "/images_products" },  
-      { name: "Testimonios", path: "/testimonios", new: true  },
-      {  name: "Blog", path: "/blog", new: true  },
+      { name: "Testimonios", path: "/testimonios", new: false  },
+      { name: "Blog", path: "/blog", new: false  },
+      { name: "Categorias de Blog", path: "/blog_categories", new: true  },
     ],
   },
   {

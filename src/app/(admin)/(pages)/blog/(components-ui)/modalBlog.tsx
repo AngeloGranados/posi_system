@@ -14,6 +14,9 @@ import DatePicker from "@/components/form/date-picker";
 import { getNowDate } from "../../../../../../util";
 import Checkbox from "@/components/form/input/Checkbox";
 import CheckboxComponents from "@/components/form/form-elements/CheckboxComponents";
+import Select from "@/components/form/Select";
+import { getBlogCategories } from "@/services/BlogCategoriesServices";
+import { BlogCategories } from "@/types/BlogCategories";
 
 interface ModalBlogProps {
     isOpen: boolean;
@@ -38,6 +41,8 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
     const emptyBlog: Blog = {
         title: "",
         slug: "",
+        category_id: 0,
+        duration: 0,
         summary: "",
         content: "",
         image_url: new File([], ""),
@@ -49,6 +54,8 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
     // Si selected existe, usarlo; si no, usar emptyBlog
     const [FormDataBlog, setFormDataBlog] = useState<Blog>(selected || emptyBlog);
 
+    const [BlogCategoriesOptions, setBlogCategoriesOptions] = useState<{ value: string; label: string }[]>([]);
+
     // Actualiza el estado cuando cambia selected
     useEffect(() => {
       if(isOpen && !selected){
@@ -56,6 +63,8 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
       }else{
         setFormDataBlog(selected || emptyBlog);
       }
+
+      handleFetchBlogCategories();
     },[selected, isOpen]);
 
     const handleCloseModal = () => {
@@ -68,6 +77,19 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
       setSelected(null);
       alertProps.closeAlert();
       setErrorInput(null);
+    }
+
+    async function handleFetchBlogCategories() {
+      try {
+        const BlogCategories = await getBlogCategories();
+        const formattedCategories = BlogCategories.data.map((cat: BlogCategories) => ({
+          value: cat.id as string,
+          label: cat.name,
+        }));
+        setBlogCategoriesOptions(formattedCategories);
+      }catch (error) {
+        console.error("Error fetching BlogCategories:", error);
+      }
     }
 
     const handleImageChange = (files: File[]) => {
@@ -84,7 +106,18 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
     const handleDataChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         e.preventDefault();
-        setFormDataBlog((prevData) => {      
+        setFormDataBlog((prevData) => { 
+
+            if (name === "duration") {
+                const durationValue = Number(value);
+                if (!isNaN(durationValue)) {
+                    return {
+                        ...prevData,
+                        [name]: durationValue
+                    };
+                }
+            }
+
             return {
                 ...prevData,
                 [name]: value
@@ -135,10 +168,20 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
                       onChange={handleDataChange}
                     />
                   </FormGroupInput>
+                  <FormGroupInput>
+                      <Label htmlFor="category">Categoria:</Label>
+                      <Select
+                        className={`${errorInput === "category_id" ? "border-red-500" : ""}`}
+                        name="category_id"
+                        value={FormDataBlog.category_id ? FormDataBlog.category_id : ""}
+                        onChange={handleDataChange}
+                        options={BlogCategoriesOptions}
+                      />
+                    </FormGroupInput>
                 </FormRow>
                 <FormRow>
                   <FormGroupInput>
-                      <Label htmlFor="content">Contenido:</Label>
+                      <Label htmlFor="content">Contenido (codigo HTML)*:</Label>
                       <TextArea
                         className={errorInput === "content" ? "border-red-500" : ""}
                         name="content"
@@ -156,6 +199,20 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
                         name="summary"
                         placeholder="Ej: Este es el resumen del blog"
                         value={FormDataBlog.summary ? FormDataBlog.summary : ""}
+                        onChange={handleDataChange}
+                      />
+                  </FormGroupInput>
+                </FormRow>
+                <FormRow>
+                  <FormGroupInput>
+                      <Label htmlFor="duration">Duración (Seg)*:</Label>
+                      <InputField
+                        className={errorInput === "duration" ? "border-red-500" : ""}
+                        id="input-duration"
+                        name="duration"
+                        type="number"
+                        placeholder="Ej: 5"
+                        value={FormDataBlog.duration ? FormDataBlog.duration : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>

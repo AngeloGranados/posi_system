@@ -36,7 +36,9 @@ export async function updateBlog(blog: Blog): Promise<Blog> {
     const formData = new FormData();
     formData.append("title", blog.title);
     formData.append("slug", blog.slug);
+    formData.append("category_id", blog.category_id.toString());
     formData.append("author", blog.author);
+    formData.append("duration", blog.duration.toString());
     formData.append("summary", blog.summary);
     formData.append("content", blog.content);
     formData.append("published_at", blog.published_at || new Date().toISOString());
@@ -61,6 +63,8 @@ export async function createBlog(blog: Blog): Promise<Blog> {
     const formData = new FormData();
     formData.append("title", blog.title);
     formData.append("slug", blog.slug);
+    formData.append("category_id", blog.category_id.toString());
+    formData.append("duration", blog.duration.toString());
     formData.append("author", blog.author);
     formData.append("summary", blog.summary);
     formData.append("content", blog.content);
