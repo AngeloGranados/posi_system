@@ -6,6 +6,7 @@ interface CompanyData {
     companyEmail: string;
     companyPhone: string;
     companyLogo: File;
+    companyLogoHeader: File;
     companyAddress: string;
     socials: Record<RedSocial, string>;
     companyPriceLimit: string;
@@ -16,5 +17,6 @@ interface FormDataType {
     companyPhone: string;
     companyLogo: File;
     companyAddress: string;
+    companyLogoHeader: File;
     companyPriceLimit: string;
 }

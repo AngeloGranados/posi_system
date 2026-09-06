@@ -11,16 +11,18 @@ type CompanyData = {
     companyEmail: string;
     companyPhone: string;
     companyLogo: File;
+    companyLogoHeader: File;
     companyAddress: string;
     companyPriceLimit: string;
 }
 interface FormInfoCompanyData {
     FormData : CompanyData,
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    handleLogoChange: (files: File[]) => void
+    handleLogoChange: (files: File[]) => void,
+    handleLogoHeaderChange: (files: File[]) => void
 }
 
-export default function FormInfoCompany({FormData, handleInputChange, handleLogoChange}: FormInfoCompanyData) {
+export default function FormInfoCompany({FormData, handleInputChange, handleLogoChange, handleLogoHeaderChange}: FormInfoCompanyData) {
 
 
     return (
@@ -86,12 +88,21 @@ export default function FormInfoCompany({FormData, handleInputChange, handleLogo
                     </FormGroupInput>
                 </FormRow>
             </form>
-            <div className="flex-1 ml-6">
-                <DropzoneComponent 
-                    ImageDefault={FormData.companyLogo}
-                    image={FormData.companyLogo}
-                    onDrop={handleLogoChange}
-                />
+            <div>
+                <div className="flex-1 ml-6">
+                    <DropzoneComponent 
+                        ImageDefault={FormData.companyLogo}
+                        image={FormData.companyLogo}
+                        onDrop={handleLogoChange}
+                    />
+                </div>
+                <div className="flex-1 ml-6">
+                    <DropzoneComponent 
+                        ImageDefault={FormData.companyLogoHeader}
+                        image={FormData.companyLogoHeader}
+                        onDrop={handleLogoHeaderChange}
+                    />
+                </div>
             </div>
         </div>
     )

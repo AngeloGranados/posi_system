@@ -20,6 +20,7 @@ export default function ConfigModal({ dataCompany }: ConfigModalProps) {
         companyEmail: dataCompany.companyEmail || "",
         companyPhone: dataCompany.companyPhone || "",
         companyLogo: dataCompany.companyLogo || new File([], ""),
+        companyLogoHeader: dataCompany.companyLogoHeader || new File([], ""),
         companyAddress: dataCompany.companyAddress || "",
         companyPriceLimit: dataCompany.companyPriceLimit || ""
     });
@@ -77,6 +78,11 @@ export default function ConfigModal({ dataCompany }: ConfigModalProps) {
                 alert(`El imagen de logo es obligatoria.`);
                 return false;
             }
+
+            if (field === "companyLogoHeader" && FormData.companyLogoHeader instanceof File && FormData.companyLogoHeader.size === 0) {
+                alert(`El imagen de logo de encabezado es obligatoria.`);
+                return false;
+            }
         }
 
         for (const social in FormDataSocials) {
@@ -124,6 +130,12 @@ export default function ConfigModal({ dataCompany }: ConfigModalProps) {
         }
     }
 
+    function handleLogoHeaderChange(files: File[]) {
+        if (files.length > 0) {
+            setFormData(prev => ({ ...prev, companyLogoHeader: files[0] }));
+        }
+    }
+
     const redesSociales: RedSocialItems[] = [
         {
             name: "Instagram",
@@ -164,6 +176,7 @@ export default function ConfigModal({ dataCompany }: ConfigModalProps) {
                 handleLogoChange={handleLogoChange}
                 FormData={FormData}
                 handleInputChange={handleInputChange}
+                handleLogoHeaderChange={handleLogoHeaderChange}
             />
             <RedComunityCards formDataSocials={FormDataSocials} handleRedesSocialesChange={handleRedesSocialesChange} redSocials={redesSociales} />
         </>

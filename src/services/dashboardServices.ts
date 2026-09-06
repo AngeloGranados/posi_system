@@ -23,6 +23,7 @@ export async function configDataCompany(dataCompany: CompanyData): Promise<{ mes
     configDataCompany.append("companyPhone", dataCompany.companyPhone);
     configDataCompany.append("companyAddress", dataCompany.companyAddress);
     configDataCompany.append("companyLogo", dataCompany.companyLogo);
+    configDataCompany.append("companyLogoHeader", dataCompany.companyLogoHeader);
     configDataCompany.append("companyPriceLimit", dataCompany.companyPriceLimit);
     configDataCompany.append("socials", JSON.stringify(dataCompany.socials));
 
