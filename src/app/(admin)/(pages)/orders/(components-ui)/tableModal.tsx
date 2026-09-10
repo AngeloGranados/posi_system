@@ -6,8 +6,7 @@ import TablePage from "@/components/tables/TablePage";
 import { TableRow, TableCell } from "@/components/ui/table";
 import Skeleton from "react-loading-skeleton";
 import Button from "@/components/ui/button/Button";
-import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
-import { Orders, orderByAscDescOrders, orderByOrders, tableThOrders } from "@/types/orders";
+import { Orders, filterOptions, orderByAscDescOrders, orderByOrders, statusOrders, tableThOrders } from "@/types/orders";
 import { EyeIcon, UserIcon } from "@/icons";
 import { cancelOrder, getOrdersFiltered } from "@/services/ordersServices";
 import CancelIcon from "../../../../../../public/images/icons/cancel-icon";
@@ -17,6 +16,7 @@ import { formatPrice, verifyColorByStatus } from "../../../../../../util";
 import { formatDate } from "@fullcalendar/core/index.js";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import FiltersComponentOrders from "./filtersComponentOrder";
 
 
 export default function TableModal() {
@@ -27,12 +27,16 @@ export default function TableModal() {
     const [ordersList, setOrdersList] = useState<Orders[]>([]);
 
     // filters
-    const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(100)
+    const [filters, setFilters] = useState<filterOptions>({
+        orderField: "order_number",
+        ByStatus: "pending",
+        orderBy: "status",
+        filterlike: '',
+        limit: 100,
+        page: 1
+    })
+
     const [pageTotal, setPageTotal] = useState(1)
-    const [orderBy, setOrderBy] = useState<orderByOrders>("ByDESC")
-    const [orderField, setOrderField] = useState<orderByAscDescOrders>("order_number")
-    const [filterlike, setFilterlike] = useState('')
 
     const [loading, setLoading] = useState(false);
 
@@ -54,7 +58,7 @@ export default function TableModal() {
 
         setLoading(true);
         try {
-            const response = await getOrdersFiltered({orderBy, orderField, limit, page});
+            const response = await getOrdersFiltered(filters);
             setOrdersList(response.data);
             setPageTotal(response.totalRows);
         }catch (error) {
@@ -94,30 +98,34 @@ export default function TableModal() {
 
     useEffect(() => {
         fetchOrdersFiltered()
-    }, [limit, page, orderBy, filterlike, orderField]);
+    }, [filters]);
 
-    const pageTotalToTable = Math.ceil(pageTotal / limit);
+    const pageTotalToTable = Math.ceil(pageTotal / filters.limit);
 
     async function handleOrderByAscDesc(field: orderByAscDescOrders) {
-        if(orderField === field){
-            setOrderBy(orderBy === "ByASC" ? "ByDESC" : "ByASC");
+        if(filters.orderField === field){
+            setFilters((prev) => ({ ...prev, orderBy: prev.orderBy === "ByASC" ? "ByDESC" : "ByASC" }));
         } else {
-            setOrderField(field);
-            setOrderBy("ByASC");
+            setFilters((prev) => ({ ...prev, orderField: field, orderBy: "ByASC" }));
         }
+    }
+
+    function handleStatusChange(status: statusOrders) {
+        setFilters((prev) => ({ ...prev, orderBy: "status", ByStatus: status, page: 1 }));
     }
 
     return (
         <>
             <TablePage<Orders>
                 titleTable="Tabla de Órdenes"
-                orderField={orderField} 
-                orderBy={orderBy} 
+                orderField={filters.orderField} 
+                filters={<FiltersComponentOrders onTypeOrdersChange={handleStatusChange} />}
+                orderBy={filters.orderBy} 
                 tableThPage={tableThOrders} 
                 handleOrderByAscDesc={handleOrderByAscDesc} 
                 pageTotal={pageTotalToTable} 
-                page={page}
-                setPage={setPage}
+                page={filters.page}
+                setPage={(page) => setFilters((prev) => ({ ...prev, page }))}
             >
                 {
                     loading ? (

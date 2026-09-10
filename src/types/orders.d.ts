@@ -12,13 +12,14 @@ export type tableThNameOrders =
 export type statusOrders = "pending" | "processing" | "shipped" | "delivered" | "cancelled" | null;
 
 export type orderByAscDescOrders = Exclude<tableThNameOrders, "actions">;
-export type orderByOrders = "ByASC" | "ByDESC";
+export type orderByOrders = "ByASC" | "ByDESC" | "status";
 export interface tableThOrders {
     name: tableThNameOrders;
     value: string;
     className?: string;
 }
 
+export type typeOrders = statusOrders | null;
 export interface Orders {
     order_number?: string,
     user_id: string | null,
@@ -66,5 +67,14 @@ export interface OrderItems {
     price?: number | string,
     product_name?: string,
     subtotal?: number | string
+}
+
+export interface filterOptions {
+    orderField: orderByAscDescOrders;
+    ByStatus: statusOrders;
+    orderBy: orderByOrders;
+    filterlike: string;
+    limit: number;
+    page: number;
 }
 

@@ -1,9 +1,10 @@
-import { orderByAscDescOrders, orderByOrders, OrderItems, Orders } from "@/types/orders";
+import { orderByAscDescOrders, orderByOrders, OrderItems, Orders, statusOrders } from "@/types/orders";
 
 const URL_API = `${process.env.NEXT_PUBLIC_API_URL}orders`;
 
 interface filterOptions {
     orderField: orderByAscDescOrders;
+    ByStatus: statusOrders;
     orderBy: orderByOrders;
     limit: number;
     page: number;
@@ -15,6 +16,7 @@ export async function getOrdersFiltered(filterOptions: filterOptions): Promise<{
 
     if(filterOptions.limit) params.append("limit", filterOptions.limit.toString());
     if(filterOptions.page) params.append("page", filterOptions.page.toString());
+    if(filterOptions.ByStatus) params.append("ByStatus", filterOptions.ByStatus);
     if(filterOptions.orderBy){
         switch (filterOptions.orderBy) {
             case "ByASC":
