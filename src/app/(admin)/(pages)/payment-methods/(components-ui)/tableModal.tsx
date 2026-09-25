@@ -17,6 +17,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
 import FiltersComponentPaymentMethods from "./filtersComponentPaymentMethod";
+import { DEFAULT_CONFIG } from "../../../../../../config";
 
 export default function TableModal() {
     const { isOpen, closeModal, openModal } = useModal();
@@ -225,7 +226,7 @@ export default function TableModal() {
                                                         width={64}
                                                         height={64}
                                                         unoptimized={process.env.NODE_ENV ? true : false}
-                                                        src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}/payments/${typeof paymentMethod.image_url === "string" ? paymentMethod.image_url : paymentMethod.image_url}`}
+                                                        src={`${DEFAULT_CONFIG.imagesRoot}/payments/${typeof paymentMethod.image_url === "string" ? paymentMethod.image_url : paymentMethod.image_url}`}
                                                         alt={paymentMethod.name}
                                                         className="w-16 h-16 object-cover rounded"
                                                     />

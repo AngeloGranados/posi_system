@@ -17,6 +17,7 @@ import ModalImagesProducts from "./modalImagesProducts";
 import debounce from "debounce";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { DEFAULT_CONFIG } from "../../../../../../config";
 
 const SweetAlert = withReactContent(Swal);
 
@@ -212,7 +213,7 @@ export default function TableModal() {
                                                             width={64}
                                                             height={64}
                                                             unoptimized={process.env.NODE_ENV ? true : false}
-                                                            src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}${typeof imagesProduct.image_url === "string" ? imagesProduct.image_url : imagesProduct.image_url}`}
+                                                            src={`${DEFAULT_CONFIG.imagesRoot}${typeof imagesProduct.image_url === "string" ? imagesProduct.image_url : imagesProduct.image_url}`}
                                                             alt={imagesProduct.product_name as string}
                                                             className="w-16 h-16 object-cover rounded"
                                                         />

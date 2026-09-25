@@ -37,10 +37,10 @@ const DropzoneComponent: React.FC<{ onDrop?: (files: File[]) => void, image: Fil
   });
   return (
     <ComponentCard title="Insertar Imagen">
-      <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
+      <div className="flex transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
         <div
           {...getRootProps()}
-          className={`dropzone rounded-xl   border-dashed border-gray-300 p-7 lg:p-10
+          className={`flex justify-center w-full dropzone rounded-xl border-dashed border-gray-300 p-7 lg:p-10
         ${
           isDragActive
             ? "border-brand-500 bg-gray-100 dark:bg-gray-800"
@@ -55,7 +55,7 @@ const DropzoneComponent: React.FC<{ onDrop?: (files: File[]) => void, image: Fil
           <div className="dz-message flex flex-col items-center m-0!">
             {
               (previewImage && image instanceof File && image.size > 0) ? (
-                <div className="w-[400px] h-[300px] mb-[22px] flex justify-center">
+                <div className="w-full h-full mb-[22px] flex justify-center">
                   <Image
                     className="w-full h-auto rounded-lg object-cover"
                     src={previewImage}
@@ -66,7 +66,7 @@ const DropzoneComponent: React.FC<{ onDrop?: (files: File[]) => void, image: Fil
                   />
                 </div>
               ) : (ImageDefault && typeof ImageDefault === "string" && ImageDefault.length > 0) ? (
-                <div className="w-[400px] h-[300px] mb-[22px] flex justify-center">
+                <div className="w-full h-full mb-[22px] flex justify-center">
                   <Image
                     className="w-full h-auto rounded-lg object-cover"
                     src={(process.env.NEXT_PUBLIC_URL_IMAGES ?? "") + ImageDefault}

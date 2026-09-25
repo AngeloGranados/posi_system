@@ -19,6 +19,7 @@ import debounce from "debounce";
 import FiltersComponentCategories from "./filtersComponentDiscount";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { DEFAULT_CONFIG } from "../../../../../../config";
 
 const SweetAlert = withReactContent(Swal);
 
@@ -230,7 +231,7 @@ export default function TableModal() {
                                                         width={64}
                                                         height={64}
                                                         unoptimized={process.env.NODE_ENV ? true : false}
-                                                        src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}categories/${typeof category.image_url === "string" ? category.image_url : category.image_url}`}
+                                                        src={`${DEFAULT_CONFIG.imagesRoot}categories/${typeof category.image_url === "string" ? category.image_url : category.image_url}`}
                                                         alt={category.name}
                                                         className="w-16 h-16 object-cover rounded"
                                                     />

@@ -15,6 +15,7 @@ import { createBrands, deleteBrands, getBrandsFiltered, updateBrands } from "@/s
 import Image from "next/image";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { DEFAULT_CONFIG } from "../../../../../../config";
 
 const SweetAlert = withReactContent(Swal);
 
@@ -196,7 +197,7 @@ export default function TableModal() {
                                                         width={64}
                                                         height={64}
                                                         unoptimized={process.env.NODE_ENV ? true : false}
-                                                        src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}brands/${typeof brands.image_url === "string" ? brands.image_url : brands.image_url}`}
+                                                        src={`${DEFAULT_CONFIG.imagesRoot}brands/${typeof brands.image_url === "string" ? brands.image_url : brands.image_url}`}
                                                         alt={brands.name}
                                                         className="w-16 h-16 object-cover rounded"
                                                     />

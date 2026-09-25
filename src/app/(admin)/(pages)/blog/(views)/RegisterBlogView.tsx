@@ -1,24 +1,26 @@
 'use client';
 
-import { Modal } from "@/components/ui/modal";
 import InputField from "@/components/form/input/InputField";
 import React, { useEffect, useState } from "react";
 import Label from "@/components/form/Label";
 import Alert from "@/components/ui/alert/Alert";
 import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
-import { Blog } from "@/types/blog";
+import { Blog, templateType } from "@/types/blog";
 import TextArea from "@/components/form/input/TextArea";
 import DropzoneComponent from "@/components/form/form-elements/DropZone";
 import DatePicker from "@/components/form/date-picker";
-import { getNowDate } from "../../../../../../util";
 import Checkbox from "@/components/form/input/Checkbox";
-import CheckboxComponents from "@/components/form/form-elements/CheckboxComponents";
 import Select from "@/components/form/Select";
 import { getBlogCategories } from "@/services/BlogCategoriesServices";
 import { BlogCategories } from "@/types/BlogCategories";
+import { getNowDate } from "../../../../../../util";
+import ModalTemplates from "../(components-ui)/modalTemplates";
+import Image from "next/image";
+import { DEFAULT_CONFIG } from "../../../../../../config";
+import { ArrowLeftIcon, Edit2Icon } from "lucide-react";
 
-interface ModalBlogProps {
+interface RegisterBlogProps {
     isOpen: boolean;
     loading: boolean;
     setErrorInput: (field: string | null) => void; 
@@ -36,7 +38,17 @@ interface ModalBlogProps {
     }
 }
 
-export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, closeModal, selected, setSelected, handleCreateBlog, alertProps } : ModalBlogProps) {
+export default function RegisterBlogView({
+    isOpen,
+    loading,
+    setErrorInput,
+    errorInput,
+    closeModal,
+    selected,
+    setSelected,
+    handleCreateBlog,
+    alertProps
+}: RegisterBlogProps) {
 
     const emptyBlog: Blog = {
         title: "",
@@ -44,12 +56,97 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
         category_id: 0,
         duration: 0,
         summary: "",
-        content: "",
+        content: [],
         image_url: new File([], ""),
         author: "",
         published_at: "",
         is_published: false
     };
+
+    const [openModalTemplate, setOpenModalTemplate] = useState<boolean>(false);
+
+    const TEMPLATES_OPTIONS = [
+        {
+          "type_plantilla" : "parrafo_top-img_bottom",
+          "container_style" : "flex flex-col-reverse",
+          "parrafo_style" : "w-full h-[50%]",
+          "parrafo_content" : null,
+          "imagen_content" : null,
+          "imagen_style" : "w-full h-[50%]"
+        },
+        {
+          "type_plantilla" : "img_top-parrafo_bottom",          
+          "container_style" : "flex flex-col",
+          "parrafo_style" : "w-full h-[50%]",
+          "parrafo_content" : null,
+          "imagen_content" : null,
+          "imagen_style" : "w-full h-[50%]"
+        },
+        {
+          "type_plantilla" : "parrafo_right_top-img_left_full",          
+          "container_style" : "flex flex-row",
+          "parrafo_style" : "w-[50%] h-[50%]",
+          "parrafo_content" : null,
+          "imagen_content" : null,
+          "imagen_style" : "w-[50%] h-full"
+        },
+        {
+          "type_plantilla" : "parrafo_left_bottom-img_right_full",          
+          "container_style" : "flex flex-row-reverse",
+          "parrafo_style" : "self-end w-[50%] h-[50%]",
+          "parrafo_content" : null,
+          "imagen_content" : null,
+          "imagen_style" : "w-[50%] h-full"
+        },
+        {
+          "type_plantilla" : "img_left_full-parrafo_right_top",          
+          "container_style" : "flex flex-row",
+          "parrafo_style" : "w-[50%] h-[50%]",
+          "parrafo_content" : null,
+          "imagen_content" : null,
+          "imagen_style" : "w-[50%] h-full"
+        },
+        {
+          "type_plantilla" : "img_left_full-parrafo_right_center",          
+          "container_style" : "flex flex-row",
+          "parrafo_style" : "w-[50%] h-[50%] self-center",
+          "parrafo_content" : null,
+          "imagen_content" : null,
+          "imagen_style" : "w-[50%] h-full"
+        },
+        {
+          "type_plantilla" : "img_right_center-parrafo_left_center",          
+          "container_style" : "flex flex-row-reverse items-center",
+          "parrafo_style" : "w-[50%] h-[50%]",
+          "parrafo_content" : null,
+          "imagen_content" : null,
+          "imagen_style" : "w-[50%] h-[50%]"
+        },
+        {
+          "type_plantilla" : "img_right_full-parrafo_left_center",          
+          "container_style" : "flex flex-row-reverse",
+          "parrafo_style" : "w-[50%] h-[50%] self-center",
+          "parrafo_content" : null,
+          "imagen_content" : null,
+          "imagen_style" : "w-[50%] h-full"
+        },
+        {
+          "type_plantilla" : "parrafo_left_top-img_right_bottom",          
+          "container_style" : "flex flex-col-reverse",
+          "parrafo_style" : "w-[50%] h-full",
+          "parrafo_content" : null,
+          "imagen_content" : null,    
+          "imagen_style" : "w-[50%] h-full self-end"
+        },
+        {
+          "type_plantilla" : "parrafo_right_bottom-img_left_top",          
+          "container_style" : "flex flex-col",
+          "parrafo_style" : "w-[50%] h-full self-end",
+          "parrafo_content" : null,
+          "imagen_content" : null,
+          "imagen_style" : "w-[50%] h-full"
+        }
+    ]
 
     // Si selected existe, usarlo; si no, usar emptyBlog
     const [FormDataBlog, setFormDataBlog] = useState<Blog>(selected || emptyBlog);
@@ -79,6 +176,14 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
       setErrorInput(null);
     }
 
+    const buttonEditTemplate = () => {
+        setFormDataBlog((prevData) => ({
+            ...prevData,
+            content: []
+        }));
+        setOpenModalTemplate(true);
+    }
+
     async function handleFetchBlogCategories() {
       try {
         const BlogCategories = await getBlogCategories();
@@ -100,6 +205,13 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
           image_url: file
         }))
       }
+    }
+
+    const handleAddTemplate = (template: templateType) => {
+        setFormDataBlog((prevData) => ({
+            ...prevData,
+            content: prevData.content ? [...prevData.content, template] : [template]
+        }));
     }
 
     // Handler universal, siempre actualiza el estado
@@ -126,12 +238,9 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
     }
 
     return (
-        <Modal
-            isOpen={isOpen}
-            onClose={handleCloseModal}
-            className="max-w-[700px] p-6 lg:p-10"
-          >
-            <form onSubmit={(e) => handleCreateBlog(e, FormDataBlog)} className="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[80vh]">
+        <div>
+            <form onSubmit={(e) => handleCreateBlog(e, FormDataBlog)} className="flex flex-col px-2 overflow-y-auto custom-scrollbar">
+              <button type="button" onClick={() => closeModal()}><ArrowLeftIcon className="w-6 h-6 mb-5" /></button>
               <div>
                 <h5 className="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl">
                   {selected ? `Editar Post` : `Agregar Post`}
@@ -179,18 +288,48 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
                       />
                     </FormGroupInput>
                 </FormRow>
-                <FormRow>
-                  <FormGroupInput>
-                      <Label htmlFor="content">Contenido (codigo HTML)*:</Label>
-                      <TextArea
-                        className={errorInput === "content" ? "border-red-500" : ""}
-                        name="content"
-                        placeholder="Ej: Este es el contenido del blog"
-                        value={FormDataBlog.content ? FormDataBlog.content : ""}
-                        onChange={handleDataChange}
-                      />
-                  </FormGroupInput>
-                </FormRow>
+                <div className="my-4">
+                  <h3>Contenido (codigo HTML)*:</h3>
+                  <div className="mt-4 border border-gray-300 p-4 w-[800px] mx-auto">
+                    <button type="button" onClick={buttonEditTemplate} className="bg-[#afafff] rounded p-2 flex item-center ml-auto mb-5"><Edit2Icon className="w-4 h-4 fill-[#000]"></Edit2Icon></button>
+                    {
+                      FormDataBlog.content && FormDataBlog.content.length > 0 ? (
+                        <div className="flex flex-col gap-10"> 
+                          {FormDataBlog.content.map((template) => (
+                            <div key={template.type_plantilla}>
+                              <div className={`w-full ${template.container_style}`}>
+                                <div className={`min-w-0 max-w-full overflow-hidden p-4 ${template.imagen_style}`}>
+                                  <Image
+                                    unoptimized={process.env.NODE_ENV === "development"}
+                                    src={`${template.imagen_content && typeof template.imagen_content !== "string" ? URL.createObjectURL(template.imagen_content as File) : `${DEFAULT_CONFIG.imagesRoot}blog/${template.imagen_content}`}`}
+                                    width={500}
+                                    height={300}
+                                    alt="Imagen del blog"
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div className={`min-w-0 max-w-full overflow-hidden break-words whitespace-normal p-4 ${template.parrafo_style}`}>
+                                  <div className="prose prose-sm" dangerouslySetInnerHTML={{ __html: template.parrafo_content ? template.parrafo_content : "Parrafo" }}></div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          <button type="button" onClick={() => { setOpenModalTemplate(true); console.log("Opening modal"); }} className="px-4 py-2 bg-blue-500 mt-20 mx-auto block text-white rounded hover:bg-blue-600 w-full">
+                            +
+                          </button>
+                        </div>
+                      ) : (
+                        <div>
+                          <button type="button" onClick={() => setOpenModalTemplate(true)} className="w-full text-center p-10 border border-gray-300 hover:border-gray-500 cursor-pointer">
+                            <span>Inicia el contenido del Blog</span>
+                          </button>
+                        </div>
+                      )
+                    }
+                  </div>
+                </div>
+                <ModalTemplates setFormTemplates={handleAddTemplate} openModalTemplate={openModalTemplate} setOpenModalTemplate={setOpenModalTemplate} templatesOptions={TEMPLATES_OPTIONS} />
+                {/* Este es el modal para seleccionar una plantilla de una seccion */}
                 <FormRow>
                   <FormGroupInput>
                       <Label htmlFor="summary">Resumen:</Label>
@@ -259,11 +398,13 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
                 </FormRow>
                 <FormRow>
                   <FormGroupInput>
-                    <DropzoneComponent
-                      onDrop={handleImageChange}
-                      image={FormDataBlog.image_url}
-                      ImageDefault={`blog/${selected?.image_url}`}
-                    />
+                    <div className="w-[800px] h-[400px] overflow-auto">
+                      <DropzoneComponent
+                        onDrop={handleImageChange}
+                        image={FormDataBlog.image_url}
+                        ImageDefault={`${DEFAULT_CONFIG.imagesRoot}blog/${selected?.image_url}`}
+                      />
+                    </div>
                   </FormGroupInput>
                 </FormRow>
               </div>
@@ -284,7 +425,6 @@ export default function ModalBlog({ setErrorInput, errorInput, loading, isOpen, 
                 </button>
               </div>
             </form>
-        </Modal>
-
-    )
+        </div>
+    );
 }

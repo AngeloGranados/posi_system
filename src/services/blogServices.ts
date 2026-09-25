@@ -40,10 +40,14 @@ export async function updateBlog(blog: Blog): Promise<Blog> {
     formData.append("author", blog.author);
     formData.append("duration", blog.duration.toString());
     formData.append("summary", blog.summary);
-    formData.append("content", blog.content);
+    formData.append("content", JSON.stringify(blog.content));
     formData.append("published_at", blog.published_at || new Date().toISOString());
     formData.append("is_published", blog.is_published ? "true" : "false");
     formData.append("image_url", blog.image_url);
+
+    blog.content && blog.content.forEach((item, index) => {
+        formData.append("images_content_blog", item.imagen_content as File);
+    });
 
     const response = await fetch(`${URL_API}/${blog.id}`, {
         method: "PUT",
@@ -67,10 +71,14 @@ export async function createBlog(blog: Blog): Promise<Blog> {
     formData.append("duration", blog.duration.toString());
     formData.append("author", blog.author);
     formData.append("summary", blog.summary);
-    formData.append("content", blog.content);
+    formData.append("content", JSON.stringify(blog.content));
     formData.append("published_at", blog.published_at || new Date().toISOString());
     formData.append("is_published", blog.is_published ? "true" : "false");
     formData.append("image_url", blog.image_url);
+
+    blog.content && blog.content.forEach((item, index) => {
+        formData.append("images_content_blog", item.imagen_content as File);
+    });
 
     const response = await fetch(`${URL_API}`, {
         method: "POST",

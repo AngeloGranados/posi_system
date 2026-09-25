@@ -1,4 +1,5 @@
 export const DEFAULT_CONFIG = {
+    imagesRoot: process.env.NEXT_PUBLIC_URL_IMAGES ? process.env.NEXT_PUBLIC_URL_IMAGES : "http://localhost:5000/public/uploads/",
     moneyConfig: {
         IGV: 0.18,
     },

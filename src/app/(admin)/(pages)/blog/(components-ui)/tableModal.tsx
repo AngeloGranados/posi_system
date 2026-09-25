@@ -11,12 +11,13 @@ import Button from "@/components/ui/button/Button";
 import DeleteIcon from "../../../../../../public/images/icons/delete-icon";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import ModalBlog from "./modalBlog";
 import { Blog, orderByAscDescBlog, orderByBlog, tableThBlog } from "@/types/blog";
 import { createBlog, deleteBlog, getBlogFiltered, updateBlog } from "@/services/blogServices";
 import Image from "next/image";
 import Badge from "@/components/ui/badge/Badge";
 import { formarSegToHuman } from "../../../../../../util";
+import RegisterBlogView from "../(views)/RegisterBlogView";
+import { DEFAULT_CONFIG } from "../../../../../../config";
 
 const SweetAlert = withReactContent(Swal);
 
@@ -89,6 +90,12 @@ export default function TableModal() {
                 break;
             }
 
+            if (field === "content" && blog[field].length <= 0) {
+                error = `El campo ${field} debe contener al menos un elemento.`;
+                fieldError = field;
+                break;
+            }
+
             if ((field === "category_id" && isNaN(Number(blog[field]))) || (field === "duration" && isNaN(Number(blog[field])))) {
                 error = `El campo ${field} debe ser un número válido.`;
                 fieldError = field;
@@ -153,9 +160,8 @@ export default function TableModal() {
         openModal();
     };
 
-    return (
-        <>
-            <ModalBlog
+    if (isOpen) {
+        return <RegisterBlogView
                 errorInput={errorInput}
                 setErrorInput={setErrorInput}
                 loading={loading}
@@ -165,79 +171,86 @@ export default function TableModal() {
                 handleCreateBlog={handleCreateBlog} 
                 selected={selectedBlog} 
                 alertProps={{ showAlert, alertMessage, alertVariant, alertTitle, closeAlert }} 
-            />
-            <TablePage<Blog>
-                titleTable=""
-                buttonText="Agregar un nuevo post"
-                orderField={filters.orderField} 
-                orderBy={filters.orderBy} 
-                tableThPage={tableThBlog} 
-                OpenModal={handleOpenModal}  
-                handleOrderByAscDesc={handleOrderByAscDesc} 
-                pageTotal={pageTotalToTable} 
-                page={filters.page}
-                setPage={(page) => setFilters({...filters, page})}
-            >
-                {
-                    loading ? (
-                        <TableRow>
-                            <TableCell className="text-center py-4" colSpan={12}>   
-                                <div className="w-full h-50">
-                                    <Skeleton width={'100%'} height={'100%'} />
-                                </div>
-                            </TableCell>
-                        </TableRow>
-                    ) : (
-                        blogList && blogList.length > 0 ? (
-                            blogList.map((blog) => (
-                                <TableRow key={blog.id}>
-                                    <TableCell className="px-3 py-3 text-left">#{blog.id}</TableCell>
-                                    <TableCell className="px-3 py-3 text-left">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="mb-2">
-                                                {
-                                                    blog.image_url && (
-                                                    <Image
-                                                        width={64}
-                                                        height={64}
-                                                        unoptimized={process.env.NODE_ENV ? true : false}
-                                                        src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}blog/${typeof blog.image_url === "string" ? blog.image_url : blog.image_url}`}
-                                                        alt={blog.title}
-                                                        className="w-16 h-16 object-cover rounded"
-                                                    />
-                                                    )
-                                                }
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[17px] font-bold">{blog.title}</span>
-                                                <small className="text-gray-800">{blog.slug}</small>
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="px-3 py-3 text-left">{blog.blog_category_name}</TableCell>
-                                    <TableCell className="px-3 py-3 text-left">{blog.author}</TableCell>
-                                    <TableCell className="px-3 py-3 text-left">{formarSegToHuman(blog.duration)}</TableCell>
-                                    <TableCell className="px-3 py-3 text-left">{blog.published_at ? new Date(blog.published_at).toLocaleDateString() : "No publicado"}</TableCell>
-                                    <TableCell className="px-3 py-3 text-left">{blog.created_at ? new Date(blog.created_at).toLocaleDateString() : "No publicado"}</TableCell>
-                                    <TableCell className="px-3 py-3 text-left text-gray-500">
-                                        {blog.is_published ? <Badge color="success" variant="light">Publicado</Badge> : <Badge color="warning" variant="light">No publicado</Badge>}
-                                    </TableCell>
-                                    <TableCell className="px-3 py-3">
-                                        <div className="flex space-x-4">
-                                            <Button onClick={() => handleOpenModal(blog)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
-                                            <Button onClick={() => handleDeleteBlog(blog.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        ) : (
+            /> 
+    } else {
+        return (
+            <>
+                
+                <TablePage<Blog>
+                    titleTable=""
+                    buttonText="Agregar un nuevo post"
+                    orderField={filters.orderField} 
+                    orderBy={filters.orderBy} 
+                    tableThPage={tableThBlog} 
+                    OpenModal={handleOpenModal}  
+                    handleOrderByAscDesc={handleOrderByAscDesc} 
+                    pageTotal={pageTotalToTable} 
+                    page={filters.page}
+                    setPage={(page) => setFilters({...filters, page})}
+                >
+                    {
+                        loading ? (
                             <TableRow>
-                                <TableCell className="text-center py-4" colSpan={12}>No se encontraron posts registrados.</TableCell>
+                                <TableCell className="text-center py-4" colSpan={12}>   
+                                    <div className="w-full h-50">
+                                        <Skeleton width={'100%'} height={'100%'} />
+                                    </div>
+                                </TableCell>
                             </TableRow>
+                        ) : (
+                            blogList && blogList.length > 0 ? (
+                                blogList.map((blog) => (
+                                    <TableRow key={blog.id}>
+                                        <TableCell className="px-3 py-3 text-left">#{blog.id}</TableCell>
+                                        <TableCell className="px-3 py-3 text-left">
+                                            <div className="flex items-center space-x-4">
+                                                <div className="mb-2">
+                                                    {
+                                                        blog.image_url && (
+                                                        <Image
+                                                            width={64}
+                                                            height={64}
+                                                            unoptimized={process.env.NODE_ENV ? true : false}
+                                                            src={`${DEFAULT_CONFIG.imagesRoot}blog/${typeof blog.image_url === "string" ? blog.image_url : URL.createObjectURL(blog.image_url)}`}
+                                                            alt={blog.title}
+                                                            className="w-16 h-16 object-cover rounded"
+                                                        />
+                                                        )
+                                                    }
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="text-[17px] font-bold">{blog.title}</span>
+                                                    <small className="text-gray-800">{blog.slug}</small>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="px-3 py-3 text-left">{blog.blog_category_name}</TableCell>
+                                        <TableCell className="px-3 py-3 text-left">{blog.author}</TableCell>
+                                        <TableCell className="px-3 py-3 text-left">{formarSegToHuman(blog.duration)}</TableCell>
+                                        <TableCell className="px-3 py-3 text-left">{blog.published_at ? new Date(blog.published_at).toLocaleDateString() : "No publicado"}</TableCell>
+                                        <TableCell className="px-3 py-3 text-left">{blog.created_at ? new Date(blog.created_at).toLocaleDateString() : "No publicado"}</TableCell>
+                                        <TableCell className="px-3 py-3 text-left text-gray-500">
+                                            {blog.is_published ? <Badge color="success" variant="light">Publicado</Badge> : <Badge color="warning" variant="light">No publicado</Badge>}
+                                        </TableCell>
+                                        <TableCell className="px-3 py-3">
+                                            <div className="flex space-x-4">
+                                                <Button onClick={() => handleOpenModal(blog)} variant="outline" className="text-blue-500"><EditIcon width={16} height={16} fill="currentColor" /></Button>
+                                                <Button onClick={() => handleDeleteBlog(blog.id as string)} variant="outline" className="text-red-500"><DeleteIcon width={16} height={16} fill="currentColor" /></Button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell className="text-center py-4" colSpan={12}>No se encontraron posts registrados.</TableCell>
+                                </TableRow>
+                            )
                         )
-                    )
-                }
-            </TablePage>
-        </>
-    );
+                    }
+                </TablePage>
+            </>
+        );
+
+    }
+
 }

@@ -10,6 +10,7 @@ import { formatPrice } from "../../../util";
 import { useCallback, useEffect, useState } from "react";
 import { getProductsFilter } from "@/services/produtsServices";
 import debounce from "debounce";
+import { DEFAULT_CONFIG } from "../../../config";
 
 export default function NewEntrysTable() {
 
@@ -114,7 +115,7 @@ export default function NewEntrysTable() {
                                                             width={64}
                                                             height={64}
                                                             unoptimized={process.env.NODE_ENV ? true : false}
-                                                            src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}${typeof product.image === "string" ? product.image : product.image}`}
+                                                            src={`${DEFAULT_CONFIG.imagesRoot}${typeof product.image === "string" ? product.image : product.image}`}
                                                             alt={product.name}
                                                             className="w-16 h-16 object-cover rounded"
                                                         />

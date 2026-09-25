@@ -21,6 +21,7 @@ import withReactContent from "sweetalert2-react-content";
 import ChangeStatusIcon from "../../../../../../public/images/icons/changeStatus-icon";
 import FiltersComponentDiscounts from "./filtersComponentDiscount";
 import { get } from "http";
+import { DEFAULT_CONFIG } from "../../../../../../config";
 
 
 export default function TableModal() {
@@ -238,7 +239,7 @@ export default function TableModal() {
                                                             width={64}
                                                             height={64}
                                                             unoptimized={process.env.NODE_ENV ? true : false}
-                                                            src={`${process.env.NEXT_PUBLIC_URL_IMAGES ?? ""}${typeof discounts.product_image === "string" ? discounts.product_image : discounts.product_image}`}
+                                                            src={`${DEFAULT_CONFIG.imagesRoot}${typeof discounts.product_image === "string" ? discounts.product_image : discounts.product_image}`}
                                                             alt={discounts.product_name as string}
                                                             className="w-16 h-16 object-cover rounded"
                                                         />
