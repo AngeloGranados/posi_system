@@ -300,7 +300,7 @@ export default function RegisterBlogView({
                               <div className={`w-full ${template.container_style}`}>
                                 <div className={`min-w-0 max-w-full overflow-hidden p-4 ${template.imagen_style}`}>
                                   <Image
-                                    unoptimized={process.env.NODE_ENV === "development"}
+                                    unoptimized={process.env.NODE_ENV ? true : false}
                                     src={`${template.imagen_content && typeof template.imagen_content !== "string" ? URL.createObjectURL(template.imagen_content as File) : `${DEFAULT_CONFIG.imagesRoot}blog/${template.imagen_content}`}`}
                                     width={500}
                                     height={300}
