@@ -10,9 +10,9 @@ import DropzoneComponent from '@/components/form/form-elements/DropZone';
 import { DEFAULT_CONFIG } from '../../../../../../config';
 
 interface ModalTemplatesProps {
-    setFormTemplates: (template: templateType) => void;
-    openModalTemplate: boolean;
-    setOpenModalTemplate: (open: boolean) => void;
+    setFormTemplates: (template: templateType, position: "anterior" | "posterior") => void;
+    openModalTemplate: { isOpen: boolean; position: string };
+    setOpenModalTemplate: Dispatch<SetStateAction<{ isOpen: boolean; position: string }>>;
     templatesOptions: Array<templateType>;
 }
 
@@ -33,7 +33,7 @@ export default function ModalTemplates({ setFormTemplates, openModalTemplate, se
     };
 
     const handleCloseModal = () => {
-        setOpenModalTemplate(false);
+        setOpenModalTemplate((prev) => ({ ...prev, isOpen: false }));
         setFormDataTemplate({ imagen_content: new File([], ""), parrafo_content: "" });
         setTemplateSelected(null);
     };
@@ -50,12 +50,15 @@ export default function ModalTemplates({ setFormTemplates, openModalTemplate, se
             return;
         }
 
-        setFormTemplates({ ...templateSelected, ...FormDataTemplate as templateType });
+        setFormTemplates(
+            { ...templateSelected, ...FormDataTemplate as templateType },
+            openModalTemplate.position === "anterior" ? "anterior" : "posterior"
+        );
         handleCloseModal();
     };
 
     return (
-        <div className={`fixed w-full h-full z-50 top-0 left-0 flex items-center justify-center ${openModalTemplate ? "" : "hidden"}`}>
+        <div className={`fixed w-full h-full z-50 top-0 left-0 flex items-center justify-center ${openModalTemplate.isOpen ? "" : "hidden"}`}>
           <div className="fixed w-full h-full bg-black opacity-50"></div>
           <button type="button" onClick={handleCloseModal} className="absolute top-[60px] right-[140px] p-4 cursor-pointer z-60 w-10 h-10 flex items-center justify-center bg-black text-white rounded-full">X</button>
           <div className="w-[80%] h-[80%] overflow-auto py-0 px-4 pt-4 bg-white z-50">

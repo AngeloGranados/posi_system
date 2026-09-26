@@ -18,7 +18,8 @@ import { getNowDate } from "../../../../../../util";
 import ModalTemplates from "../(components-ui)/modalTemplates";
 import Image from "next/image";
 import { DEFAULT_CONFIG } from "../../../../../../config";
-import { ArrowLeftIcon, Edit2Icon } from "lucide-react";
+import { ArrowLeftIcon, DeleteIcon, Edit2Icon } from "lucide-react";
+import { CloseIcon } from "@/icons";
 
 interface RegisterBlogProps {
     isOpen: boolean;
@@ -63,7 +64,7 @@ export default function RegisterBlogView({
         is_published: false
     };
 
-    const [openModalTemplate, setOpenModalTemplate] = useState<boolean>(false);
+    const [openModalTemplate, setOpenModalTemplate] = useState({ isOpen: false, position: "" });
 
     const TEMPLATES_OPTIONS = [
         {
@@ -176,12 +177,8 @@ export default function RegisterBlogView({
       setErrorInput(null);
     }
 
-    const buttonEditTemplate = () => {
-        setFormDataBlog((prevData) => ({
-            ...prevData,
-            content: []
-        }));
-        setOpenModalTemplate(true);
+    const buttonEditTemplate = (position: string) => {
+        setOpenModalTemplate({ isOpen: true, position });
     }
 
     async function handleFetchBlogCategories() {
@@ -207,12 +204,25 @@ export default function RegisterBlogView({
       }
     }
 
-    const handleAddTemplate = (template: templateType) => {
+    const handleAddTemplate = (template: templateType, position: "anterior" | "posterior") => {
         setFormDataBlog((prevData) => ({
             ...prevData,
-            content: prevData.content ? [...prevData.content, template] : [template]
+            content: position === "anterior"
+                ? [template, ...(prevData.content || [])]
+                : [...(prevData.content || []), template]
         }));
     }
+
+    const handleDeleteTemplate = (index: number) => {
+        setFormDataBlog((prevData) => {
+            const updatedContent = [...(prevData.content || [])];
+            updatedContent.splice(index, 1);
+            return {
+                ...prevData,
+                content: updatedContent
+            };
+        });
+    };
 
     // Handler universal, siempre actualiza el estado
     const handleDataChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -291,12 +301,15 @@ export default function RegisterBlogView({
                 <div className="my-4">
                   <h3>Contenido (codigo HTML)*:</h3>
                   <div className="mt-4 border border-gray-300 p-4 w-[800px] mx-auto">
-                    {selected && <button type="button" onClick={buttonEditTemplate} className="bg-[#afafff] rounded p-2 flex item-center ml-auto mb-5"><Edit2Icon className="w-4 h-4 fill-[#000]"></Edit2Icon></button>} 
                     {
                       FormDataBlog.content && FormDataBlog.content.length > 0 ? (
-                        <div className="flex flex-col gap-10"> 
-                          {FormDataBlog.content.map((template) => (
-                            <div key={template.type_plantilla}>
+                        <div className="flex flex-col gap-10">
+                          <button type="button" onClick={() => buttonEditTemplate("anterior")} className="px-4 py-2 bg-blue-500 mb-20 mx-auto block text-white rounded hover:bg-blue-600 w-full">
+                            +
+                          </button> 
+                          {FormDataBlog.content.map((template, index) => (
+                            <div className="border border-gray-300" key={`${template.type_plantilla}-${index}`}>
+                              <button type="button" onClick={() => handleDeleteTemplate(index)} className="p-2 block ml-auto"><DeleteIcon className="w-6 h-6 fill-red-500" /></button>
                               <div className={`w-full ${template.container_style}`}>
                                 <div className={`min-w-0 max-w-full overflow-hidden p-4 ${template.imagen_style}`}>
                                   <Image
@@ -314,13 +327,13 @@ export default function RegisterBlogView({
                               </div>
                             </div>
                           ))}
-                          <button type="button" onClick={() => { setOpenModalTemplate(true); }} className="px-4 py-2 bg-blue-500 mt-20 mx-auto block text-white rounded hover:bg-blue-600 w-full">
+                          <button type="button" onClick={() => buttonEditTemplate("posterior")} className="px-4 py-2 bg-blue-500 mt-20 mx-auto block text-white rounded hover:bg-blue-600 w-full">
                             +
                           </button>
                         </div>
                       ) : (
                         <div>
-                          <button type="button" onClick={() => setOpenModalTemplate(true)} className="w-full text-center p-10 border border-gray-300 hover:border-gray-500 cursor-pointer">
+                          <button type="button" onClick={() => buttonEditTemplate("posterior")} className="w-full text-center p-10 border border-gray-300 hover:border-gray-500 cursor-pointer">
                             <span>Inicia el contenido del Blog</span>
                           </button>
                         </div>
