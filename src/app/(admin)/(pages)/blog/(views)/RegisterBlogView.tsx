@@ -291,7 +291,7 @@ export default function RegisterBlogView({
                 <div className="my-4">
                   <h3>Contenido (codigo HTML)*:</h3>
                   <div className="mt-4 border border-gray-300 p-4 w-[800px] mx-auto">
-                    <button type="button" onClick={buttonEditTemplate} className="bg-[#afafff] rounded p-2 flex item-center ml-auto mb-5"><Edit2Icon className="w-4 h-4 fill-[#000]"></Edit2Icon></button>
+                    {selected && <button type="button" onClick={buttonEditTemplate} className="bg-[#afafff] rounded p-2 flex item-center ml-auto mb-5"><Edit2Icon className="w-4 h-4 fill-[#000]"></Edit2Icon></button>} 
                     {
                       FormDataBlog.content && FormDataBlog.content.length > 0 ? (
                         <div className="flex flex-col gap-10"> 
@@ -314,7 +314,7 @@ export default function RegisterBlogView({
                               </div>
                             </div>
                           ))}
-                          <button type="button" onClick={() => { setOpenModalTemplate(true); console.log("Opening modal"); }} className="px-4 py-2 bg-blue-500 mt-20 mx-auto block text-white rounded hover:bg-blue-600 w-full">
+                          <button type="button" onClick={() => { setOpenModalTemplate(true); }} className="px-4 py-2 bg-blue-500 mt-20 mx-auto block text-white rounded hover:bg-blue-600 w-full">
                             +
                           </button>
                         </div>

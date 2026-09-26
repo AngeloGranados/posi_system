@@ -111,6 +111,15 @@ export async function getBlogFiltered(filterOptions: filterOptions): Promise<{ d
 
     const response = await fetch(`${URL_API}/filter?${params.toString()}`);
     const data = await response.json();
+
+    const blogsFiltered = data.data as Blog[];
+    // El content de cada blog viene como string, necesitamos parsearlo a JSON
+    blogsFiltered.forEach(blog => {
+        if (blog.content && typeof blog.content === "string") {
+            blog.content = JSON.parse(blog.content);
+        }
+    });
+
     if (!response.ok || data.error) {
         throw new Error(data.error);
     }
