@@ -402,7 +402,7 @@ export default function RegisterBlogView({
                       <DropzoneComponent
                         onDrop={handleImageChange}
                         image={FormDataBlog.image_url}
-                        ImageDefault={`${DEFAULT_CONFIG.imagesRoot}blog/${selected?.image_url}`}
+                        ImageDefault={`blog/${selected?.image_url}`}
                       />
                     </div>
                   </FormGroupInput>
