@@ -51,8 +51,14 @@ export default function ModalTemplates({ setFormTemplates, openModalTemplate, se
             return;
         }
 
+        const templateToSave = {
+            ...templateSelected,
+            imagen_content: FormDataTemplate.imagen_content,
+            parrafo_content: FormDataTemplate.parrafo_content,
+        } as templateType;
+
         setFormTemplates(
-            { ...templateSelected, ...FormDataTemplate as templateType },
+            templateToSave,
             openModalTemplate.position === "anterior" ? "anterior" : "posterior"
         );
         handleCloseModal();
