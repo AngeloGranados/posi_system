@@ -21,6 +21,7 @@ export default function ModalTemplates({ setFormTemplates, openModalTemplate, se
     const [FormDataTemplate, setFormDataTemplate] = useState<Partial<templateType>>({
         imagen_content: new File([], ""),
         parrafo_content: "",
+        type_plantilla: ""
     });
 
     const [templateSelected, setTemplateSelected] = useState<templateType | null>(null);
@@ -34,7 +35,7 @@ export default function ModalTemplates({ setFormTemplates, openModalTemplate, se
 
     const handleCloseModal = () => {
         setOpenModalTemplate((prev) => ({ ...prev, isOpen: false }));
-        setFormDataTemplate({ imagen_content: new File([], ""), parrafo_content: "" });
+        setFormDataTemplate({ imagen_content: new File([], ""), parrafo_content: "", type_plantilla: "" });
         setTemplateSelected(null);
     };
 
@@ -45,7 +46,7 @@ export default function ModalTemplates({ setFormTemplates, openModalTemplate, se
             return;
         }
 
-        if ( (FormDataTemplate.imagen_content as File).size === 0 || !FormDataTemplate.parrafo_content) {
+        if ( ((templateSelected.type_plantilla != "parrafo_only" && (FormDataTemplate.imagen_content as File).size === 0)) || !FormDataTemplate.parrafo_content) {
             alert("Por favor complete todos los campos antes de guardar.");
             return;
         }

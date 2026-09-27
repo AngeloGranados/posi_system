@@ -87,7 +87,13 @@ export async function createBlog(blog: Blog): Promise<Blog> {
     });
 
     const data = await response.json();
+    
     if (!response.ok || data.error) {
+
+        if (response.status === 413) {
+            throw new Error("La imagen es demasiado grande.");
+        }
+
         throw new Error(data.error);
     }
     return data;

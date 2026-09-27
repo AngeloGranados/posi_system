@@ -146,6 +146,14 @@ export default function RegisterBlogView({
           "parrafo_content" : null,
           "imagen_content" : null,
           "imagen_style" : "w-[50%] h-full"
+        },
+        {
+          "type_plantilla" : "parrafo_only",          
+          "container_style" : "flex flex-col items-center",
+          "parrafo_style" : "w-full h-auto my-auto",
+          "parrafo_content" : null,
+          "imagen_content" : null,
+          "imagen_style" : "hidden"
         }
     ]
 
