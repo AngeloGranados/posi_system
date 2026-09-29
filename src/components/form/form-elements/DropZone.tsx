@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import ComponentCard from "../../common/ComponentCard";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
+import { DEFAULT_CONFIG } from "../../../../config";
 
 const DropzoneComponent: React.FC<{ onDrop?: (files: File[]) => void, image: File | null, ImageDefault?: string | File | null }> = ({ onDrop, image, ImageDefault }) => {
 
@@ -69,7 +70,7 @@ const DropzoneComponent: React.FC<{ onDrop?: (files: File[]) => void, image: Fil
                 <div className="w-full h-full mb-[22px] flex justify-center">
                   <Image
                     className="w-full h-auto rounded-lg object-cover"
-                    src={(process.env.NEXT_PUBLIC_URL_IMAGES ?? "") + ImageDefault}
+                    src={(DEFAULT_CONFIG.imagesRoot ?? "") + ImageDefault}
                     alt="Product Image"
                     width={200}
                     unoptimized={process.env.NODE_ENV ? true : false}

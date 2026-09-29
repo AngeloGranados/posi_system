@@ -121,7 +121,7 @@ export default function TableModal() {
             closeAlert();
             closeModal();
         } catch (error) {
-            console.error("Error creating blog:", error);
+           triggerAlert("Error", (error instanceof Error ? error.message : String(error)), "error")
         } finally {
             setLoading(false);
         }

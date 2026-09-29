@@ -53,9 +53,11 @@ export default function ModalTemplates({ setFormTemplates, openModalTemplate, se
 
         const templateToSave = {
             ...templateSelected,
-            imagen_content: FormDataTemplate.imagen_content,
+            imagen_content: (FormDataTemplate.imagen_content as File).size > 0 ? FormDataTemplate.imagen_content : null,
             parrafo_content: FormDataTemplate.parrafo_content,
         } as templateType;
+
+        console.log("Template to save:", templateToSave);
 
         setFormTemplates(
             templateToSave,

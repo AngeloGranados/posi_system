@@ -56,7 +56,13 @@ export async function updateBlog(blog: Blog): Promise<Blog> {
     });
 
     const data = await response.json();
-    if (!response.ok || data.error) {
+    
+    if (response.status !== 200 || data.error) {
+
+        if (response.status === 413) {
+            throw new Error("La imagen es demasiado grande.");
+        }
+
         throw new Error(data.error);
     }
     return data;
@@ -80,7 +86,7 @@ export async function createBlog(blog: Blog): Promise<Blog> {
         formData.append("images_content_blog", item.imagen_content as File);
     });
 
-    const response = await fetch(`${URL_API}`, {
+    let response = await fetch(`${URL_API}`, {
         method: "POST",
         credentials: "include",
         body: formData
@@ -88,7 +94,7 @@ export async function createBlog(blog: Blog): Promise<Blog> {
 
     const data = await response.json();
     
-    if (!response.ok || data.error) {
+    if (response.status !== 200 || data.error) {
 
         if (response.status === 413) {
             throw new Error("La imagen es demasiado grande.");
