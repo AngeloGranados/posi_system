@@ -216,7 +216,7 @@ export default function TableModal() {
                                     <TableCell className="px-3 py-3 text-left">
                                         <div className="flex items-center space-x-4">
                                             <div className="flex flex-col">
-                                                <span className="text-[14px] font-bold">{shippingMethod.name}</span>
+                                                <span className="text-[14px] font-bold" dangerouslySetInnerHTML={{ __html: shippingMethod.name }}></span>
                                                 <small className="text-gray-500">Code: {shippingMethod.code}</small>
                                             </div>
                                         </div>
@@ -229,7 +229,7 @@ export default function TableModal() {
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="px-3 my-4 line-clamp text-gray-700">{shippingMethod.description}</TableCell>
+                                    <TableCell className="px-3 my-4 line-clamp text-gray-700"><p dangerouslySetInnerHTML={{ __html: shippingMethod.description }}></p></TableCell>
                                     <TableCell className="px-3 py-3 text-left">{shippingMethod.price}</TableCell>
                                     <TableCell className="px-3 py-3 text-left">
                                         {
