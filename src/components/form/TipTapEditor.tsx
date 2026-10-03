@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import { Extension } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
@@ -32,6 +33,7 @@ type TipTapEditorProps = {
 }
 
 export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
+  
     const editor = useEditor({
         extensions: [StarterKit, TextAlign],
         editorProps: {
@@ -46,6 +48,13 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
         // Don't render immediately on the server to avoid SSR issues
         immediatelyRender: false,
     })
+
+    // Sync external content updates (e.g. when editing a different record) into the editor
+    useEffect(() => {
+        if (editor && content !== editor.getHTML()) {
+            editor.commands.setContent(content, { emitUpdate: false })
+        }
+    }, [content, editor])
 
   return (
     <div className="border border-gray-300 rounded p-2">

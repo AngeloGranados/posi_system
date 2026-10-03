@@ -9,6 +9,7 @@ import FormRow from "@/components/form/group-input/FormRow";
 import FormGroupInput from "@/components/form/group-input/FormGroupInput";
 import TextArea from "@/components/form/input/TextArea";
 import { ShippingMethods } from "@/types/shippingMethods";
+import TipTapEditor from "@/components/form/TipTapEditor";
 
 
 interface ModalShippingMethodsProps {
@@ -133,15 +134,10 @@ export default function ModalShippingMethods({ errorInput, setErrorInput, loadin
                       />
                   </FormGroupInput>
                 </FormRow>
-                <FormRow>
+                <FormRow>     
                   <FormGroupInput>
                       <Label htmlFor="description">Descripcion:</Label>
-                      <TextArea
-                        className={errorInput === "description" ? "border-red-500" : ""}
-                        name="description"
-                        value={FormDataShippingMethods ? FormDataShippingMethods.description : ""}
-                        onChange={handleDataChange}
-                      />
+                      <TipTapEditor content={FormDataShippingMethods ? FormDataShippingMethods.description : ""} onChange={(content) => setFormDataShippingMethods({ ...FormDataShippingMethods, description: content })} />
                   </FormGroupInput>
                 </FormRow>
                 <FormRow>
