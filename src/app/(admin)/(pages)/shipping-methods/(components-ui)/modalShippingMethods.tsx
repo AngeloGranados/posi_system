@@ -115,23 +115,7 @@ export default function ModalShippingMethods({ errorInput, setErrorInput, loadin
                 <FormRow>
                   <FormGroupInput>
                       <Label htmlFor="name">Nombre:</Label>
-                      <InputField
-                        className={errorInput === "name" ? "border-red-500" : ""}
-                        id="input-name"
-                        name="name"
-                        value={FormDataShippingMethods ? FormDataShippingMethods.name : ""}
-                        onChange={handleDataChange}
-                      />
-                  </FormGroupInput>
-                  <FormGroupInput>
-                      <Label htmlFor="code">Code:</Label>
-                      <InputField
-                        className={errorInput === "code" ? "border-red-500" : ""}
-                        id="input-code"
-                        name="code"
-                        value={FormDataShippingMethods ? FormDataShippingMethods.code : ""}
-                        onChange={handleDataChange}
-                      />
+                      <TipTapEditor content={FormDataShippingMethods ? FormDataShippingMethods.name : ""} onChange={(content) => setFormDataShippingMethods({ ...FormDataShippingMethods, name: content })} />
                   </FormGroupInput>
                 </FormRow>
                 <FormRow>     
@@ -158,6 +142,16 @@ export default function ModalShippingMethods({ errorInput, setErrorInput, loadin
                         type="number"
                         name="estimated_days_max"
                         value={FormDataShippingMethods ? FormDataShippingMethods.estimated_days_max : 0}
+                        onChange={handleDataChange}
+                      />
+                  </FormGroupInput>
+                  <FormGroupInput>
+                      <Label htmlFor="code">Code:</Label>
+                      <InputField
+                        className={errorInput === "code" ? "border-red-500" : ""}
+                        id="input-code"
+                        name="code"
+                        value={FormDataShippingMethods ? FormDataShippingMethods.code : ""}
                         onChange={handleDataChange}
                       />
                   </FormGroupInput>
