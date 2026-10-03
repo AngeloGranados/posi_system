@@ -229,7 +229,7 @@ export default function TableModal() {
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="px-3 py-3 text-left">{shippingMethod.description}</TableCell>
+                                    <TableCell className="px-3 my-4 line-clamp text-gray-700">{shippingMethod.description}</TableCell>
                                     <TableCell className="px-3 py-3 text-left">{shippingMethod.price}</TableCell>
                                     <TableCell className="px-3 py-3 text-left">
                                         {

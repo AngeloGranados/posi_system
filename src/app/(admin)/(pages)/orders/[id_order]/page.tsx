@@ -181,6 +181,7 @@ export default function OrderDetails() {
                             {/* Aquí deberías mostrar la dirección completa si la tienes */}
                             <div className="text-sm text-gray-600">
                                 {order.shipping_address_details} <br />
+                                <span className="text-sm text-gray-600 font-bold">Método de envío: {order.shipping_method_name}</span><br />
                                 {order.shipping_address_name} <br />
                                 {formatTelephone(order.shipping_address_phone as string || "")}
                             </div>
