@@ -22,6 +22,7 @@ import { Brands } from "@/types/brands";
 import AttributeRow from "./attributeRow";
 import { CheckCircleIcon } from "@/icons";
 import Checkbox from "@/components/form/input/Checkbox";
+import TipTapEditor from "@/components/form/TipTapEditor";
 
 interface ModalProductProps {
     isOpen: boolean;
@@ -321,12 +322,15 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                   <FormRow>
                     <FormGroupInput>
                       <Label htmlFor="description_long">Descripción larga:</Label>
-                      <TextArea 
-                          className={`${errorInput === "description_long" ? "border-red-500" : ""}`}
-                          name="description_long"
-                          value={FormDataProduct.description_long ? FormDataProduct.description_long : ""}
-                          onChange={handleDataChange}
-                      />
+                      <div className="mt-2 min-w-full max-w-[300px] overflow-y-auto">
+                        <TipTapEditor
+                          content={FormDataProduct.description_long || ""}
+                          onChange={(content) => setFormDataProduct((prevData) => ({
+                            ...prevData,
+                            description_long: content
+                          }))}
+                        />
+                      </div>
                     </FormGroupInput>
                   </FormRow>
                   <FormRow>
@@ -385,11 +389,15 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
                   <FormRow>
                     <FormGroupInput>
                       <Label htmlFor="details">Detalles adicionales (opcional):</Label>
-                      <TextArea
-                        name="details"
-                        value={FormDataProduct.details || ""}
-                        onChange={handleDataChange}
+                      <div className="mt-2 min-w-full max-w-[300px] overflow-y-auto">
+                      <TipTapEditor 
+                        content={FormDataProduct.details || ""}
+                        onChange={(content) => setFormDataProduct((prevData) => ({
+                          ...prevData,
+                          details: content
+                        }))}
                       />
+                      </div>
                     </FormGroupInput>
                   </FormRow>
                 </div>

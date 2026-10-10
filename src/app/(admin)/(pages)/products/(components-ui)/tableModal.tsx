@@ -89,7 +89,7 @@ export default function TableModal() {
         for (const field of requiredFields) {
             if (field !== "stock" && field !== "discount" && field !== "price") {
                 if (!product[field] || (product[field] as string).toString().trim() === "") {
-                    error = `Todos los campos son obligatorios.`;
+                    error = `Todos los campos son obligatorios. Campo faltante: ${field}`;
                     fieldError = field;
                     break;
                 }
