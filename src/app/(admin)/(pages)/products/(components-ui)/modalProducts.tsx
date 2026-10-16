@@ -78,7 +78,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
       if (selected) {
         setFormDataProduct(selected);
         handleImagesByProductId(selected.id || "");
-        handlegetAttributesByProductId(selected.id || "");
+        handlegetAttributesByProductId(selected.slug || "");
       } else {
         handleClearForm();
       }
@@ -99,6 +99,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
           value: attr.id as string,
           label: attr.attribute_name,
         }));
+        console.log("Fetched category attributes:", formattedAttributes);
         setCategoryAttributes(formattedAttributes);
       }catch (error) {
         console.error("Error fetching category attributes:", error);
@@ -147,16 +148,16 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
       }
     }
 
-    async function handlegetAttributesByProductId(productId: string) {
+    async function handlegetAttributesByProductId(slug: string) {
       try {
-        const attributes = await getAttributesByProductId(productId);
+        const attributes = await getAttributesByProductId(slug);
         const formattedAttributes = attributes.map((attr: ProductAttribute) => ({
           key: attr.id as string,
           value: attr.attribute_value,
         }));
         setProductAttributes(formattedAttributes);
       }catch (error) {
-        console.error("Error fetching attributes for product ID:", productId, error);
+        console.error("Error fetching attributes for product ID:", slug, error);
       }
     }
 
