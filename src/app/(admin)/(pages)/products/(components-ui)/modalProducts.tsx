@@ -77,7 +77,7 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
 
       if (selected) {
         setFormDataProduct(selected);
-        handleImagesByProductId(selected.id || "");
+        handleImagesByProductId(selected.slug || "");
         handlegetAttributesByProductId(selected.slug || "");
       } else {
         handleClearForm();
@@ -132,9 +132,9 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
       }
     }
 
-    async function handleImagesByProductId(productId: string) {
+    async function handleImagesByProductId(slug: string) {
       try {
-        const images = await getImagesByProductId(productId);
+        const images = await getImagesByProductId(slug);
         const imageFiles = images.map((img: ImagesProduct, index) => {
           return img.image_url;
         });
@@ -142,9 +142,10 @@ export default function ModalProduct({ setErrorInput, loading, isOpen, closeModa
         const imagesUnWhithImageMain = images
           .filter((img: ImagesProduct) => img.sort_order !== 0)
           .map((img: ImagesProduct) => img.image_url);
+          console.log("Images without main image:", imagesUnWhithImageMain);
         setImageExtrasFiles(imagesUnWhithImageMain);
       }catch (error) {
-        console.error("Error fetching images for product ID:", productId, error);
+        console.error("Error fetching images for product ID:", slug, error);
       }
     }
 

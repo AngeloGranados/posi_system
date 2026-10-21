@@ -5,10 +5,13 @@ import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import AddIcon from "../../../../public/images/icons/add-icon";
 import CancelIcon from "../../../../public/images/icons/cancel-icon";
+import { DEFAULT_CONFIG } from "../../../../config";
 
 const ImagesDropzone: React.FC<{imageExtrasFiles: File[] | string[]; setImageExtrasFiles: React.Dispatch<React.SetStateAction<File[] | string[]>>}> = ({imageExtrasFiles, setImageExtrasFiles}) => {
 
   const [previewImages, setPreviewImages] = React.useState<string[]>([]);
+
+  console.log("Image extras files:", imageExtrasFiles);
 
   const onDropHandler = (acceptedFiles: File[]) => {
     setImageExtrasFiles(acceptedFiles); 
@@ -79,7 +82,7 @@ const ImagesDropzone: React.FC<{imageExtrasFiles: File[] | string[]; setImageExt
                     <Image
                       unoptimized={process.env.NODE_ENV ? true : false}
                       className="w-full h-auto rounded-lg object-cover"
-                      src={previewImages[index]}
+                      src={(DEFAULT_CONFIG.imagesRoot ?? "") + previewImages[index]}
                       alt={`Image ${index + 1}`}
                       width={85}
                       height={100}
@@ -93,7 +96,7 @@ const ImagesDropzone: React.FC<{imageExtrasFiles: File[] | string[]; setImageExt
                     <Image
                       unoptimized={process.env.NODE_ENV ? true : false}
                       className="w-full h-auto rounded-lg object-cover"
-                      src={(process.env.NEXT_PUBLIC_URL_IMAGES ?? "") + image}
+                      src={(DEFAULT_CONFIG.imagesRoot ?? "") + image}
                       alt={`Image ${index + 1}`}
                       width={85}
                       height={100}

@@ -168,8 +168,8 @@ export async function deleteProduct(id: string): Promise<void> {
     return data;
 }
 
-export async function getImagesByProductId(productId: string): Promise<ImagesProduct[]> {
-    const response = await fetch(`${URL_API}/images/${productId}`);
+export async function getImagesByProductId(slug: string): Promise<ImagesProduct[]> {
+    const response = await fetch(`${URL_API}/images/${slug}`);
     const data = await response.json();
     if (!response.ok || data.error) {
         throw new Error(data.error);
