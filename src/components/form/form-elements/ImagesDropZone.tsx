@@ -82,7 +82,7 @@ const ImagesDropzone: React.FC<{imageExtrasFiles: File[] | string[]; setImageExt
                     <Image
                       unoptimized={process.env.NODE_ENV ? true : false}
                       className="w-full h-auto rounded-lg object-cover"
-                      src={(DEFAULT_CONFIG.imagesRoot ?? "") + previewImages[index]}
+                      src={previewImages[index]}
                       alt={`Image ${index + 1}`}
                       width={85}
                       height={100}

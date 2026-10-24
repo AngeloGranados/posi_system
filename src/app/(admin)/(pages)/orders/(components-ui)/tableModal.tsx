@@ -28,9 +28,9 @@ export default function TableModal() {
 
     // filters
     const [filters, setFilters] = useState<filterOptions>({
-        orderField: "order_number",
+        orderField: "created_at",
         ByStatus: "pending",
-        orderBy: "status",
+        orderBy: "ByDESC",
         filterlike: '',
         limit: 100,
         page: 1

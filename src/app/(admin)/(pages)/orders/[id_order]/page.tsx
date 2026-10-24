@@ -159,7 +159,7 @@ export default function OrderDetails() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-[auto_2fr] gap-6 mb-6">
+                <div className="grid grid-cols-1 gap-6 mb-6">
                     <div className="flex flex-col items-center gap-3 mb-2">
                         {/* Información del Cliente */}
                         <div className="bg-white rounded-lg p-6 shadow border flex flex-col">
@@ -175,25 +175,27 @@ export default function OrderDetails() {
                             <div className="mb-2">{order.email}</div>
                             {/* Si tienes teléfono, agrégalo aquí */}
                         </div>
-                        {/* Dirección de envío */}
-                        <div className="w-full bg-white rounded-lg p-6 shadow border flex flex-col">
-                            <span className="font-semibold text-gray-700 mb-2">Dirección de envío</span>
-                            {/* Aquí deberías mostrar la dirección completa si la tienes */}
-                            <div className="text-sm text-gray-600">
-                                {order.shipping_address_details} <br />
-                                <span className="text-sm text-gray-600 font-bold">Método de envío: {order.shipping_method_name}</span><br />
-                                {order.shipping_address_name} <br />
-                                {formatTelephone(order.shipping_address_phone as string || "")}
+                        <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
+                            {/* Dirección de envío */}
+                            <div className="w-[50%] bg-white rounded-lg p-6 shadow border flex flex-col">
+                                <span className="font-semibold text-gray-700 mb-2">Dirección de envío</span>
+                                {/* Aquí deberías mostrar la dirección completa si la tienes */}
+                                <div className="text-sm text-gray-600">
+                                    {order.shipping_address_details} <br />
+                                    <span className="text-sm text-gray-600 font-bold" dangerouslySetInnerHTML={{ __html: `Método de envío: ${order.shipping_method_name}` }}></span><br />
+                                    {order.shipping_address_name} <br />
+                                    {formatTelephone(order.shipping_address_phone as string || "")}
+                                </div>
                             </div>
-                        </div>
-                        {/* Dirección de facturación */}
-                        <div className="w-full bg-white rounded-lg p-6 shadow border flex flex-col">
-                            <span className="font-semibold text-gray-700 mb-2">Dirección de facturación</span>
-                            {/* Aquí deberías mostrar la dirección completa si la tienes */}
-                            <div className="text-sm text-gray-600">
-                                {order.billing_address_details} <br />
-                                {order.billing_address_name} <br />
-                                {formatTelephone(order.billing_address_phone as string || "")}
+                            {/* Dirección de facturación */}
+                            <div className="w-[50%] bg-white rounded-lg p-6 shadow border flex flex-col">
+                                <span className="font-semibold text-gray-700 mb-2">Dirección de facturación</span>
+                                {/* Aquí deberías mostrar la dirección completa si la tienes */}
+                                <div className="text-sm text-gray-600">
+                                    {order.billing_address_details ?? order.shipping_address_details} <br />
+                                    {order.billing_address_name ?? order.shipping_address_name} <br />
+                                    {formatTelephone(order.billing_address_phone as string || "")}
+                                </div>
                             </div>
                         </div>
                     </div>
